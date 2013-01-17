@@ -9,7 +9,7 @@ This library integrates skosprovider_ in a pyramid application.
 Installation
 ------------
 
-To install pyramid_rawes, use pip
+To install pyramid_skosproviders, use pip
 
 .. code-block:: bash
     
