@@ -57,3 +57,22 @@ class TestGetAndBuild(unittest.TestCase):
         r = TestRegistry()
         SR = _build_skos_registry(r)
         self.assertIsInstance(SR, Registry)
+
+
+class TestIncludeMe(unittest.TestCase):
+
+    def setUp(self):
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        del self.config
+
+    def test_includeme(self):
+        includeme(self.config)
+        SR = self.config.registry.queryUtility(ISkosRegistry)
+        self.assertIsInstance(SR, Registry)
+
+    def test_directive_was_added(self):
+        includeme(self.config)
+        SR = self.config.get_skos_registry()
+        self.assertIsInstance(SR, Registry)
