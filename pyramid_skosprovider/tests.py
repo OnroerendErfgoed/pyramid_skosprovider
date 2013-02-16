@@ -136,3 +136,16 @@ class ProviderViewTests(unittest.TestCase):
         for c in concepts:
             self.assertIsInstance(c, dict)
             self.assertIn('id', c)
+
+    def test_get_concept(self):
+        request = testing.DummyRequest()
+        request.matchdict = {
+            'scheme_id': 'TREES', 
+            'concept_id': 1
+        }
+        pv = self._get_provider_view(request)
+        concept = pv.get_concept()
+        self.assertIsInstance(concept, dict)
+        self.assertIn('id', concept)
+        self.assertEqual(1, concept['id'])
+
