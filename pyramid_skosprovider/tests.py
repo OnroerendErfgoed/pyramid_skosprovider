@@ -13,10 +13,44 @@ from skosprovider.registry import (
     Registry
 )
 
+from skosprovider.providers import (
+    FlatDictionaryProvider
+)
+
 try:
     import unittest2 as unittest
 except ImportError:
     import unittest
+
+larch = {
+    'id': 1,
+    'labels': [
+        {'type': 'pref', 'lang': 'en', 'label': 'The Larch'},
+        {'type': 'pref', 'lang': 'nl', 'label': 'De Lariks'}
+    ],
+    'notes': [
+        {'type': 'definition', 'lang': 'en', 'note': 'A type of tree.'}
+    ]
+}
+
+chestnut = {
+    'id': 2,
+    'labels': [
+        {'type': 'pref', 'lang': 'en', 'label': 'The Chestnut'},
+        {'type': 'alt', 'lang': 'nl', 'label': 'De Paardekastanje'}
+    ],
+    'notes': [
+        {
+            'type': 'definition', 'lang': 'en',
+            'note': 'A different type of tree.'
+        }
+    ]
+}
+
+trees = FlatDictionaryProvider(
+    {'id': 'TREES', 'default_language': 'nl'},
+    [larch, chestnut]
+)
 
 
 class TestRegistry(object):
@@ -76,3 +110,29 @@ class TestIncludeMe(unittest.TestCase):
         includeme(self.config)
         SR = self.config.get_skos_registry()
         self.assertIsInstance(SR, Registry)
+
+
+class ProviderViewTests(unittest.TestCase):
+
+    def setUp(self):
+        self.config = testing.setUp()
+        self.config.include('pyramid_skosprovider')
+        regis = self.config.get_skos_registry()
+        regis.register_provider(trees)
+
+    def tearDown(self):
+        testing.tearDown()
+
+    def _get_provider_view(self, request):
+        from pyramid_skosprovider.views import ProviderView
+        return ProviderView(request)
+
+    def test_get_conceptscheme(self):
+        request = testing.DummyRequest()
+        request.matchdict = {'scheme_id': 'TREES'}
+        pv = self._get_provider_view(request)
+        concepts = pv.get_conceptscheme()
+        self.assertIsInstance(concepts, list)
+        for c in concepts:
+            self.assertIsInstance(c, dict)
+            self.assertIn('id', c)

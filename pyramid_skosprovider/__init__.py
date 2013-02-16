@@ -31,3 +31,4 @@ def get_skos_registry(registry):
 def includeme(config):
     _build_skos_registry(config.registry)
     config.add_directive('get_skos_registry', get_skos_registry)
+    config.add_route('skosprovider.conceptscheme', '/{scheme_id}')
