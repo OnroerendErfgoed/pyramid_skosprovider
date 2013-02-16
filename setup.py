@@ -8,7 +8,7 @@ CHANGES = open(os.path.join(here, 'HISTORY.rst')).read()
 
 requires = [
     'pyramid',
-    'skosprovider'
+    'skosprovider>=0.1.2'
     ]
 
 tests_requires = [

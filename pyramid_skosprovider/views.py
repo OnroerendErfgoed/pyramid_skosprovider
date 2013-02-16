@@ -17,13 +17,13 @@ class ProviderView(RestView):
     def get_conceptscheme(self):
         scheme_id = self.request.matchdict['scheme_id']
         regis = get_skos_registry(self.request)
-        providers = regis.get_providers(ids = [scheme_id])
-        return providers[0].get_all()
+        provider = regis.get_provider(scheme_id)
+        return provider.get_all()
 
     @view_config(route_name='skosprovider.concept', request_method='GET')
     def get_concept(self):
         scheme_id = self.request.matchdict['scheme_id']
         concept_id = self.request.matchdict['concept_id']
         regis = get_skos_registry(self.request)
-        providers = regis.get_providers(ids = [scheme_id])
-        return providers[0].get_by_id(concept_id)
+        provider = regis.get_provider(scheme_id)
+        return provider.get_by_id(concept_id)
