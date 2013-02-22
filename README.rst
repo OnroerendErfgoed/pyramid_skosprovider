@@ -46,4 +46,18 @@ Eg. in a view:
         providers = skos.get_providers()
         # ...
 
+Exposed information
+-------------------
+
+This library takes your skosproviders and makes them available as REST services. 
+The following API is planned:
+
+ * GET `/conceptschemes`: Get all registered concept schemes.
+ * GET `/conceptschemes/{scheme_id}`: Get information about a concept scheme.
+ * GET `/conceptschemes/{scheme_id}/concepts`: Search for concepts in a scheme.
+ * GET `/conceptschemes/{scheme_id}/concepts/{concept_id}`: Get information about a concept
+ * GET `/concepts`: Search for concepts in one or more schemes.
+ * GET `/concepts/{scheme_id}/{concept_id}`: Get information about a concept, 
+   is an alias for `/{scheme_id}/concepts/{concept_id}`.
+
 .. _skosprovider: https://github.com/koenedaele/skosprovider

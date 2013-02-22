@@ -2,6 +2,11 @@
 
 from pyramid import testing
 
+from pyramid.httpexceptions import (
+    HTTPFound,
+    HTTPNotFound
+    )
+
 from pyramid_skosprovider import (
     ISkosRegistry,
     _build_skos_registry,
@@ -127,15 +132,45 @@ class ProviderViewTests(unittest.TestCase):
         from pyramid_skosprovider.views import ProviderView
         return ProviderView(request)
 
+    def test_get_conceptschemes(self):
+        request = testing.DummyRequest()
+        pv = self._get_provider_view(request)
+        conceptschemes = pv.get_conceptschemes()
+        self.assertIsInstance(conceptschemes, list)
+        for cs in conceptschemes:
+            self.assertIsInstance(cs, dict)
+            self.assertIn('id', cs)
+
     def test_get_conceptscheme(self):
         request = testing.DummyRequest()
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
-        concepts = pv.get_conceptscheme()
+        cs = pv.get_conceptscheme()
+        self.assertEqual({'id': 'TREES'}, cs)
+
+    def test_get_unexisting_conceptscheme(self):
+        request = testing.DummyRequest()
+        request.matchdict = {'scheme_id': 'PARROTS'}
+        pv = self._get_provider_view(request)
+        cs = pv.get_conceptscheme()
+        self.assertIsInstance(cs, HTTPNotFound)
+
+    def test_get_conceptscheme_concepts(self):
+        request = testing.DummyRequest()
+        request.matchdict = {'scheme_id': 'TREES'}
+        pv = self._get_provider_view(request)
+        concepts = pv.get_conceptscheme_concepts()
         self.assertIsInstance(concepts, list)
         for c in concepts:
             self.assertIsInstance(c, dict)
             self.assertIn('id', c)
+
+    def test_get_unexisting_conceptscheme_concepts(self):
+        request = testing.DummyRequest()
+        request.matchdict = {'scheme_id': 'PARROTS'}
+        pv = self._get_provider_view(request)
+        concepts = pv.get_conceptscheme_concepts()
+        self.assertIsInstance(concepts, HTTPNotFound)
 
     def test_get_concept(self):
         request = testing.DummyRequest()
