@@ -16,6 +16,7 @@ class RestView(object):
         self.request = request
         self.skos_registry = get_skos_registry(self.request)
 
+
 @view_defaults(renderer='json', accept='application/json')
 class ProviderView(RestView):
 
@@ -37,7 +38,13 @@ class ProviderView(RestView):
         provider = self.skos_registry.get_provider(scheme_id)
         if not provider:
             return HTTPNotFound()
-        return provider.get_all()
+        # TODO: result paging
+        concepts = provider.get_all()
+        count = len(concepts)
+        start = 0
+        finish = start + count - 1 if count > 0 else 0
+        self.request.response.headers['Content-Range'] = 'items %d-%d/%d' % (start, finish, count)
+        return concepts
 
     @view_config(route_name='skosprovider.concept', request_method='GET')
     def get_concept(self):
@@ -45,4 +52,7 @@ class ProviderView(RestView):
         concept_id = self.request.matchdict['concept_id']
         regis = get_skos_registry(self.request)
         provider = self.skos_registry.get_provider(scheme_id)
-        return provider.get_by_id(concept_id)
+        concept = provider.get_by_id(concept_id)
+        if not concept:
+            return HTTPNotFound()
+        return concept

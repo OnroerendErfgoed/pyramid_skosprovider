@@ -58,6 +58,6 @@ The following API is planned:
  * GET `/conceptschemes/{scheme_id}/concepts/{concept_id}`: Get information about a concept
  * GET `/concepts`: Search for concepts in one or more schemes.
  * GET `/concepts/{scheme_id}/{concept_id}`: Get information about a concept, 
-   is an alias for `/{scheme_id}/concepts/{concept_id}`.
+   is an alias for `/conceptschemes/{scheme_id}/concepts/{concept_id}`.
 
 .. _skosprovider: https://github.com/koenedaele/skosprovider

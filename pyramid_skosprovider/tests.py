@@ -184,3 +184,12 @@ class ProviderViewTests(unittest.TestCase):
         self.assertIn('id', concept)
         self.assertEqual(1, concept['id'])
 
+    def test_get_unexsisting_concept(self):
+        request = testing.DummyRequest()
+        request.matchdict = {
+            'scheme_id': 'TREES', 
+            'concept_id': 123456789
+        }
+        pv = self._get_provider_view(request)
+        concept = pv.get_concept()
+        self.assertIsInstance(concept, HTTPNotFound)
