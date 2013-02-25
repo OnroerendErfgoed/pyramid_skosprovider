@@ -83,14 +83,14 @@ class TestGetAndBuild(unittest.TestCase):
         SR = Registry()
         r.registerUtility(SR, ISkosRegistry)
         SR2 = get_skos_registry(r)
-        self.assertEquals(SR, SR2)
+        self.assertEqual(SR, SR2)
 
     def test_build_skos_registry_already_exists(self):
         r = TestRegistry()
         SR = Registry()
         r.registerUtility(SR, ISkosRegistry)
         SR2 = _build_skos_registry(r)
-        self.assertEquals(SR, SR2)
+        self.assertEqual(SR, SR2)
 
     def test_build_skos_registry_default_settings(self):
         r = TestRegistry()
