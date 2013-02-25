@@ -193,3 +193,37 @@ class ProviderViewTests(unittest.TestCase):
         pv = self._get_provider_view(request)
         concept = pv.get_concept()
         self.assertIsInstance(concept, HTTPNotFound)
+
+
+class TestUtils(unittest.TestCase):
+
+    def test_parse_range_header(self):
+        from pyramid_skosprovider.utils import parse_range_header
+        headers = [
+            {
+                'header': 'items=0-19',
+                'result': {
+                    'start': 0,
+                    'number': 20,
+                    'finish': 19
+                }
+            }, {
+                'header': 'items:0-19',
+                'result': False
+            }, {
+                'header': 'test',
+                'result': False
+            }, {
+                'header': 'items=t-t',
+                'result': False
+            }, {
+                'header': 'items=10-0',
+                'result': {
+                    'start': 10,
+                    'finish': 10,
+                    'number': 1
+                }
+            }]
+        for header in headers:
+            res = parse_range_header(header['header'])
+            self.assertEquals(res, header['result'])
