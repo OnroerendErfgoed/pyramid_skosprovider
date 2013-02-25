@@ -9,6 +9,10 @@ from pyramid.httpexceptions import (
     HTTPNotFound
 )
 
+from pyramid_skosprovider.utils import (
+    parse_range_header
+)
+
 
 class RestView(object):
 
@@ -39,12 +43,21 @@ class ProviderView(RestView):
         if not provider:
             return HTTPNotFound()
         # TODO: result paging
+        paging_data = False
+        if 'Range' in self.request.headers:
+            paging_data = parse_range_header(self.request.headers['Range'])
         concepts = provider.get_all()
         count = len(concepts)
-        start = 0
-        finish = start + count - 1 if count > 0 else 0
-        self.request.response.headers['Content-Range'] = 'items %d-%d/%d' % (start, finish, count)
-        return concepts
+        if not paging_data:
+            paging_data = {
+                'start': 0,
+                'finish': count - 1 if count > 0 else 0,
+                'number': count
+            }
+        cslice = concepts[paging_data['start']:paging_data['number']]
+        self.request.response.headers['Content-Range'] = \
+            'items %d-%d/%d' % (paging_data['start'], paging_data['finish'], count)
+        return cslice
 
     @view_config(route_name='skosprovider.concept', request_method='GET')
     def get_concept(self):
