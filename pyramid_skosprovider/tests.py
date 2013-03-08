@@ -243,4 +243,4 @@ class TestUtils(unittest.TestCase):
             }]
         for header in headers:
             res = parse_range_header(header['header'])
-            self.assertEquals(res, header['result'])
+            self.assertEqual(res, header['result'])
