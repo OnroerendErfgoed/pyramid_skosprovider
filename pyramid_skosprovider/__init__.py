@@ -35,3 +35,5 @@ def includeme(config):
     config.add_route('skosprovider.conceptscheme', '/conceptschemes/{scheme_id}')
     config.add_route('skosprovider.conceptscheme.concepts', '/conceptschemes/{scheme_id}/concepts')
     config.add_route('skosprovider.concept', '/conceptschemes/{scheme_id}/concepts/{concept_id}')
+
+    config.scan()
