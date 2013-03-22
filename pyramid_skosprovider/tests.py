@@ -189,6 +189,17 @@ class ProviderViewTests(unittest.TestCase):
         concepts = pv.get_conceptscheme_concepts()
         self.assertIsInstance(concepts, HTTPNotFound)
 
+    def test_get_conceptscheme_concepts_search(self):
+        request = testing.DummyRequest({
+            'label': 'Larc'
+        })
+        request.matchdict = {'scheme_id': 'TREES'}
+        pv = self._get_provider_view(request)
+        concepts = pv.get_conceptscheme_concepts()
+        self.assertIsInstance(concepts, list)
+        self.assertEqual(1, len(concepts))
+        self.assertEqual(1, concepts[0]['id'])
+
     def test_get_concept(self):
         request = testing.DummyRequest()
         request.matchdict = {

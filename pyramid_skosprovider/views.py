@@ -42,11 +42,16 @@ class ProviderView(RestView):
         provider = self.skos_registry.get_provider(scheme_id)
         if not provider:
             return HTTPNotFound()
-        # TODO: result paging
+        if 'label' in self.request.params and self.request.params.get('label') != '*':
+            concepts = provider.find({
+                'label': self.request.params.get('label')
+            })
+        else:
+            concepts = provider.get_all()
+        # Result paging
         paging_data = False
         if 'Range' in self.request.headers:
             paging_data = parse_range_header(self.request.headers['Range'])
-        concepts = provider.get_all()
         count = len(concepts)
         if not paging_data:
             paging_data = {
