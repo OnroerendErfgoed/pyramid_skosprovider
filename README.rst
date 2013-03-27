@@ -1,5 +1,5 @@
-pyramid_rawes
-=============
+pyramid_skosprovider
+====================
 
 This library integrates skosprovider_ in a pyramid application.
 
