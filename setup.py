@@ -8,7 +8,7 @@ CHANGES = open(os.path.join(here, 'HISTORY.rst')).read()
 
 requires = [
     'pyramid',
-    'skosprovider>=0.1.3'
+    'skosprovider>=0.2.0dev'
 ]
 
 tests_requires = [
@@ -46,5 +46,8 @@ setup(
     extras_require={
         'testing': testing_extras
     },
-    test_suite='pyramid_skosprovider'
+    test_suite='pyramid_skosprovider',
+    dependency_links = [
+        'https://github.com/koenedaele/skosprovider/tarball/zerotwo#egg=skosprovider-0.2.0',
+    ]
 )

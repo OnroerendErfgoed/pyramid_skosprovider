@@ -22,6 +22,10 @@ from skosprovider.providers import (
     FlatDictionaryProvider
 )
 
+from skosprovider.skos import (
+    Concept
+)
+
 try:
     import unittest2 as unittest
 except ImportError:
@@ -30,23 +34,23 @@ except ImportError:
 larch = {
     'id': 1,
     'labels': [
-        {'type': 'pref', 'lang': 'en', 'label': 'The Larch'},
-        {'type': 'pref', 'lang': 'nl', 'label': 'De Lariks'}
+        {'type': 'prefLabel', 'language': 'en', 'label': 'The Larch'},
+        {'type': 'prefLabel', 'language': 'nl', 'label': 'De Lariks'}
     ],
     'notes': [
-        {'type': 'definition', 'lang': 'en', 'note': 'A type of tree.'}
+        {'type': 'definition', 'language': 'en', 'note': 'A type of tree.'}
     ]
 }
 
 chestnut = {
     'id': 2,
     'labels': [
-        {'type': 'pref', 'lang': 'en', 'label': 'The Chestnut'},
-        {'type': 'alt', 'lang': 'nl', 'label': 'De Paardekastanje'}
+        {'type': 'prefLabel', 'language': 'en', 'label': 'The Chestnut'},
+        {'type': 'altLabel', 'language': 'nl', 'label': 'De Paardekastanje'}
     ],
     'notes': [
         {
-            'type': 'definition', 'lang': 'en',
+            'type': 'definition', 'language': 'en',
             'note': 'A different type of tree.'
         }
     ]
@@ -122,18 +126,25 @@ class ProviderViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_skosprovider')
-        regis = self.config.get_skos_registry()
-        regis.register_provider(trees)
+        self.regis = self.config.get_skos_registry()
+        self.regis.register_provider(trees)
 
     def tearDown(self):
         testing.tearDown()
+        del self.config
+        del self.regis
+
+    def _get_dummy_request(self, *args, **kwargs):
+        request = testing.DummyRequest(*args, **kwargs)
+        request.skos_registry = self.regis
+        return request
 
     def _get_provider_view(self, request):
         from pyramid_skosprovider.views import ProviderView
         return ProviderView(request)
 
     def test_get_conceptschemes(self):
-        request = testing.DummyRequest()
+        request = self._get_dummy_request()
         pv = self._get_provider_view(request)
         conceptschemes = pv.get_conceptschemes()
         self.assertIsInstance(conceptschemes, list)
@@ -142,21 +153,21 @@ class ProviderViewTests(unittest.TestCase):
             self.assertIn('id', cs)
 
     def test_get_conceptscheme(self):
-        request = testing.DummyRequest()
+        request = self._get_dummy_request()
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         cs = pv.get_conceptscheme()
         self.assertEqual({'id': 'TREES'}, cs)
 
     def test_get_unexisting_conceptscheme(self):
-        request = testing.DummyRequest()
+        request = self._get_dummy_request()
         request.matchdict = {'scheme_id': 'PARROTS'}
         pv = self._get_provider_view(request)
         cs = pv.get_conceptscheme()
         self.assertIsInstance(cs, HTTPNotFound)
 
     def test_get_conceptscheme_concepts(self):
-        request = testing.DummyRequest()
+        request = self._get_dummy_request()
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
@@ -167,7 +178,7 @@ class ProviderViewTests(unittest.TestCase):
             self.assertIn('id', c)
 
     def test_get_conceptscheme_concepts_complete_range(self):
-        request = testing.DummyRequest()
+        request = self._get_dummy_request()
         request.matchdict = {'scheme_id': 'TREES'}
         request.headers['Range'] = 'items=0-19'
         pv = self._get_provider_view(request)
@@ -175,7 +186,7 @@ class ProviderViewTests(unittest.TestCase):
         self.assertEqual(2, len(concepts))
 
     def test_get_conceptscheme_concepts_partial_range(self):
-        request = testing.DummyRequest()
+        request = self._get_dummy_request()
         request.matchdict = {'scheme_id': 'TREES'}
         request.headers['Range'] = 'items=0-0'
         pv = self._get_provider_view(request)
@@ -183,14 +194,14 @@ class ProviderViewTests(unittest.TestCase):
         self.assertEqual(1, len(concepts))
 
     def test_get_unexisting_conceptscheme_concepts(self):
-        request = testing.DummyRequest()
+        request = self._get_dummy_request()
         request.matchdict = {'scheme_id': 'PARROTS'}
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
         self.assertIsInstance(concepts, HTTPNotFound)
 
     def test_get_conceptscheme_concepts_search(self):
-        request = testing.DummyRequest({
+        request = self._get_dummy_request({
             'label': 'Larc'
         })
         request.matchdict = {'scheme_id': 'TREES'}
@@ -201,19 +212,19 @@ class ProviderViewTests(unittest.TestCase):
         self.assertEqual(1, concepts[0]['id'])
 
     def test_get_concept(self):
-        request = testing.DummyRequest()
+        request = self._get_dummy_request()
         request.matchdict = {
             'scheme_id': 'TREES', 
             'concept_id': 1
         }
         pv = self._get_provider_view(request)
         concept = pv.get_concept()
-        self.assertIsInstance(concept, dict)
+        self.assertIsInstance(concept, Concept)
         self.assertIn('id', concept)
         self.assertEqual(1, concept['id'])
 
     def test_get_unexsisting_concept(self):
-        request = testing.DummyRequest()
+        request = self._get_dummy_request()
         request.matchdict = {
             'scheme_id': 'TREES', 
             'concept_id': 123456789

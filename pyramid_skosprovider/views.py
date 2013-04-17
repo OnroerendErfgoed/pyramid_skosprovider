@@ -13,12 +13,15 @@ from pyramid_skosprovider.utils import (
     parse_range_header
 )
 
+import logging
+log = logging.getLogger(__name__)
+
 
 class RestView(object):
 
     def __init__(self, request):
         self.request = request
-        self.skos_registry = get_skos_registry(self.request)
+        self.skos_registry = self.request.skos_registry
 
 
 @view_defaults(renderer='json', accept='application/json')
@@ -42,9 +45,10 @@ class ProviderView(RestView):
         provider = self.skos_registry.get_provider(scheme_id)
         if not provider:
             return HTTPNotFound()
-        if 'label' in self.request.params and self.request.params.get('label') != '*':
+        label = self.request.params.get('label', None)
+        if label not in [None, '*']:
             concepts = provider.find({
-                'label': self.request.params.get('label')
+                'label': label
             })
         else:
             concepts = provider.get_all()
@@ -68,9 +72,10 @@ class ProviderView(RestView):
     def get_concept(self):
         scheme_id = self.request.matchdict['scheme_id']
         concept_id = self.request.matchdict['concept_id']
-        regis = get_skos_registry(self.request)
         provider = self.skos_registry.get_provider(scheme_id)
+        log.debug(provider)
         concept = provider.get_by_id(concept_id)
+        log.debug(concept)
         if not concept:
             return HTTPNotFound()
         return concept
