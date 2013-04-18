@@ -6,6 +6,8 @@ from pyramid_skosprovider import get_skos_registry
 
 from pyramid.view import view_config, view_defaults
 
+from pyramid.compat import ascii_native_
+
 from pyramid.httpexceptions import (
     HTTPFound,
     HTTPNotFound
@@ -70,8 +72,8 @@ class ProviderView(RestView):
                 'number': count
             }
         cslice = concepts[paging_data['start']:paging_data['number']]
-        self.request.response.headers['Content-Range'] = \
-            'items %d-%d/%d' % (paging_data['start'], paging_data['finish'], count)
+        self.request.response.headers[ascii_native_('Content-Range')] = \
+            ascii_native_('items %d-%d/%d' % (paging_data['start'], paging_data['finish'], count))
         return cslice
 
     @view_config(route_name='skosprovider.concept', request_method='GET')
