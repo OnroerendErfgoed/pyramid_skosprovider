@@ -56,9 +56,19 @@ chestnut = {
     ]
 }
 
+species = {
+    'id': 3,
+    'labels': [
+        {'type': 'prefLabel', 'language': 'en', 'label': 'Trees by species'},
+        {'type': 'prefLabel', 'language': 'nl', 'label': 'Bomen per soort'}
+    ],
+    'type': 'collection',
+    'members': ['1', '2']
+}
+
 trees = FlatDictionaryProvider(
     {'id': 'TREES', 'default_language': 'nl'},
-    [larch, chestnut]
+    [larch, chestnut, species]
 )
 
 
@@ -172,7 +182,7 @@ class ProviderViewTests(unittest.TestCase):
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
         self.assertIsInstance(concepts, list)
-        self.assertEqual(2, len(concepts))
+        self.assertEqual(3, len(concepts))
         for c in concepts:
             self.assertIsInstance(c, dict)
             self.assertIn('id', c)
@@ -183,7 +193,7 @@ class ProviderViewTests(unittest.TestCase):
         request.headers['Range'] = 'items=0-19'
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
-        self.assertEqual(2, len(concepts))
+        self.assertEqual(3, len(concepts))
 
     def test_get_conceptscheme_concepts_partial_range(self):
         request = self._get_dummy_request()
@@ -200,7 +210,7 @@ class ProviderViewTests(unittest.TestCase):
         concepts = pv.get_conceptscheme_concepts()
         self.assertIsInstance(concepts, HTTPNotFound)
 
-    def test_get_conceptscheme_concepts_search(self):
+    def test_get_conceptscheme_concepts_search_label(self):
         request = self._get_dummy_request({
             'label': 'Larc'
         })
@@ -210,6 +220,36 @@ class ProviderViewTests(unittest.TestCase):
         self.assertIsInstance(concepts, list)
         self.assertEqual(1, len(concepts))
         self.assertEqual(1, concepts[0]['id'])
+
+    def test_get_conceptscheme_concepts_search_type_concept(self):
+        request = self._get_dummy_request({
+            'type': 'concept'
+        })
+        request.matchdict = {'scheme_id': 'TREES'}
+        pv = self._get_provider_view(request)
+        concepts = pv.get_conceptscheme_concepts()
+        self.assertIsInstance(concepts, list)
+        self.assertEqual(2, len(concepts))
+
+    def test_get_conceptscheme_concepts_search_type_collection(self):
+        request = self._get_dummy_request({
+            'type': 'collection'
+        })
+        request.matchdict = {'scheme_id': 'TREES'}
+        pv = self._get_provider_view(request)
+        concepts = pv.get_conceptscheme_concepts()
+        self.assertIsInstance(concepts, list)
+        self.assertEqual(1, len(concepts))
+
+    def test_get_conceptscheme_concepts_search_in_collection(self):
+        request = self._get_dummy_request({
+            'collection': 3
+        })
+        request.matchdict = {'scheme_id': 'TREES'}
+        pv = self._get_provider_view(request)
+        concepts = pv.get_conceptscheme_concepts()
+        self.assertIsInstance(concepts, list)
+        self.assertEqual(2, len(concepts))
 
     def test_get_concept(self):
         request = self._get_dummy_request()

@@ -45,13 +45,17 @@ class ProviderView(RestView):
         provider = self.skos_registry.get_provider(scheme_id)
         if not provider:
             return HTTPNotFound()
+        query = {}
         label = self.request.params.get('label', None)
         if label not in [None, '*']:
-            concepts = provider.find({
-                'label': label
-            })
-        else:
-            concepts = provider.get_all()
+            query['label'] = label
+        type = self.request.params.get('type', None)
+        if type in ['concept', 'collection']:
+            query['type'] = type
+        coll = self.request.params.get('collection', None)
+        if coll is not None:
+            query['collection'] = {'id': coll, 'depth': 'all'}
+        concepts = provider.find(query)
         # Result paging
         paging_data = False
         if 'Range' in self.request.headers:
