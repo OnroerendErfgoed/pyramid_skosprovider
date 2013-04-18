@@ -46,7 +46,7 @@ setup(
     extras_require={
         'testing': testing_extras
     },
-    test_suite='pyramid_skosprovider',
+    test_suite='nose.collector',
     dependency_links = [
         'https://github.com/koenedaele/skosprovider/tarball/zerotwo#egg=skosprovider-0.2.0',
     ]
