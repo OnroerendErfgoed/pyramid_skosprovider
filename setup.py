@@ -8,7 +8,7 @@ CHANGES = open(os.path.join(here, 'HISTORY.rst')).read()
 
 requires = [
     'pyramid',
-    'skosprovider>=0.2.0dev'
+    'skosprovider>=0.2.0a1'
 ]
 
 tests_requires = [
@@ -26,7 +26,7 @@ setup(
     long_description=README + '\n\n' + CHANGES,
     classifiers=[
         'Intended Audience :: Developers',
-        'Development Status :: 4 - Beta',
+        'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.6',
@@ -48,6 +48,6 @@ setup(
     },
     test_suite='nose.collector',
     dependency_links = [
-        'https://github.com/koenedaele/skosprovider/tarball/zerotwo#egg=skosprovider-0.2.0',
+        'https://github.com/koenedaele/skosprovider/tarball/zerotwo#egg=skosprovider-0.2.0a1',
     ]
 )
