@@ -72,17 +72,10 @@ class ProviderView(RestView):
         # We need to refine results further
         if postprocess:
             if label.startswith('*') and label.endswith('*'):
-                log.debug('both')
-                log.debug(len(concepts))
                 concepts = [c for c in concepts if label[1:-1] in c['label']]
             elif label.endswith('*'):
-                log.debug('ends')
-                log.debug(len(concepts))
-                log.debug(concepts)
                 concepts = [c for c in concepts if c['label'].startswith(label[0:-1])]
             elif label.startswith('*'):
-                log.debug('starts')
-                log.debug(len(concepts))
                 concepts = [c for c in concepts if c['label'].endswith(label[1:])]
         # Result paging
         paging_data = False
@@ -105,9 +98,7 @@ class ProviderView(RestView):
         scheme_id = self.request.matchdict['scheme_id']
         concept_id = self.request.matchdict['concept_id']
         provider = self.skos_registry.get_provider(scheme_id)
-        log.debug(provider)
         concept = provider.get_by_id(concept_id)
-        log.debug(concept)
         if not concept:
             return HTTPNotFound()
         return concept
