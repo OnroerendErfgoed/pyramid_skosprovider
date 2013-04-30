@@ -50,16 +50,40 @@ class ProviderView(RestView):
         if not provider:
             return HTTPNotFound()
         query = {}
+        mode = self.request.params.get('mode', 'default')
         label = self.request.params.get('label', None)
-        if label not in [None, '*']:
-            query['label'] = label
-        type = self.request.params.get('type', None)
-        if type in ['concept', 'collection']:
-            query['type'] = type
-        coll = self.request.params.get('collection', None)
-        if coll is not None:
-            query['collection'] = {'id': coll, 'depth': 'all'}
-        concepts = provider.find(query)
+        postprocess = False
+        if mode == 'dijitFilteringSelect' and label == '':
+            concepts = []
+        else:
+            if label not in [None, '*', '']:
+                if mode == 'dijitFilteringSelect' and '*' in label:
+                    postprocess = True
+                    query['label'] = label.replace('*', '')
+                else:
+                    query['label'] = label
+            type = self.request.params.get('type', None)
+            if type in ['concept', 'collection']:
+                query['type'] = type
+            coll = self.request.params.get('collection', None)
+            if coll is not None:
+                query['collection'] = {'id': coll, 'depth': 'all'}
+            concepts = provider.find(query)
+        # We need to refine results further
+        if postprocess:
+            if label.startswith('*') and label.endswith('*'):
+                log.debug('both')
+                log.debug(len(concepts))
+                concepts = [c for c in concepts if label[1:-1] in c['label']]
+            elif label.endswith('*'):
+                log.debug('ends')
+                log.debug(len(concepts))
+                log.debug(concepts)
+                concepts = [c for c in concepts if c['label'].startswith(label[0:-1])]
+            elif label.startswith('*'):
+                log.debug('starts')
+                log.debug(len(concepts))
+                concepts = [c for c in concepts if c['label'].endswith(label[1:])]
         # Result paging
         paging_data = False
         if 'Range' in self.request.headers:

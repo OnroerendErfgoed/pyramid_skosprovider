@@ -229,6 +229,76 @@ class ProviderViewTests(unittest.TestCase):
         self.assertIsInstance(concepts, list)
         self.assertEqual(2, len(concepts))
 
+    def test_get_conceptscheme_concepts_search_dfs_all(self):
+        request = self._get_dummy_request({
+            'type': 'concept',
+            'mode': 'dijitFilteringSelect',
+            'label': '*'
+        })
+        request.matchdict = {
+            'scheme_id': 'TREES'
+        }
+        pv = self._get_provider_view(request)
+        concepts = pv.get_conceptscheme_concepts()
+        self.assertIsInstance(concepts, list)
+        self.assertEqual(2, len(concepts))
+
+    def test_get_conceptscheme_concepts_search_dfs_empty_label(self):
+        request = self._get_dummy_request({
+            'type': 'concept',
+            'mode': 'dijitFilteringSelect',
+            'label': ''
+        })
+        request.matchdict = {
+            'scheme_id': 'TREES'
+        }
+        pv = self._get_provider_view(request)
+        concepts = pv.get_conceptscheme_concepts()
+        self.assertIsInstance(concepts, list)
+        self.assertEqual(0, len(concepts))
+
+    def test_get_conceptscheme_concepts_search_dfs_label_star(self):
+        request = self._get_dummy_request({
+            'type': 'concept',
+            'mode': 'dijitFilteringSelect',
+            'label': 'De *'
+        })
+        request.matchdict = {
+            'scheme_id': 'TREES'
+        }
+        pv = self._get_provider_view(request)
+        concepts = pv.get_conceptscheme_concepts()
+        self.assertIsInstance(concepts, list)
+        self.assertEqual(2, len(concepts))
+
+    def test_get_conceptscheme_concepts_search_dfs_star_label(self):
+        request = self._get_dummy_request({
+            'type': 'concept',
+            'mode': 'dijitFilteringSelect',
+            'label': '*iks'
+        })
+        request.matchdict = {
+            'scheme_id': 'TREES'
+        }
+        pv = self._get_provider_view(request)
+        concepts = pv.get_conceptscheme_concepts()
+        self.assertIsInstance(concepts, list)
+        self.assertEqual(1, len(concepts))
+
+    def test_get_conceptscheme_concepts_search_dfs_star_label_star(self):
+        request = self._get_dummy_request({
+            'type': 'concept',
+            'mode': 'dijitFilteringSelect',
+            'label': '*Larik*'
+        })
+        request.matchdict = {
+            'scheme_id': 'TREES'
+        }
+        pv = self._get_provider_view(request)
+        concepts = pv.get_conceptscheme_concepts()
+        self.assertIsInstance(concepts, list)
+        self.assertEqual(1, len(concepts))
+
     def test_get_concept(self):
         request = self._get_dummy_request()
         request.matchdict = {
