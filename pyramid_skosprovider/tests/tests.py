@@ -31,10 +31,6 @@ from skosprovider.registry import (
     Registry
 )
 
-from skosprovider.providers import (
-    FlatDictionaryProvider
-)
-
 from skosprovider.skos import (
     Concept,
     Collection,

@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 from skosprovider.providers import (
-    FlatDictionaryProvider
+    DictionaryProvider
 )
 
 larch = {
@@ -41,7 +41,7 @@ species = {
     'members': ['1', '2']
 }
 
-trees = FlatDictionaryProvider(
+trees = DictionaryProvider(
     {'id': 'TREES', 'default_language': 'nl'},
     [larch, chestnut, species]
 )
