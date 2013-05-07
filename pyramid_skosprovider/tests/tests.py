@@ -303,7 +303,7 @@ class ProviderViewTests(unittest.TestCase):
         request = self._get_dummy_request()
         request.matchdict = {
             'scheme_id': 'TREES', 
-            'concept_id': 1
+            'c_id': 1
         }
         pv = self._get_provider_view(request)
         concept = pv.get_concept()
@@ -315,7 +315,7 @@ class ProviderViewTests(unittest.TestCase):
         request = self._get_dummy_request()
         request.matchdict = {
             'scheme_id': 'TREES', 
-            'concept_id': 123456789
+            'c_id': 123456789
         }
         pv = self._get_provider_view(request)
         concept = pv.get_concept()

@@ -43,7 +43,7 @@ class ProviderView(RestView):
             return HTTPNotFound()
         return {'id': provider.get_vocabulary_id()}
 
-    @view_config(route_name='skosprovider.conceptscheme.concepts', request_method='GET')
+    @view_config(route_name='skosprovider.conceptscheme.cs', request_method='GET')
     def get_conceptscheme_concepts(self):
         scheme_id = self.request.matchdict['scheme_id']
         provider = self.skos_registry.get_provider(scheme_id)
@@ -93,10 +93,10 @@ class ProviderView(RestView):
             ascii_native_('items %d-%d/%d' % (paging_data['start'], paging_data['finish'], count))
         return cslice
 
-    @view_config(route_name='skosprovider.concept', request_method='GET')
+    @view_config(route_name='skosprovider.c', request_method='GET')
     def get_concept(self):
         scheme_id = self.request.matchdict['scheme_id']
-        concept_id = self.request.matchdict['concept_id']
+        concept_id = self.request.matchdict['c_id']
         provider = self.skos_registry.get_provider(scheme_id)
         concept = provider.get_by_id(concept_id)
         if not concept:
