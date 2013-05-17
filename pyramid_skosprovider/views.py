@@ -2,8 +2,6 @@
 
 from __future__ import unicode_literals
 
-from pyramid_skosprovider import get_skos_registry
-
 from pyramid.view import view_config, view_defaults
 
 from pyramid.compat import ascii_native_
