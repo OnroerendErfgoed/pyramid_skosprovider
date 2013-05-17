@@ -12,6 +12,9 @@ from skosprovider.skos import (
 )
 
 def parse_range_header(range):
+    '''
+    Parse a range header as used by the dojo Json Rest store.
+    '''
     match = re.match('^items=([0-9]+)-([0-9]+)$', range)
     if match:
         start = int(match.group(1))
@@ -29,6 +32,9 @@ def parse_range_header(range):
 json_renderer = JSON()
 
 def concept_adapter(obj, request):
+    '''
+    Adapter for rendering a :class:`skosprovider.skos.Concept` to json.
+    '''
     return {
         'id': obj.id,
         'type': 'concept',
@@ -41,6 +47,9 @@ def concept_adapter(obj, request):
     }
 
 def collection_adapter(obj, request):
+    '''
+    Adapter for rendering a :class:`skosprovider.skos.Collection` to json.
+    '''
     return {
         'id': obj.id,
         'type': 'collection',
@@ -50,6 +59,9 @@ def collection_adapter(obj, request):
     }
 
 def label_adapter(obj, request):
+    '''
+    Adapter for rendering a :class:`skosprovider.skos.Label` to json.
+    '''
     return {
         'label': obj.label,
         'type': obj.type,
@@ -57,6 +69,9 @@ def label_adapter(obj, request):
     }
 
 def note_adapter(obj, request):
+    '''
+    Adapter for rendering a :class:`skosprovider.skos.Note` to json.
+    '''
     return {
         'note': obj.note,
         'type': obj.type,
