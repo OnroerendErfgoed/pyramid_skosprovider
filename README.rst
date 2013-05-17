@@ -46,18 +46,28 @@ Eg. in a view:
         providers = skos.get_providers()
         # ...
 
-Exposed information
--------------------
+Alternatively you can get the registry as an attribute of a pyramid request:
+
+.. code-block:: python
+
+    from pyramid_skosprovider import get_skos_registry
+
+    def my_view(request):
+        skos = request.skos_registry
+        providers = skos.get_providers()
+        # ...
+
+REST Services
+-------------
 
 This library takes your skosproviders and makes them available as REST services. 
-The following API is planned:
+The following API is present:
 
  * GET `/conceptschemes`: Get all registered concept schemes.
  * GET `/conceptschemes/{scheme_id}`: Get information about a concept scheme.
- * GET `/conceptschemes/{scheme_id}/concepts`: Search for concepts in a scheme.
- * GET `/conceptschemes/{scheme_id}/concepts/{concept_id}`: Get information about a concept
- * GET `/concepts`: Search for concepts in one or more schemes.
- * GET `/concepts/{scheme_id}/{concept_id}`: Get information about a concept, 
-   is an alias for `/conceptschemes/{scheme_id}/concepts/{concept_id}`.
+ * GET `/conceptschemes/{scheme_id}/c`: Search for concepts or collections in 
+   a scheme.
+ * GET `/conceptschemes/{scheme_id}/c/{c_id}`: Get information about a concept 
+   or collection.
 
 .. _skosprovider: https://github.com/koenedaele/skosprovider
