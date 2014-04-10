@@ -1,11 +1,9 @@
-History
-=======
-
 0.2.0 (2013-??-??)
 ------------------
 
 - Code coverage by coveralls.
 - Removed unit tests from resulting package.
+- Moved documentation to Sphinx.
 
 0.1.0 (2013-05-16)
 ------------------
