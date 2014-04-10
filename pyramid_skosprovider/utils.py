@@ -11,6 +11,7 @@ from skosprovider.skos import (
     Note
 )
 
+
 def parse_range_header(range):
     '''
     Parse a range header as used by the dojo Json Rest store.
@@ -31,6 +32,7 @@ def parse_range_header(range):
 
 json_renderer = JSON()
 
+
 def concept_adapter(obj, request):
     '''
     Adapter for rendering a :class:`skosprovider.skos.Concept` to json.
@@ -46,6 +48,7 @@ def concept_adapter(obj, request):
         'related': obj.related
     }
 
+
 def collection_adapter(obj, request):
     '''
     Adapter for rendering a :class:`skosprovider.skos.Collection` to json.
@@ -58,6 +61,7 @@ def collection_adapter(obj, request):
         'members': obj.members
     }
 
+
 def label_adapter(obj, request):
     '''
     Adapter for rendering a :class:`skosprovider.skos.Label` to json.
@@ -67,6 +71,7 @@ def label_adapter(obj, request):
         'type': obj.type,
         'language': obj.language
     }
+
 
 def note_adapter(obj, request):
     '''

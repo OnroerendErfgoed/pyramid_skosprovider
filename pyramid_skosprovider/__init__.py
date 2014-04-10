@@ -8,6 +8,7 @@ from pyramid_skosprovider.utils import (
     json_renderer
 )
 
+
 class ISkosRegistry(Interface):
     pass
 
@@ -38,9 +39,21 @@ def includeme(config):
 
     config.add_directive('get_skos_registry', get_skos_registry)
     config.add_request_method(get_skos_registry, 'skos_registry', reify=True)
-    config.add_route('skosprovider.conceptschemes', '/conceptschemes')
-    config.add_route('skosprovider.conceptscheme', '/conceptschemes/{scheme_id}')
-    config.add_route('skosprovider.conceptscheme.cs', '/conceptschemes/{scheme_id}/c')
-    config.add_route('skosprovider.c', '/conceptschemes/{scheme_id}/c/{c_id}')
+    config.add_route(
+        'skosprovider.conceptschemes',
+        '/conceptschemes'
+    )
+    config.add_route(
+        'skosprovider.conceptscheme',
+        '/conceptschemes/{scheme_id}'
+    )
+    config.add_route(
+        'skosprovider.conceptscheme.cs',
+        '/conceptschemes/{scheme_id}/c'
+    )
+    config.add_route(
+        'skosprovider.c',
+        '/conceptschemes/{scheme_id}/c/{c_id}'
+    )
 
     config.scan()

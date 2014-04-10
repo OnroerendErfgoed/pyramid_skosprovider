@@ -7,7 +7,6 @@ from pyramid.view import view_config, view_defaults
 from pyramid.compat import ascii_native_
 
 from pyramid.httpexceptions import (
-    HTTPFound,
     HTTPNotFound
 )
 
@@ -88,7 +87,9 @@ class ProviderView(RestView):
             }
         cslice = concepts[paging_data['start']:paging_data['number']]
         self.request.response.headers[ascii_native_('Content-Range')] = \
-            ascii_native_('items %d-%d/%d' % (paging_data['start'], paging_data['finish'], count))
+            ascii_native_('items %d-%d/%d' % (
+                paging_data['start'], paging_data['finish'], count
+            ))
         return cslice
 
     @view_config(route_name='skosprovider.c', request_method='GET')

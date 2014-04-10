@@ -15,8 +15,8 @@ from webtest import TestApp
 
 try:
     import unittest2 as unittest
-except ImportError:
-    import unittest
+except ImportError:  # pragma NO COVER
+    import unittest  # noqa
 
 from pyramid_skosprovider.tests import (
     trees

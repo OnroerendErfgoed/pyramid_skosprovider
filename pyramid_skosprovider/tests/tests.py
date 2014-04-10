@@ -17,8 +17,8 @@ from skosprovider.registry import (
 
 try:
     import unittest2 as unittest
-except ImportError:
-    import unittest
+except ImportError:  # pragma NO COVER
+    import unittest  # noqa
 
 
 class TestRegistry(object):

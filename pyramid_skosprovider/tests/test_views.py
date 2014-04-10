@@ -18,8 +18,8 @@ from skosprovider.skos import (
 
 try:
     import unittest2 as unittest
-except ImportError:
-    import unittest
+except ImportError:  # pragma NO COVER
+    import unittest  # noqa
 
 
 class ProviderViewTests(unittest.TestCase):
@@ -215,7 +215,7 @@ class ProviderViewTests(unittest.TestCase):
     def test_get_concept(self):
         request = self._get_dummy_request()
         request.matchdict = {
-            'scheme_id': 'TREES', 
+            'scheme_id': 'TREES',
             'c_id': 1
         }
         pv = self._get_provider_view(request)
@@ -227,7 +227,7 @@ class ProviderViewTests(unittest.TestCase):
     def test_get_unexsisting_concept(self):
         request = self._get_dummy_request()
         request.matchdict = {
-            'scheme_id': 'TREES', 
+            'scheme_id': 'TREES',
             'c_id': 123456789
         }
         pv = self._get_provider_view(request)

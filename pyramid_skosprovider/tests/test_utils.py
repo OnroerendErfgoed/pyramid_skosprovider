@@ -21,8 +21,8 @@ import json
 
 try:
     import unittest2 as unittest
-except ImportError:
-    import unittest
+except ImportError:  # pragma NO COVER
+    import unittest  # noqa
 
 
 class TestUtils(unittest.TestCase):
