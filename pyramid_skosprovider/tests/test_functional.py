@@ -22,11 +22,12 @@ from pyramid_skosprovider.tests import (
     trees
 )
 
+
 def skosmain(global_config, **settings):
-    """ 
+    """
     This function returns a Pyramid WSGI application.
     """
-    
+
     # Set up pyramid
     config = Configurator(settings=settings)
 
@@ -37,6 +38,7 @@ def skosmain(global_config, **settings):
 
     return config.make_wsgi_app()
 
+
 class FunctionalTests(unittest.TestCase):
 
     def setUp(self):
@@ -46,6 +48,7 @@ class FunctionalTests(unittest.TestCase):
 
     def tearDown(self):
         del self.testapp
+
 
 class RestFunctionalTests(FunctionalTests):
 
@@ -96,7 +99,11 @@ class RestFunctionalTests(FunctionalTests):
     def test_get_conceptscheme_concepts_search_dfs_label_star(self):
         res = self.testapp.get(
             '/conceptschemes/TREES/c',
-            {'type': 'concept', 'mode': 'dijitFilteringSelect', 'label': 'De *'},
+            {
+                'type': 'concept',
+                'mode': 'dijitFilteringSelect',
+                'label': 'De *'
+            },
             {ascii_native_('Accept'): ascii_native_('application/json')}
         )
         self.assertEqual('200 OK', res.status)
