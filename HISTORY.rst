@@ -5,6 +5,7 @@ History
 ------------------
 
 - Code coverage by coveralls.
+- Removed unit tests from resulting package.
 
 0.1.0 (2013-05-16)
 ------------------
