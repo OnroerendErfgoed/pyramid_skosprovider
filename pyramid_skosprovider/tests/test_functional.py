@@ -18,7 +18,7 @@ try:
 except ImportError:  # pragma NO COVER
     import unittest  # noqa
 
-from pyramid_skosprovider.tests import (
+from pyramid_skosprovider.tests.fixtures.data import (
     trees
 )
 

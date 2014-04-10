@@ -27,8 +27,8 @@ class TestRegistry(object):
 
         if settings is None:
             self.settings = {}
-        else:
-            self.settings = settings
+        else: # pragma NO COVER
+            self.settings = settings 
 
         self.skos_registry = None
 
