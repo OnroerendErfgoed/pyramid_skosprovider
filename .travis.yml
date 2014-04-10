@@ -6,8 +6,8 @@ python:
  - 3.3
 install:
  - python setup.py develop
- - pip install nose webtest coveralls
+ - pip install pytest pytest-cov webtest coveralls
  # Install unittest2 on 2.6
  - "if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then pip install unittest2; fi"
-script: python setup.py nosetests --config nose_cover.cfg
+script: py.test --cov pyramid_skosprovider --cov-report term-missing
 after_success: coveralls
