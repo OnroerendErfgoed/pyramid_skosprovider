@@ -12,6 +12,7 @@ Welcome to Pyramid Skosprovider's documentation!
    install
    usage
    services
+   api
    changes
 
 Indices and tables

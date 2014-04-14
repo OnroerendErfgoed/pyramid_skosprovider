@@ -15,6 +15,11 @@ from skosprovider.skos import (
 def parse_range_header(range):
     '''
     Parse a range header as used by the dojo Json Rest store.
+
+    :param str range: The content of the range header to be parsed. 
+        eg. `items=0-9`
+    :returns: A dict with keys start, finish and number or `False` if the
+        range is invalid.
     '''
     match = re.match('^items=([0-9]+)-([0-9]+)$', range)
     if match:
@@ -36,6 +41,9 @@ json_renderer = JSON()
 def concept_adapter(obj, request):
     '''
     Adapter for rendering a :class:`skosprovider.skos.Concept` to json.
+
+    :param skosprovider.skos.Concept obj: The concept to be rendered.
+    :rtype: :class:`dict`
     '''
     return {
         'id': obj.id,
@@ -52,6 +60,9 @@ def concept_adapter(obj, request):
 def collection_adapter(obj, request):
     '''
     Adapter for rendering a :class:`skosprovider.skos.Collection` to json.
+
+    :param skosprovider.skos.Collection obj: The collection to be rendered.
+    :rtype: :class:`dict`
     '''
     return {
         'id': obj.id,
@@ -65,6 +76,9 @@ def collection_adapter(obj, request):
 def label_adapter(obj, request):
     '''
     Adapter for rendering a :class:`skosprovider.skos.Label` to json.
+
+    :param skosprovider.skos.Label obj: The label to be rendered.
+    :rtype: :class:`dict`
     '''
     return {
         'label': obj.label,
@@ -76,6 +90,9 @@ def label_adapter(obj, request):
 def note_adapter(obj, request):
     '''
     Adapter for rendering a :class:`skosprovider.skos.Note` to json.
+
+    :param skosprovider.skos.Note obj: The note to be rendered.
+    :rtype: :class:`dict`
     '''
     return {
         'note': obj.note,
