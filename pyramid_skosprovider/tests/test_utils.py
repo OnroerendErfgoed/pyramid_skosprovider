@@ -73,6 +73,7 @@ class TestUtils(unittest.TestCase):
         concept = concept_adapter(c, {})
         self.assertIsInstance(concept, dict)
         self.assertEqual(concept['id'], 1)
+        self.assertIn('uri', concept)
         self.assertIsInstance(concept['label'], text_type)
         self.assertIn(concept['type'], 'concept')
         self.assertEqual(len(concept['labels']), 2)
@@ -90,6 +91,7 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(collection['id'], 3)
         self.assertIsInstance(collection['label'], text_type)
         self.assertIn('label', collection)
+        self.assertIn('uri', collection)
         self.assertEqual(collection['type'], 'collection')
         self.assertEqual(len(collection['labels']), 2)
         self._assert_is_labels(collection['labels'])
@@ -98,6 +100,7 @@ class TestUtils(unittest.TestCase):
         from pyramid_skosprovider.utils import json_renderer
         c = Concept(
             id=larch['id'],
+            uri=larch['uri'],
             labels=larch['labels'],
             notes=larch['notes']
         )
@@ -106,6 +109,7 @@ class TestUtils(unittest.TestCase):
         concept = json.loads(jsonstring)
         self.assertIsInstance(concept, dict)
         self.assertEqual(concept['id'], 1)
+        self.assertEqual(concept['uri'], 'http://python.com/trees/larch')
         self.assertIsInstance(concept['label'], text_type)
         self.assertEqual(concept['type'], 'concept')
         self.assertIsInstance(concept['labels'], list)
@@ -130,6 +134,7 @@ class TestUtils(unittest.TestCase):
         from pyramid_skosprovider.utils import json_renderer
         c = Collection(
             id=species['id'],
+            uri=species['uri'],
             labels=species['labels'],
             members=species['members']
         )
@@ -138,6 +143,7 @@ class TestUtils(unittest.TestCase):
         coll = json.loads(jsonstring)
         self.assertIsInstance(coll, dict)
         self.assertEqual(coll['id'], 3)
+        self.assertEqual(coll['uri'], 'http://python.com/trees/species')
         self.assertIsInstance(coll['label'], text_type)
         self.assertEqual(coll['type'], 'collection')
         self.assertIsInstance(coll['labels'], list)

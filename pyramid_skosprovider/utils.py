@@ -48,6 +48,7 @@ def concept_adapter(obj, request):
     return {
         'id': obj.id,
         'type': 'concept',
+        'uri': obj.uri,
         'label': obj.label().label,
         'labels': obj.labels,
         'notes': obj.notes,
@@ -67,6 +68,7 @@ def collection_adapter(obj, request):
     return {
         'id': obj.id,
         'type': 'collection',
+        'uri': obj.uri,
         'label': obj.label().label,
         'labels': obj.labels,
         'members': obj.members
