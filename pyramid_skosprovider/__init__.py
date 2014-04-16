@@ -25,6 +25,12 @@ def _build_skos_registry(registry):
 
 
 def get_skos_registry(registry):
+    '''
+    Get the :class:`skosprovider.registry.Registry` attached to this pyramid
+    application.
+
+    :rtype: :class:`skosprovider.registry.Registry`
+    '''
     #Argument might be a config or request
     regis = getattr(registry, 'registry', None)
     if regis is None:

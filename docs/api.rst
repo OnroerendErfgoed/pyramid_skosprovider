@@ -1,6 +1,12 @@
 API Documentation
 =================
 
+Pyramid_skosprovider module
+---------------------------
+
+.. automodule:: pyramid_skosprovider
+   :members:
+
 Utils module
 ------------
 
