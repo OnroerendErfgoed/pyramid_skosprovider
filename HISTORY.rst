@@ -1,3 +1,9 @@
+0.2.0 (2014-??-??)
+------------------
+
+- Compatibility with skosprovider 0.3.0
+- Added service documentation (#1)
+
 0.1.1 (2014-04-10)
 ------------------
 
