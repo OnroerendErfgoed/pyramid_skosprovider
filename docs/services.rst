@@ -168,6 +168,7 @@ The following API is present:
             ], 
             "type": "concept", 
             "id": "1", 
+            "uri": "urn:x-skosprovider:TREES:1",
             "related": [], 
             "label": "The Larch"
         }
