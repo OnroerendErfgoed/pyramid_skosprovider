@@ -8,7 +8,7 @@ from pyramid.httpexceptions import (
     HTTPNotFound
 )
 
-from pyramid_skosprovider.tests.fixtures.data import (
+from .fixtures.data import (
     trees
 )
 
