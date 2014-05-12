@@ -129,6 +129,13 @@ The following API is present:
         Date:  Tue, 15 Apr 2014 20:32:52 GMT
         Server:  waitress
 
+    :query: Ask a question. This will result in a full-text search.
+    :query type: Define if you want to show concepts or collections.
+    :query mode: Allows for special processing mode for dijitFilteringSelect. Makes it possible to use wildcards.
+    :query label: Shows all concepts and collections that have the term in their label.
+    :query collection: Get information about the content of a collection.
+
+
     :reqheader Range: Can be used to request a certain set of results.
         eg. ``items=0-24`` requests the first 25 results.
     :resheader Content-Range: Tells the client was set of results is being returned
