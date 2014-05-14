@@ -54,7 +54,8 @@ def concept_adapter(obj, request):
         'notes': obj.notes,
         'narrower': obj.narrower,
         'broader': obj.broader,
-        'related': obj.related
+        'related': obj.related,
+        'member_of': obj.member_of
     }
 
 
@@ -71,7 +72,8 @@ def collection_adapter(obj, request):
         'uri': obj.uri,
         'label': obj.label().label,
         'labels': obj.labels,
-        'members': obj.members
+        'members': obj.members,
+        'member_of': obj.member_of
     }
 
 

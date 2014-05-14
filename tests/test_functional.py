@@ -95,6 +95,28 @@ class RestFunctionalTests(FunctionalTests):
         self.assertIn('narrower', data)
         self.assertIn('broader', data)
         self.assertIn('related', data)
+        self.assertNotIn('members', data)
+        self.assertIn('member_of', data)
+
+    def test_get_conceptschemes_trees_species_json(self):
+        res = self.testapp.get(
+            '/conceptschemes/TREES/c/3',
+            {},
+            {ascii_native_('Accept'): ascii_native_('application/json')}
+        )
+        self.assertEqual('200 OK', res.status)
+        self.assertIn('application/json', res.headers['Content-Type'])
+        data = json.loads(res.body.decode('utf-8'))
+        self.assertIsInstance(data, dict)
+        self.assertIn('id', data)
+        self.assertIn('label', data)
+        self.assertIn('labels', data)
+        self.assertEqual('collection', data['type'])
+        self.assertNotIn('narrower', data)
+        self.assertNotIn('broader', data)
+        self.assertNotIn('related', data)
+        self.assertIn('members', data)
+        self.assertIn('member_of', data)
 
     def test_get_conceptscheme_concepts_search_dfs_label_star(self):
         res = self.testapp.get(
