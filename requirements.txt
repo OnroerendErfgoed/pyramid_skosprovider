@@ -1,2 +1,2 @@
 pyramid==1.5
-skosprovider==0.3.0a1
+skosprovider==0.3.0
