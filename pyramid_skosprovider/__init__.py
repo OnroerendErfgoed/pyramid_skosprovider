@@ -58,6 +58,10 @@ def includeme(config):
         '/conceptschemes/{scheme_id}/c'
     )
     config.add_route(
+        'skosprovider.conceptscheme.tc',
+        '/conceptschemes/{scheme_id}/topconcepts'
+    )
+    config.add_route(
         'skosprovider.c',
         '/conceptschemes/{scheme_id}/c/{c_id}'
     )

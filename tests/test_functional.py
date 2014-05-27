@@ -145,3 +145,14 @@ class RestFunctionalTests(FunctionalTests):
         data = json.loads(res.body.decode('utf-8'))
         self.assertIsInstance(data, list)
         self.assertEqual(3, len(data))
+
+    def test_get_top_concepts(self):
+        res = self.testapp.get(
+            '/conceptschemes/TREES/topconcepts',
+            {ascii_native_('Accept'): ascii_native_('application/json')}
+        )
+        self.assertEqual('200 OK', res.status)
+        self.assertIn('application/json', res.headers['Content-Type'])
+        data = json.loads(res.body.decode('utf-8'))
+        self.assertIsInstance(data, list)
+        self.assertEqual(2, len(data))
