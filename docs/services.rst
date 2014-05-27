@@ -81,6 +81,36 @@ The following API is present:
 
     :statuscode 200: The conceptscheme was found.
     :statuscode 404: The conceptscheme was not found.
+
+.. http:get:: /conceptschemes/{scheme_id}/topconcepts
+    
+    Get all top concepts in a certain conceptscheme. These are all the concepts
+    in the conceptscheme that have no broader concept.
+    
+    **Example request**:
+    
+    .. sourcecode:: http
+    
+        GET /conceptschemes/TREES/topconcepts
+        Host: localhost:6543
+        Accept: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type:  application/json; charset=UTF-8
+        Date:  Mon, 14 Apr 2014 14:47:33 GMT
+        Server:  waitress
+
+        [
+            {"id": "1", "label": "De Lariks"},
+            {"id": "2", "label": "De Paardekastanje"},
+        ]
+
+    :statuscode 200: The topconcepts in this conceptscheme were found.
+    :statuscode 404: The conceptscheme was not found.
 		
 .. http:get:: /conceptschemes/{scheme_id}/c
     

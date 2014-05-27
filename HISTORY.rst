@@ -1,3 +1,8 @@
+Next version
+------------
+
+- Expose information about top concepts.
+
 0.2.0 (2014-05-14)
 ------------------
 
