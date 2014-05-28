@@ -248,3 +248,10 @@ class ProviderViewTests(unittest.TestCase):
         tc = pv.get_conceptscheme_top_concepts()
         self.assertIsInstance(tc, list)
         self.assertEqual(2, len(tc))
+        first = tc[0]
+        for c in tc:
+            self.assertIn('id', c)
+            self.assertIn('uri', c)
+            self.assertIn('label', c)
+            self.assertEqual('concept', c['type'])
+

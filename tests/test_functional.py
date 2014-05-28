@@ -156,3 +156,8 @@ class RestFunctionalTests(FunctionalTests):
         data = json.loads(res.body.decode('utf-8'))
         self.assertIsInstance(data, list)
         self.assertEqual(2, len(data))
+        for c in data:
+            self.assertIn('id', c)
+            self.assertIn('uri', c)
+            self.assertIn('label', c)
+            self.assertEqual('concept', c['type'])
