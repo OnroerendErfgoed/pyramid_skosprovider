@@ -77,6 +77,23 @@ class RestFunctionalTests(FunctionalTests):
         self.assertIsInstance(data, list)
         self.assertEqual(len(data), 3)
 
+    def test_get_conceptschemes_trees_cs_slice_json(self):
+        res = self.testapp.get(
+            '/conceptschemes/TREES/c',
+            {},
+            {
+                ascii_native_('Accept'): ascii_native_('application/json'),
+                ascii_native_('Range'): ascii_native_('items=2-2')
+            }
+        )
+        self.assertEqual('200 OK', res.status)
+        self.assertIn('application/json', res.headers['Content-Type'])
+        self.assertIsInstance(res.headers['Content-Range'], string_types)
+        self.assertEqual('items 2-2/3', res.headers['Content-Range'])
+        data = json.loads(res.body.decode('utf-8'))
+        self.assertIsInstance(data, list)
+        self.assertEqual(len(data), 1)
+
     def test_get_conceptschemes_trees_larch_json(self):
         res = self.testapp.get(
             '/conceptschemes/TREES/c/1',

@@ -93,7 +93,7 @@ class ProviderView(RestView):
                 'finish': count - 1 if count > 0 else 0,
                 'number': count
             }
-        cslice = concepts[paging_data['start']:paging_data['number']]
+        cslice = concepts[paging_data['start']:paging_data['finish']+1]
         self.request.response.headers[ascii_native_('Content-Range')] = \
             ascii_native_('items %d-%d/%d' % (
                 paging_data['start'], paging_data['finish'], count

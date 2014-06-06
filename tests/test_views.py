@@ -86,13 +86,29 @@ class ProviderViewTests(unittest.TestCase):
         concepts = pv.get_conceptscheme_concepts()
         self.assertEqual(3, len(concepts))
 
-    def test_get_conceptscheme_concepts_partial_range(self):
+    def test_get_conceptscheme_concepts_range_one_item(self):
         request = self._get_dummy_request()
         request.matchdict = {'scheme_id': 'TREES'}
         request.headers['Range'] = 'items=0-0'
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
         self.assertEqual(1, len(concepts))
+
+    def test_get_conceptscheme_concepts_range_final_items(self):
+        request = self._get_dummy_request()
+        request.matchdict = {'scheme_id': 'TREES'}
+        request.headers['Range'] = 'items=1-2'
+        pv = self._get_provider_view(request)
+        concepts = pv.get_conceptscheme_concepts()
+        self.assertEqual(2, len(concepts))
+
+    def test_get_conceptscheme_concepts_invalid_range(self):
+        request = self._get_dummy_request()
+        request.matchdict = {'scheme_id': 'TREES'}
+        request.headers['Range'] = 'items=a-2'
+        pv = self._get_provider_view(request)
+        concepts = pv.get_conceptscheme_concepts()
+        self.assertEqual(3, len(concepts))
 
     def test_get_unexisting_conceptscheme_concepts(self):
         request = self._get_dummy_request()
