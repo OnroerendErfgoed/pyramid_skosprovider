@@ -105,8 +105,17 @@ The following API is present:
         Server:  waitress
 
         [
-            {"id": "1", "label": "De Lariks"},
-            {"id": "2", "label": "De Paardekastanje"},
+            {
+                "id": "1", 
+                "uri": "urn:x-skosprovider:TREES:1",
+                "type": "concept",
+                "label": "De Lariks"
+            }, {
+                "id": "2", 
+                "uri": "urn:x-skosprovider:TREES:2",
+                "type": "concept",
+                "label": "De Paardekastanje"
+            }
         ]
 
     :statuscode 200: The topconcepts in this conceptscheme were found.
@@ -136,9 +145,22 @@ The following API is present:
         Server:  waitress
 
         [
-            {"id": "1", "label": "De Lariks"},
-            {"id": "2", "label": "De Paardekastanje"},
-            {"id": 3, "label": "Bomen per soort"}
+            {
+                "id": "1",
+                "uri": "urn:x-skosprovider:TREES:1",
+                "type": "concept",
+                "label": "De Lariks"
+            }, {   
+                "id": "2",
+                "uri": "urn:x-skosprovider:TREES:2",
+                "type": "concept",
+                "label": "De Paardekastanje"
+            }, {   
+                "id": 3,
+                "uri": "urn:x-skosprovider:TREES:3",
+                "type": "collection",
+                "label": "Bomen per soort"
+            }
         ]
 
     **Example request**:
