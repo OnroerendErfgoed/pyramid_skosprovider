@@ -4,7 +4,7 @@ Next version
 - Expose information about top concepts.
 - Fix a bug with returning concepts and collections not on the first page
   of data through the Range header. (#3)
-- Added support for sorting
+- Added support for sorting. (#4) [cedrikv]
 
 0.2.0 (2014-05-14)
 ------------------
