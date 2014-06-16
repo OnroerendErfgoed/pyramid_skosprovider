@@ -56,6 +56,7 @@ class ProviderView(RestView):
             return HTTPNotFound()
         query = {}
         mode = self.request.params.get('mode', 'default')
+        sort = self.request.params.get('sort', None)
         label = self.request.params.get('label', None)
         postprocess = False
         if mode == 'dijitFilteringSelect' and label == '':
@@ -82,6 +83,17 @@ class ProviderView(RestView):
                 concepts = [c for c in concepts if c['label'].startswith(label[0:-1])]
             elif label.startswith('*'):
                 concepts = [c for c in concepts if c['label'].endswith(label[1:])]
+
+        #Result sorting
+        if sort:
+            sort_desc = False
+            if sort[0] in ['+', '-']:
+                if sort[0] == '-':
+                    sort_desc = True
+                sort = sort[1:]
+            if (len(concepts) > 0) and (sort in concepts[0]):
+                concepts.sort(key=lambda concept: concept[sort], reverse=sort_desc)
+
         # Result paging
         paging_data = False
         if 'Range' in self.request.headers:

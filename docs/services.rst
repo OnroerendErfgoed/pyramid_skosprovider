@@ -191,6 +191,9 @@ The following API is present:
         Expects to be passed an id of a collection in this scheme. Will restrict
         the search to concepts or collections that are a member of this collection
         or a narrower concept of a member.
+    :query sort: Define if you want to sort the results by a given field. Otherwise items are returned
+        in an indeterminate order. Prefix with '+' to sort ascending, '-' to sort descending.
+        eg. ``?sort=-label`` to sort all results descending by label.
 
     :reqheader Range: Can be used to request a certain set of results.
         eg. ``items=0-24`` requests the first 25 results.
