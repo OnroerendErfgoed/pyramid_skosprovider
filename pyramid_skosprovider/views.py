@@ -87,7 +87,7 @@ class ProviderView(RestView):
         #Result sorting
         if sort:
             sort_desc = False
-            if sort[0] in ['+', '-']:
+            if sort[0] in ['+', '-', ' ']:  # ' ' is urlencoded representation of '+'
                 if sort[0] == '-':
                     sort_desc = True
                 sort = sort[1:]
