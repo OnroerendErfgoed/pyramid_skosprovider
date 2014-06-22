@@ -86,11 +86,9 @@ class ProviderView(RestView):
 
         #Result sorting
         if sort:
-            sort_desc = False
-            if sort[0] in ['+', '-', ' ']:  # ' ' is urlencoded representation of '+'
-                if sort[0] == '-':
-                    sort_desc = True
-                sort = sort[1:]
+            sort_desc = (sort[0:1] == '-')
+            sort = sort[1:] if sort[0:1] in ['-', '+'] else sort
+            sort = sort.strip() # dojo store does not encode '+'
             if (len(concepts) > 0) and (sort in concepts[0]):
                 concepts.sort(key=lambda concept: concept[sort], reverse=sort_desc)
 
