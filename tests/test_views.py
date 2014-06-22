@@ -281,6 +281,26 @@ class ProviderViewTests(unittest.TestCase):
         self.assertIsInstance(concepts, list)
         self.assertEqual(1, concepts[0]['id'])
 
+    def test_get_conceptscheme_concepts_search_sort_id_space_is_asc(self):
+        request = self._get_dummy_request({
+            'sort': ' id'
+        })
+        request.matchdict = {'scheme_id': 'TREES'}
+        pv = self._get_provider_view(request)
+        concepts = pv.get_conceptscheme_concepts()
+        self.assertIsInstance(concepts, list)
+        self.assertEqual(1, concepts[0]['id'])
+
+    def test_get_conceptscheme_concepts_search_sort_id_undefined_is_asc(self):
+        request = self._get_dummy_request({
+            'sort': 'id'
+        })
+        request.matchdict = {'scheme_id': 'TREES'}
+        pv = self._get_provider_view(request)
+        concepts = pv.get_conceptscheme_concepts()
+        self.assertIsInstance(concepts, list)
+        self.assertEqual(1, concepts[0]['id'])
+
     def test_get_conceptscheme_concepts_search_sort_id_desc(self):
         request = self._get_dummy_request({
             'sort': '-id'
