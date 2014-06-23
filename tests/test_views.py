@@ -250,6 +250,31 @@ class ProviderViewTests(unittest.TestCase):
         concept = pv.get_concept()
         self.assertIsInstance(concept, HTTPNotFound)
 
+    def test_get_concept_display_children(self):
+        request = self._get_dummy_request()
+        request.matchdict = {
+            'scheme_id': 'TREES',
+            'c_id': 1
+        }
+        pv = self._get_provider_view(request)
+        children = pv.get_concept_display_children()
+        self.assertIsInstance(children, list)
+        for c in children:
+            self.assertIn('id', c)
+            self.assertIn('uri', c)
+            self.assertIn('label', c)
+            self.assertIn('type', c)
+
+    def test_get_unexsisting_concept_display_children(self):
+        request = self._get_dummy_request()
+        request.matchdict = {
+            'scheme_id': 'TREES',
+            'c_id': 123456789
+        }
+        pv = self._get_provider_view(request)
+        concept = pv.get_concept_display_children()
+        self.assertIsInstance(concept, HTTPNotFound)
+
     def test_get_top_concepts_unexisting_conceptscheme(self):
         request = self._get_dummy_request()
         request.matchdict = {'scheme_id': 'PARROTS'}
@@ -270,6 +295,25 @@ class ProviderViewTests(unittest.TestCase):
             self.assertIn('uri', c)
             self.assertIn('label', c)
             self.assertEqual('concept', c['type'])
+
+    def test_get_display_top_unexisting_conceptscheme(self):
+        request = self._get_dummy_request()
+        request.matchdict = {'scheme_id': 'PARROTS'}
+        pv = self._get_provider_view(request)
+        tc = pv.get_conceptscheme_display_top()
+        self.assertIsInstance(tc, HTTPNotFound)
+
+    def test_get_display_top(self):
+        request = self._get_dummy_request()
+        request.matchdict = {'scheme_id': 'TREES'}
+        pv = self._get_provider_view(request)
+        tc = pv.get_conceptscheme_display_top()
+        self.assertIsInstance(tc, list)
+        for c in tc:
+            self.assertIn('id', c)
+            self.assertIn('uri', c)
+            self.assertIn('label', c)
+            self.assertIn('type', c)
 
     def test_get_conceptscheme_concepts_search_sort_id_asc(self):
         request = self._get_dummy_request({

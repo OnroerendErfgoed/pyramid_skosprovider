@@ -62,8 +62,16 @@ def includeme(config):
         '/conceptschemes/{scheme_id}/topconcepts'
     )
     config.add_route(
+        'skosprovider.conceptscheme.display_top',
+        '/conceptschemes/{scheme_id}/displaytop'
+    )
+    config.add_route(
         'skosprovider.c',
         '/conceptschemes/{scheme_id}/c/{c_id}'
+    )
+    config.add_route(
+        'skosprovider.c.display_children',
+        '/conceptschemes/{scheme_id}/c/{c_id}/displaychildren'
     )
 
     config.scan()

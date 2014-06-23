@@ -2,6 +2,7 @@ Next version
 ------------
 
 - Expose information about top concepts.
+- Expose information about display top and display children.
 - Fix a bug with returning concepts and collections not on the first page
   of data through the Range header. (#3)
 - Added support for sorting. (#4, #5) [cedrikv]

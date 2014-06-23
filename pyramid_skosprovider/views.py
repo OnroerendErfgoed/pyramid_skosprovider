@@ -48,6 +48,14 @@ class ProviderView(RestView):
             return HTTPNotFound()
         return provider.get_top_concepts()
 
+    @view_config(route_name='skosprovider.conceptscheme.display_top', request_method='GET')
+    def get_conceptscheme_display_top(self):
+        scheme_id = self.request.matchdict['scheme_id']
+        provider = self.skos_registry.get_provider(scheme_id)
+        if not provider:
+            return HTTPNotFound()
+        return provider.get_top_display()
+
     @view_config(route_name='skosprovider.conceptscheme.cs', request_method='GET')
     def get_conceptscheme_concepts(self):
         scheme_id = self.request.matchdict['scheme_id']
@@ -119,3 +127,13 @@ class ProviderView(RestView):
         if not concept:
             return HTTPNotFound()
         return concept
+
+    @view_config(route_name='skosprovider.c.display_children', request_method='GET')
+    def get_concept_display_children(self):
+        scheme_id = self.request.matchdict['scheme_id']
+        concept_id = self.request.matchdict['c_id']
+        provider = self.skos_registry.get_provider(scheme_id)
+        children = provider.get_children_display(concept_id)
+        if children == False:
+            return HTTPNotFound()
+        return children
