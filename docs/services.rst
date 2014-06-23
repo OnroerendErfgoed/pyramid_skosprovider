@@ -120,6 +120,45 @@ The following API is present:
 
     :statuscode 200: The topconcepts in this conceptscheme were found.
     :statuscode 404: The conceptscheme was not found.
+
+.. http:get:: /conceptschemes/{scheme_id}/displaytop
+    
+    Get the top of a display hierarchy. Depending on the underlying provider
+    this will be a list of Concepts and Collections.
+
+    **Example request**:
+    
+    .. sourcecode:: http
+    
+        GET /conceptschemes/TREES/displaytop
+        Host: localhost:6543
+        Accept: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type:  application/json; charset=UTF-8
+        Date:  Mon, 14 Apr 2014 14:47:33 GMT
+        Server:  waitress
+
+        [
+            {
+                "id": "1", 
+                "uri": "urn:x-skosprovider:TREES:1",
+                "type": "concept",
+                "label": "De Lariks"
+            }, {
+                "id": "2", 
+                "uri": "urn:x-skosprovider:TREES:2",
+                "type": "concept",
+                "label": "De Paardekastanje"
+            }
+        ]
+
+    :statuscode 200: The concepts and collections were found.
+    :statuscode 404: The conceptscheme was not found.
 		
 .. http:get:: /conceptschemes/{scheme_id}/c
     
@@ -258,6 +297,47 @@ The following API is present:
         Content-Type:  text/html; charset=UTF-8
         Date:  Tue, 15 Apr 2014 20:06:12 GMT
         Server:  waitress
+
+    :statuscode 200: The concept was found in the conceptscheme.
+    :statuscode 404: The concept was not found in the conceptscheme or the 
+        conceptscheme was not found.
+
+
+.. http:get:: /conceptschemes/{scheme_id}/c/{c_id}/displaychildren
+    
+    Get a list of Collections and Concepts that should be displayed as
+    children of this Concept or Collection.
+    
+    **Example request**:
+    
+    .. sourcecode:: http
+    
+        GET /conceptschemes/TREES/c/3/displaychildren
+        Host: localhost:6543
+        Accept: application/json
+    
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type:  application/json; charset=UTF-8
+        Date:  Mon, 14 Apr 2014 14:49:27 GMT
+        Server:  waitress
+
+        [
+            {
+                "id": "1",
+                "uri": "urn:x-skosprovider:TREES:1",
+                "type": "concept",
+                "label": "De Lariks"
+            }, {   
+                "id": "2",
+                "uri": "urn:x-skosprovider:TREES:2",
+                "type": "concept",
+                "label": "De Paardekastanje"
+            }
+        ]
 
     :statuscode 200: The concept was found in the conceptscheme.
     :statuscode 404: The concept was not found in the conceptscheme or the 
