@@ -49,5 +49,4 @@ setup(
     extras_require={
         'testing': testing_extras
     },
-    test_suite='nose.collector',
 )
