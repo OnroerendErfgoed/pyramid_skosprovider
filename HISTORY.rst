@@ -1,5 +1,5 @@
-Next version
-------------
+0.3.0 (2014-06-24)
+------------------
 
 - Expose information about top concepts.
 - Expose information about display top and display children.
