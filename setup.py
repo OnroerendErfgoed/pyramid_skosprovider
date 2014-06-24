@@ -12,8 +12,9 @@ requires = [
 ]
 
 tests_requires = [
-    'nose',
-    'coverage'
+    'pytest',
+    'pytest-cov',
+    'webtest'
 ]
 
 testing_extras = tests_requires + []

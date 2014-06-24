@@ -7,3 +7,8 @@ sphinxcontrib-httpdomain==1.2.0
 
 # Linting
 flake8==2.1.0
+
+# Unit testing
+pytest
+webtest
+pytest-cov
