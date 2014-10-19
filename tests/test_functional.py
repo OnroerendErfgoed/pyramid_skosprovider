@@ -13,10 +13,7 @@ import json
 
 from webtest import TestApp
 
-try:
-    import unittest2 as unittest
-except ImportError:  # pragma NO COVER
-    import unittest  # noqa
+import unittest
 
 from .fixtures.data import (
     trees
