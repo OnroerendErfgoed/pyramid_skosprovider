@@ -1,3 +1,9 @@
+0.4.0 (2014-10-??)
+------------------
+
+- Compatibility with skosprovider 0.4.0
+- Drop support for Python 2.6 and Python 3.2.
+
 0.3.0 (2014-06-24)
 ------------------
 
