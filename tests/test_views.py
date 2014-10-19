@@ -234,8 +234,7 @@ class ProviderViewTests(unittest.TestCase):
         pv = self._get_provider_view(request)
         concept = pv.get_concept()
         self.assertIsInstance(concept, Concept)
-        self.assertIn('id', concept)
-        self.assertEqual(1, concept['id'])
+        self.assertEqual(1, concept.id)
 
     def test_get_unexsisting_concept(self):
         request = self._get_dummy_request()
