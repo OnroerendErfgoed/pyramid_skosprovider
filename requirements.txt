@@ -1,2 +1,2 @@
-pyramid==1.5
-skosprovider==0.3.0
+pyramid==1.5.1
+skosprovider==0.4.0
