@@ -92,6 +92,7 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(collection['type'], 'collection')
         self.assertEqual(len(collection['labels']), 2)
         self._assert_is_labels(collection['labels'])
+        self.assertIn('notes', collection)
 
     def test_json_concept(self):
         from pyramid_skosprovider.utils import json_renderer
@@ -133,6 +134,7 @@ class TestUtils(unittest.TestCase):
             id=species['id'],
             uri=species['uri'],
             labels=species['labels'],
+            notes=species['notes'],
             members=species['members']
         )
         r = json_renderer({})
@@ -150,3 +152,9 @@ class TestUtils(unittest.TestCase):
             self.assertIn('label', l)
             self.assertIn('type', l)
             self.assertIn('language', l)
+        self.assertEqual(len(coll['notes']), 1)
+        for n in coll['notes']:
+            self.assertIsInstance(n, dict)
+            self.assertIn('note', n)
+            self.assertIn('type', n)
+            self.assertIn('language', n)

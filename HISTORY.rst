@@ -3,6 +3,7 @@
 
 - Compatibility with skosprovider 0.4.0
 - Drop support for Python 2.6 and Python 3.2.
+- Expose notes on collections.
 
 0.3.0 (2014-06-24)
 ------------------

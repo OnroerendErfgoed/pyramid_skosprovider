@@ -40,6 +40,12 @@ species = {
         {'type': 'prefLabel', 'language': 'en', 'label': 'Trees by species'},
         {'type': 'prefLabel', 'language': 'nl', 'label': 'Bomen per soort'}
     ],
+    'notes': [
+        {
+            'type': 'scopeNote', 'language': 'en',
+            'note': 'A division of trees.'
+        }
+    ],    
     'type': 'collection',
     'members': ['1', '2']
 }

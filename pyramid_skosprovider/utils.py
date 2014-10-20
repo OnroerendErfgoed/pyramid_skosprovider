@@ -72,6 +72,7 @@ def collection_adapter(obj, request):
         'uri': obj.uri,
         'label': obj.label().label,
         'labels': obj.labels,
+        'notes': obj.notes,
         'members': obj.members,
         'member_of': obj.member_of
     }
