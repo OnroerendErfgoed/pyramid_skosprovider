@@ -50,6 +50,10 @@ def concept_adapter(obj, request):
         'type': 'concept',
         'uri': obj.uri,
         'label': obj.label().label,
+        'concept_scheme': {
+            'uri': obj.concept_scheme.uri,
+            'labels': obj.concept_scheme.labels
+        },
         'labels': obj.labels,
         'notes': obj.notes,
         'narrower': obj.narrower,
@@ -71,6 +75,10 @@ def collection_adapter(obj, request):
         'type': 'collection',
         'uri': obj.uri,
         'label': obj.label().label,
+        'concept_scheme': {
+            'uri': obj.concept_scheme.uri,
+            'labels': obj.concept_scheme.labels
+        },
         'labels': obj.labels,
         'notes': obj.notes,
         'members': obj.members,

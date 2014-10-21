@@ -9,6 +9,7 @@ from pyramid.compat import (
 from .fixtures.data import (
     larch,
     species,
+    trees
 )
 
 from skosprovider.skos import (
@@ -65,7 +66,8 @@ class TestUtils(unittest.TestCase):
         c = Concept(
             id=larch['id'],
             labels=larch['labels'],
-            notes=larch['notes']
+            notes=larch['notes'],
+            concept_scheme=trees.concept_scheme
         )
         concept = concept_adapter(c, {})
         self.assertIsInstance(concept, dict)
@@ -81,7 +83,8 @@ class TestUtils(unittest.TestCase):
         c = Collection(
             id=species['id'],
             labels=species['labels'],
-            members=species['members']
+            members=species['members'],
+            concept_scheme=trees.concept_scheme
         )
         collection = collection_adapter(c, {})
         self.assertIsInstance(collection, dict)
@@ -100,7 +103,8 @@ class TestUtils(unittest.TestCase):
             id=larch['id'],
             uri=larch['uri'],
             labels=larch['labels'],
-            notes=larch['notes']
+            notes=larch['notes'],
+            concept_scheme=trees.concept_scheme
         )
         r = json_renderer({})
         jsonstring = r(c, {})
@@ -135,7 +139,8 @@ class TestUtils(unittest.TestCase):
             uri=species['uri'],
             labels=species['labels'],
             notes=species['notes'],
-            members=species['members']
+            members=species['members'],
+            concept_scheme=trees.concept_scheme
         )
         r = json_renderer({})
         jsonstring = r(c, {})
