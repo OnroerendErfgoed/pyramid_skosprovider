@@ -38,7 +38,13 @@ class ProviderView(RestView):
         provider = self.skos_registry.get_provider(scheme_id)
         if not provider:
             return HTTPNotFound()
-        return {'id': provider.get_vocabulary_id()}
+        return {
+            'id': provider.get_vocabulary_id(),
+            'uri': provider.concept_scheme.uri,
+            'label': provider.concept_scheme.label().label if provider.concept_scheme.label() else None,
+            'labels': provider.concept_scheme.labels,
+            'notes': provider.concept_scheme.notes
+        }
 
     @view_config(route_name='skosprovider.conceptscheme.tc', request_method='GET')
     def get_conceptscheme_top_concepts(self):

@@ -55,7 +55,16 @@ class ProviderViewTests(unittest.TestCase):
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         cs = pv.get_conceptscheme()
-        self.assertEqual({'id': 'TREES'}, cs)
+        self.assertEqual(
+            {
+                'id': 'TREES',
+                'uri': 'urn:x-skosprovider:trees',
+                'label': None,
+                'labels': [],
+                'notes': []
+            }, 
+            cs
+        )
 
     def test_get_unexisting_conceptscheme(self):
         request = self._get_dummy_request()
