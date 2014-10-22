@@ -4,10 +4,12 @@
 - Compatibility with skosprovider 0.4.0
 - Drop support for Python 2.6 and Python 3.2.
 - Expose notes on collections.
+- Expose matches on concepts (collections don't have matches).
 - Integrate concept scheme information. Concepts and collections passed through 
   the service now contain the uri of the concept scheme they belong to. The 
   concept scheme endpoint now also exposes information like a uri, a list of 
   labels and notes.
+
 
 0.3.0 (2014-06-24)
 ------------------

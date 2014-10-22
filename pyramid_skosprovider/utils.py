@@ -59,7 +59,8 @@ def concept_adapter(obj, request):
         'narrower': obj.narrower,
         'broader': obj.broader,
         'related': obj.related,
-        'member_of': obj.member_of
+        'member_of': obj.member_of,
+        'matches': obj.matches
     }
 
 

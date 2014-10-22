@@ -15,7 +15,10 @@ larch = {
     ],
     'notes': [
         {'type': 'definition', 'language': 'en', 'note': 'A type of tree.'}
-    ]
+    ],
+    'matches': {
+        'close': ['http://id.python.org/different/types/of/trees/nr/1/the/larch']
+    }
 }
 
 chestnut = {
@@ -30,7 +33,10 @@ chestnut = {
             'type': 'definition', 'language': 'en',
             'note': 'A different type of tree.'
         }
-    ]
+    ],
+    'matches': {
+        'related': ['http://id.python.org/different/types/of/trees/nr/17/the/other/chestnut']
+    }
 }
 
 species = {

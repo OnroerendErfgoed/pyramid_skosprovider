@@ -67,7 +67,8 @@ class TestUtils(unittest.TestCase):
             id=larch['id'],
             labels=larch['labels'],
             notes=larch['notes'],
-            concept_scheme=trees.concept_scheme
+            concept_scheme=trees.concept_scheme,
+            matches=larch['matches']
         )
         concept = concept_adapter(c, {})
         self.assertIsInstance(concept, dict)
@@ -77,6 +78,12 @@ class TestUtils(unittest.TestCase):
         self.assertIn(concept['type'], 'concept')
         self.assertEqual(len(concept['labels']), 2)
         self._assert_is_labels(concept['labels'])
+        assert 'matches' in concept
+        assert 0 == len(concept['matches']['broad'])
+        assert 0 == len(concept['matches']['narrow'])
+        assert 0 == len(concept['matches']['related'])
+        assert 0 == len(concept['matches']['exact'])
+        assert 1 == len(concept['matches']['close'])
 
     def test_collection_adapter(self):
         from pyramid_skosprovider.utils import collection_adapter
@@ -96,6 +103,7 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(len(collection['labels']), 2)
         self._assert_is_labels(collection['labels'])
         self.assertIn('notes', collection)
+        assert not 'matches' in collection
 
     def test_json_concept(self):
         from pyramid_skosprovider.utils import json_renderer
@@ -104,7 +112,8 @@ class TestUtils(unittest.TestCase):
             uri=larch['uri'],
             labels=larch['labels'],
             notes=larch['notes'],
-            concept_scheme=trees.concept_scheme
+            concept_scheme=trees.concept_scheme,
+            matches=larch['matches']
         )
         r = json_renderer({})
         jsonstring = r(c, {})
@@ -131,6 +140,11 @@ class TestUtils(unittest.TestCase):
         self.assertIsInstance(concept['broader'], list)
         self.assertIsInstance(concept['related'], list)
         self.assertIsInstance(concept['narrower'], list)
+        assert 'matches' in concept
+        for mt in ['broad', 'narrow', 'related', 'close', 'exact']:
+            assert mt in concept['matches']
+            assert list == type(concept['matches'][mt])
+        assert 1 == len(concept['matches']['close'])
 
     def test_json_collection(self):
         from pyramid_skosprovider.utils import json_renderer
@@ -163,3 +177,4 @@ class TestUtils(unittest.TestCase):
             self.assertIn('note', n)
             self.assertIn('type', n)
             self.assertIn('language', n)
+        assert 'matches' not in coll
