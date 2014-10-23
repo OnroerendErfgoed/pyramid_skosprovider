@@ -47,8 +47,10 @@ class ProviderViewTests(unittest.TestCase):
         conceptschemes = pv.get_conceptschemes()
         self.assertIsInstance(conceptschemes, list)
         for cs in conceptschemes:
-            self.assertIsInstance(cs, dict)
-            self.assertIn('id', cs)
+            assert isinstance(cs, dict)
+            assert 'id' in cs
+            assert 'uri' in cs
+            assert 'label' in cs
 
     def test_get_conceptscheme(self):
         request = self._get_dummy_request()

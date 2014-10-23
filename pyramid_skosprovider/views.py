@@ -30,7 +30,13 @@ class ProviderView(RestView):
 
     @view_config(route_name='skosprovider.conceptschemes', request_method='GET')
     def get_conceptschemes(self):
-        return [{'id': p.get_vocabulary_id()} for p in self.skos_registry.get_providers()]
+        return [
+            {
+                'id': p.get_vocabulary_id(),
+                'uri': p.concept_scheme.uri,
+                'label': p.concept_scheme.label().label if p.concept_scheme.label() else None,
+            } for p in self.skos_registry.get_providers()
+        ]
 
     @view_config(route_name='skosprovider.conceptscheme', request_method='GET')
     def get_conceptscheme(self):
