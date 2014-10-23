@@ -6,6 +6,10 @@
 Welcome to Pyramid Skosprovider's documentation!
 ================================================
 
+This library helps to integrate 
+`skosprovider <https://github.com/koenedaele/skosprovider>`_ in a 
+`Pyramid <http://www.pylonsproject.org>`_ application.
+
 .. toctree::
    :maxdepth: 2
 

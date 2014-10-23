@@ -1,4 +1,4 @@
-0.4.0 (2014-10-??)
+0.4.0 (2014-10-23)
 ------------------
 
 - Compatibility with skosprovider 0.4.0
@@ -10,7 +10,6 @@
   the service now contain the uri of the concept scheme they belong to. The 
   concept scheme endpoint now also exposes information like a uri, a list of 
   labels and notes.
-
 
 0.3.0 (2014-06-24)
 ------------------

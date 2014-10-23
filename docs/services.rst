@@ -26,12 +26,16 @@ The following API is present:
     .. sourcecode:: http
 
         HTTP/1.1 200 OK
-        Content-Length:  17
         Content-Type:  application/json; charset=UTF-8
         Date:  Mon, 14 Apr 2014 14:42:34 GMT
-        Server:  waitress
 
-        [{"id": "TREES"}]
+        [
+            {
+                "id": "TREES",
+                "uri": "urn:x-skosprovider:trees",
+                "label": "Different types of trees."
+            }
+        ]
 
 
     :statuscode 200: The list of conceptschemes was found.
@@ -59,11 +63,19 @@ The following API is present:
         Date:  Mon, 14 Apr 2014 14:45:37 GMT
         Server:  waitress
 
-        {"id": "TREES"}
+        {
+            "id": "TREES",
+            "uri": "urn:x-skosprovider:trees",
+            "label": "Different types of trees.",
+            "labels": [
+                {"type": "prefLabel", "language": "en", "label": "Different types of trees."},
+                {"type": "prefLabel", "language": "nl", "label": "Verschillende soorten bomen."}
+            ]
+        }
 
     **Example request**:
     
-    .. sourcecode:: http
+    -.. sourcecode:: http
     
         GET /conceptschemes/PLANTS
         Host: localhost:6543
@@ -277,7 +289,15 @@ The following API is present:
             "id": "1", 
             "uri": "urn:x-skosprovider:TREES:1",
             "related": [], 
-            "label": "The Larch"
+            "label": "The Larch",
+            "matches": {
+                "close": [
+                    'http://id.python.org/different/types/of/trees/nr/1/the/larch'
+                ]
+            },
+            concept_scheme: {
+                'uri': 'urn:x-foo:bar
+            }
         }
 
     **Example request**:

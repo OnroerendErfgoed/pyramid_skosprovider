@@ -1,8 +1,10 @@
 Usage
 =====
 
-To get a skosprovider.registry instance, call get_skos_registry with the 
-current application registry. 
+To get a :class:`skosprovider.registry.Registry` instance, call 
+:func:`pyramid_skosprovider.get_skos_registry` with the current 
+application registry. 
+
 Eg. in a view:
 
 .. code-block:: python
@@ -24,3 +26,8 @@ Alternatively you can get the registry as an attribute of a pyramid request:
         skos = request.skos_registry
         providers = skos.get_providers()
         # ...
+
+For a real-world example of an integration of `pyramid_skosprovider` in a
+`Pyramid` application, have a look at 
+`Atramhasis <https://github.com/OnroerendErfgoed/atramhasis>`_, a SKOS vocabulary
+editor partially built upon this library.
