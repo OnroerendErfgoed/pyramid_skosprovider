@@ -84,6 +84,8 @@ class TestUtils(unittest.TestCase):
         assert 0 == len(concept['matches']['related'])
         assert 0 == len(concept['matches']['exact'])
         assert 1 == len(concept['matches']['close'])
+        assert 'subordinate_arrays' in concept
+        assert 0 == len(concept['subordinate_arrays'])
 
     def test_collection_adapter(self):
         from pyramid_skosprovider.utils import collection_adapter
@@ -104,6 +106,8 @@ class TestUtils(unittest.TestCase):
         self._assert_is_labels(collection['labels'])
         self.assertIn('notes', collection)
         assert not 'matches' in collection
+        assert 'superordinates' in collection
+        assert 0 == len(collection['superordinates'])
 
     def test_json_concept(self):
         from pyramid_skosprovider.utils import json_renderer

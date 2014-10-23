@@ -60,6 +60,7 @@ def concept_adapter(obj, request):
         'broader': obj.broader,
         'related': obj.related,
         'member_of': obj.member_of,
+        'subordinate_arrays': obj.subordinate_arrays,
         'matches': obj.matches
     }
 
@@ -83,7 +84,9 @@ def collection_adapter(obj, request):
         'labels': obj.labels,
         'notes': obj.notes,
         'members': obj.members,
-        'member_of': obj.member_of
+        'member_of': obj.member_of,
+        'superordinates': obj.superordinates,
+
     }
 
 

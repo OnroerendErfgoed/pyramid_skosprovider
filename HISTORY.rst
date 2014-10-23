@@ -5,6 +5,7 @@
 - Drop support for Python 2.6 and Python 3.2.
 - Expose notes on collections.
 - Expose matches on concepts (collections don't have matches).
+- Expose subordinate_arrays on concepts and superordinates on collections.
 - Integrate concept scheme information. Concepts and collections passed through 
   the service now contain the uri of the concept scheme they belong to. The 
   concept scheme endpoint now also exposes information like a uri, a list of 
