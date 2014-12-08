@@ -1,3 +1,8 @@
+0.4.1 (2014-??-??)
+------------------
+
+- Conceptschemes expose information on the subject they're tagged with. [BartSaelen]
+
 0.4.0 (2014-10-23)
 ------------------
 
