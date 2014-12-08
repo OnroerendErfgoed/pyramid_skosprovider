@@ -35,6 +35,7 @@ class ProviderView(RestView):
                 'id': p.get_vocabulary_id(),
                 'uri': p.concept_scheme.uri,
                 'label': p.concept_scheme.label().label if p.concept_scheme.label() else None,
+                'subject': p.metadata['subject'] if p.metadata['subject'] else []
             } for p in self.skos_registry.get_providers()
         ]
 
