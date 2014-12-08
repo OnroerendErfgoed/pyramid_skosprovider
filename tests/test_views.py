@@ -62,6 +62,7 @@ class ProviderViewTests(unittest.TestCase):
                 'id': 'TREES',
                 'uri': 'urn:x-skosprovider:trees',
                 'label': None,
+                'subject': [],
                 'labels': [],
                 'notes': []
             }, 
