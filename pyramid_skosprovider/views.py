@@ -49,7 +49,7 @@ class ProviderView(RestView):
             'id': provider.get_vocabulary_id(),
             'uri': provider.concept_scheme.uri,
             'label': provider.concept_scheme.label().label if provider.concept_scheme.label() else None,
-            'subject': provider.metadata['subject'] if provider.metadata['subject'] else []
+            'subject': provider.metadata['subject'] if provider.metadata['subject'] else [],
             'labels': provider.concept_scheme.labels,
             'notes': provider.concept_scheme.notes
         }
