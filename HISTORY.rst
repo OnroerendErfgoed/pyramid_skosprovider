@@ -2,6 +2,10 @@
 ------------------
 
 - Conceptschemes expose information on the subject they're tagged with. [BartSaelen]
+- A new search endpoint for searching across conceptschemes was added. Search
+  syntax is the same as for searching within a single scheme, but the collection
+  parameter is not accepted. Two extra parameters were added for limiting the
+  search to a subset of available conceptschemes.
 
 0.4.0 (2014-10-23)
 ------------------

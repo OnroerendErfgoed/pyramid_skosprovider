@@ -76,6 +76,85 @@ class ProviderViewTests(unittest.TestCase):
         cs = pv.get_conceptscheme()
         self.assertIsInstance(cs, HTTPNotFound)
 
+    def test_get_concepts(self):
+        request = self._get_dummy_request()
+        pv = self._get_provider_view(request)
+        concepts = pv.get_concepts()
+        self.assertIsInstance(concepts, list)
+        self.assertEqual(3, len(concepts))
+        for c in concepts:
+            self.assertIsInstance(c, dict)
+            self.assertIn('id', c)
+
+    def test_get_concepts_provider_subjects(self):
+        request = self._get_dummy_request({
+            'providers.subject': 'doesnt exist'
+        })
+        pv = self._get_provider_view(request)
+        concepts = pv.get_concepts()
+        self.assertIsInstance(concepts, list)
+        self.assertEqual(0, len(concepts))
+
+    def test_get_concepts_provider_ids(self):
+        request = self._get_dummy_request({
+            'providers.ids': 'PARROTS'
+        })
+        pv = self._get_provider_view(request)
+        concepts = pv.get_concepts()
+        self.assertIsInstance(concepts, list)
+        self.assertEqual(0, len(concepts))
+
+    def test_get_concepts_search_type_concept(self):
+        request = self._get_dummy_request({
+            'type': 'concept'
+        })
+        pv = self._get_provider_view(request)
+        concepts = pv.get_concepts()
+        self.assertIsInstance(concepts, list)
+        self.assertEqual(2, len(concepts))
+
+    def test_get_concepts_search_type_concept(self):
+        request = self._get_dummy_request({
+            'label': 'De lariks'
+        })
+        pv = self._get_provider_view(request)
+        concepts = pv.get_concepts()
+        self.assertIsInstance(concepts, list)
+        self.assertEqual(1, len(concepts))
+
+    def test_get_concepts_search_dfs_empty_label(self):
+        request = self._get_dummy_request({
+            'type': 'concept',
+            'mode': 'dijitFilteringSelect',
+            'label': ''
+        })
+        pv = self._get_provider_view(request)
+        concepts = pv.get_concepts()
+        self.assertIsInstance(concepts, list)
+        self.assertEqual(0, len(concepts))
+
+    def test_get_concepts_search_dfs_all(self):
+        request = self._get_dummy_request({
+            'type': 'concept',
+            'mode': 'dijitFilteringSelect',
+            'label': '*'
+        })
+        pv = self._get_provider_view(request)
+        concepts = pv.get_concepts()
+        self.assertIsInstance(concepts, list)
+        self.assertEqual(2, len(concepts))
+
+    def test_get_concepts_search_dfs_label_star(self):
+        request = self._get_dummy_request({
+            'type': 'concept',
+            'mode': 'dijitFilteringSelect',
+            'label': 'De *'
+        })
+        pv = self._get_provider_view(request)
+        concepts = pv.get_concepts()
+        self.assertIsInstance(concepts, list)
+        self.assertEqual(2, len(concepts))
+
     def test_get_conceptscheme_concepts(self):
         request = self._get_dummy_request()
         request.matchdict = {'scheme_id': 'TREES'}
