@@ -70,6 +70,51 @@ class ProviderView(RestView):
             return HTTPNotFound()
         return provider.get_top_display()
 
+    @view_config(route_name='skosprovider.cs', request_method='GET')
+    def get_concepts(self):
+        query = {}
+        mode = self.request.params.get('mode', 'default')
+        label = self.request.params.get('label', None)
+        postprocess = False
+        if mode == 'dijitFilteringSelect' and label == '':
+            concepts = []
+        else:
+            if label not in [None, '*', '']:
+                if mode == 'dijitFilteringSelect' and '*' in label:
+                    postprocess = True
+                    query['label'] = label.replace('*', '')
+                else:
+                    query['label'] = label
+            type = self.request.params.get('type', None)
+            if type in ['concept', 'collection']:
+                query['type'] = type
+
+            # determine targets
+            providers = {}
+            ids = self.request.params.get('providers.ids', None)
+            if ids:
+                ids = ids.split(',')
+                providers['ids'] = ids
+            subject = self.request.params.get('providers.subject', None)
+            if subject:
+                providers['subject'] = subject
+            if not (ids or subject):
+                concepts = self.skos_registry.find(query)
+            else:
+                concepts = self.skos_registry.find(query, providers=providers)
+            # Flatten it all
+            cs = []
+            for c in concepts:
+                cs += c['concepts']
+            concepts = cs
+
+        if postprocess:
+            concepts = self._postprocess_wildcards(concepts, label)
+
+        concepts = self._sort_concepts(concepts)
+
+        return self._page_results(concepts)
+
     @view_config(route_name='skosprovider.conceptscheme.cs', request_method='GET')
     def get_conceptscheme_concepts(self):
         scheme_id = self.request.matchdict['scheme_id']
@@ -78,7 +123,6 @@ class ProviderView(RestView):
             return HTTPNotFound()
         query = {}
         mode = self.request.params.get('mode', 'default')
-        sort = self.request.params.get('sort', None)
         label = self.request.params.get('label', None)
         postprocess = False
         if mode == 'dijitFilteringSelect' and label == '':
@@ -97,15 +141,26 @@ class ProviderView(RestView):
             if coll is not None:
                 query['collection'] = {'id': coll, 'depth': 'all'}
             concepts = provider.find(query)
-        # We need to refine results further
-        if postprocess:
-            if label.startswith('*') and label.endswith('*'):
-                concepts = [c for c in concepts if label[1:-1] in c['label']]
-            elif label.endswith('*'):
-                concepts = [c for c in concepts if c['label'].startswith(label[0:-1])]
-            elif label.startswith('*'):
-                concepts = [c for c in concepts if c['label'].endswith(label[1:])]
 
+        if postprocess:
+            concepts = self._postprocess_wildcards(concepts, label)
+
+        concepts = self._sort_concepts(concepts)
+
+        return self._page_results(concepts)
+
+    def _postprocess_wildcards(self, concepts, label):
+        # We need to refine results further
+        if label.startswith('*') and label.endswith('*'):
+            concepts = [c for c in concepts if label[1:-1] in c['label']]
+        elif label.endswith('*'):
+            concepts = [c for c in concepts if c['label'].startswith(label[0:-1])]
+        elif label.startswith('*'):
+            concepts = [c for c in concepts if c['label'].endswith(label[1:])]
+        return concepts
+
+    def _sort_concepts(self, concepts):
+        sort = self.request.params.get('sort', None)
         #Result sorting
         if sort:
             sort_desc = (sort[0:1] == '-')
@@ -113,7 +168,9 @@ class ProviderView(RestView):
             sort = sort.strip() # dojo store does not encode '+'
             if (len(concepts) > 0) and (sort in concepts[0]):
                 concepts.sort(key=lambda concept: concept[sort], reverse=sort_desc)
+        return concepts
 
+    def _page_results(self, concepts):
         # Result paging
         paging_data = False
         if 'Range' in self.request.headers:

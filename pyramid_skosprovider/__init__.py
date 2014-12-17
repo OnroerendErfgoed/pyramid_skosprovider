@@ -45,6 +45,11 @@ def includeme(config):
 
     config.add_directive('get_skos_registry', get_skos_registry)
     config.add_request_method(get_skos_registry, 'skos_registry', reify=True)
+
+    config.add_route(
+        'skosprovider.cs',
+        '/c'
+    )
     config.add_route(
         'skosprovider.conceptschemes',
         '/conceptschemes'
