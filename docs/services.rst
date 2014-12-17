@@ -10,7 +10,7 @@ The pyramid_skosprovider serves JSON  as a REST service so it can be used easily
 The following API is present:
 
 .. http:get:: /c
-   :synopsis: Search concepts or collections.
+    :synopsis: Search concepts or collections.
 
     Search for concepts or collections, no matter what scheme they're a part of.
 
@@ -76,7 +76,7 @@ The following API is present:
     :query providers.subject: A subject can be registered with a skosprovider in
         the registry. Adding this search parameter means that the query will only
         be passed on to providers that have been tagged with this subject. Eg.
-        ``?subject=external`` to only query the providers that have been marked
+        ``?providers.subject=external`` to only query the providers that have been marked
         with the subject `external`.
 
     :reqheader Range: Can be used to request a certain set of results.
