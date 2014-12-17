@@ -9,7 +9,85 @@ The pyramid_skosprovider serves JSON  as a REST service so it can be used easily
 
 The following API is present:
 
+.. http:get:: /c
+   :synopsis: Search concepts or collections.
+
+    Search for concepts or collections, no matter what scheme they're a part of.
+
+    Although it is possible to search a single conceptscheme with just this
+    endpoint, for performance reasons it is advised to use 
+    :http:get:`/conceptschemes/{scheme_id}/c`.
+    
+    **Example request**:
+    
+    .. sourcecode:: http
+    
+        GET /c HTTP/1.1
+        Host: localhost:6543
+        Accept: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Range:  items 0-2/232
+        Content-Type:  application/json; charset=UTF-8
+
+        [
+            {
+                "id": "1",
+                "uri": "urn:x-skosprovider:TREES:1",
+                "type": "concept",
+                "label": "De Lariks"
+            }, {   
+                "id": "2",
+                "uri": "urn:x-skosprovider:TREES:2",
+                "type": "concept",
+                "label": "De Paardekastanje"
+            }, {   
+                "id": 3,
+                "uri": "urn:x-skosprovider:TREES:3",
+                "type": "collection",
+                "label": "Bomen per soort"
+            }
+        ]
+
+    **Example request**:
+    
+    .. sourcecode:: http
+    
+        GET /c?type=concept&providers.subject=external&sort=uri HTTP/1.1
+        Host: localhost:6543
+        Accept: application/json
+
+    :query type: Define if you want to show concepts or collections. Leave 
+        blank to show both.
+    :query mode: Allows for special processing mode for dijitFilteringSelect. 
+        Makes it possible to use wildcards in the label parameter.
+    :query label: Shows all concepts and collections that have this search
+        string in one of their labels.
+    :query sort: Define if you want to sort the results by a given field. Otherwise items are returned
+        in an indeterminate order. Prefix with '+' to sort ascending, '-' to sort descending.
+        eg. ``?sort=-label`` to sort all results descending by label.
+    :query providers.ids: A comma separated list of concept scheme id's. The query
+        will only be passed to the providers with these id's. eg. 
+        ``?providers.ids=TREES, PARROTS`` will only list concepts from these two providers.
+    :query providers.subject: A subject can be registered with a skosprovider in
+        the registry. Adding this search parameter means that the query will only
+        be passed on to providers that have been tagged with this subject. Eg.
+        ``?subject=external`` to only query the providers that have been marked
+        with the subject `external`.
+
+    :reqheader Range: Can be used to request a certain set of results.
+        eg. ``items=0-24`` requests the first 25 results.
+    :resheader Content-Range: Tells the client what set of results is being returned
+        eg. ``items=0-24/306`` means the first 25 out of 306 results are being returned.
+
+    :statuscode 200: The concepts in this conceptscheme were found.
+
 .. http:get:: /conceptschemes
+    :synopsis: Get all registered conceptschemes.
     
     Get all registered conceptschemes.
     
@@ -42,6 +120,7 @@ The following API is present:
 
    
 .. http:get:: /conceptschemes/{scheme_id}
+    :synopsis: Get information about a concept scheme.
     
     Get information about a concept scheme.
     
@@ -95,6 +174,7 @@ The following API is present:
     :statuscode 404: The conceptscheme was not found.
 
 .. http:get:: /conceptschemes/{scheme_id}/topconcepts
+    :synopsis: Get the top concepts in a scheme.
     
     Get all top concepts in a certain conceptscheme. These are all the concepts
     in the conceptscheme that have no broader concept.
@@ -134,6 +214,7 @@ The following API is present:
     :statuscode 404: The conceptscheme was not found.
 
 .. http:get:: /conceptschemes/{scheme_id}/displaytop
+    :synopsis: Get the top of a display hierarchy.
     
     Get the top of a display hierarchy. Depending on the underlying provider
     this will be a list of Concepts and Collections.
@@ -173,7 +254,8 @@ The following API is present:
     :statuscode 404: The conceptscheme was not found.
 		
 .. http:get:: /conceptschemes/{scheme_id}/c
-    
+    :synopsis: Search for concepts or collections in a scheme.
+
     Search for concepts or collections in a scheme.
     
     **Example request**:
@@ -254,6 +336,7 @@ The following API is present:
     :statuscode 404: The conceptscheme was not found.
 		
 .. http:get:: /conceptschemes/{scheme_id}/c/{c_id}
+    :synopsis: Get information about a concept or collection.
     
     Get information about a concept or collection.
     
@@ -324,6 +407,7 @@ The following API is present:
 
 
 .. http:get:: /conceptschemes/{scheme_id}/c/{c_id}/displaychildren
+    :synopsis: Get the children for display purposes.
     
     Get a list of Collections and Concepts that should be displayed as
     children of this Concept or Collection.
