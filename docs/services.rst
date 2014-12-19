@@ -5,9 +5,67 @@ Service Documentation
 =====================
 
 This library takes your skosproviders and makes them available as REST services. 
-The pyramid_skosprovider serves JSON  as a REST service so it can be used easily inside a AJAX webbrowser call or by an external program.
+The pyramid_skosprovider serves JSON as a REST service so it can be used 
+easily inside a AJAX webbrowser call or by an external program.
 
-The following API is present:
+The following API can be used by clients:
+
+.. http:get:: /uris/{uri}
+    :synopsis: Look up where a certain URI can be found.
+
+    Find more information on a certain :term:`URI`. This can map to eiter
+    a concept, collection or conceptscheme that is known by the current SKOS
+    registry.
+
+    **Example request**:
+    
+    .. sourcecode:: http
+    
+        GET /uris/urn:x-skosprovider:trees HTTP/1.1
+        Host: localhost:6543
+        Accept: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type:  application/json; charset=UTF-8
+
+        {
+            "id": "TREES",
+            "uri": "urn:x-skosprovider:trees",
+            "type": "concept_scheme"
+        }
+
+    **Example request**:
+    
+    .. sourcecode:: http
+    
+        GET /uris/http://python.com/trees/larch HTTP/1.1
+        Host: localhost:6543
+        Accept: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type:  application/json; charset=UTF-8
+
+        {
+            "id": "1",
+            "uri": "http://python.com/trees/larch",
+            "type": "concept",
+            "concept_scheme": {
+                "id": "TREES",
+                "uri": "urn:x-skosprovider:trees"
+            }
+        }
+
+    :statuscode 200: The URI maps to something known by pyramid_skosprovider, 
+        either a conceptscheme, a concept or collection.
+    :statuscode 404: The URI can't be found by pyramid_skosprovider.
 
 .. http:get:: /c
     :synopsis: Search concepts or collections.
