@@ -21,7 +21,7 @@ testing_extras = tests_requires + []
 
 setup(
     name='pyramid_skosprovider',
-    version='0.4.0',
+    version='0.5.0',
     license='MIT',
     description='Integration of skosprovider in pyramid',
     long_description=README + '\n\n' + CHANGES,
@@ -38,7 +38,7 @@ setup(
     author='Koen Van Daele',
     author_email='koen_van_daele@telenet.be',
     url='https://github.com/koenedaele/pyramid_skosprovider',
-    keywords='pyramid skos skosprovider',
+    keywords='pyramid skos skosprovider thesauri vocabularies',
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,

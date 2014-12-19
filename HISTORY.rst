@@ -1,11 +1,14 @@
-0.4.1 (2014-??-??)
+0.5.0 (2014-12-19)
 ------------------
 
 - Conceptschemes expose information on the subject they're tagged with. [BartSaelen]
 - A new search endpoint for searching across conceptschemes was added. Search
   syntax is the same as for searching within a single scheme, but the collection
   parameter is not accepted. Two extra parameters were added for limiting the
-  search to a subset of available conceptschemes.
+  search to a subset of available conceptschemes. (#8)
+- A new endpoint for looking up a certain URI was added. This endpoint does not
+  redirect to an external URI, but lets a client know where more information
+  about this URI can be found (eg. in which conceptscheme a concept lives). (#7)
 
 0.4.0 (2014-10-23)
 ------------------
