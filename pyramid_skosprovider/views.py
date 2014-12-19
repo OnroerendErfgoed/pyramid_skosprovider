@@ -7,7 +7,8 @@ from pyramid.view import view_config, view_defaults
 from pyramid.compat import ascii_native_
 
 from pyramid.httpexceptions import (
-    HTTPNotFound
+    HTTPNotFound,
+    HTTPBadRequest
 )
 
 from pyramid_skosprovider.utils import (
@@ -27,6 +28,30 @@ class RestView(object):
 
 @view_defaults(renderer='skosjson', accept='application/json')
 class ProviderView(RestView):
+
+    @view_config(route_name='skosprovider.uri', request_method='GET')
+    def get_uri(self):
+        uri = self.request.matchdict['uri']
+        provider = self.skos_registry.get_provider(uri)
+        if provider:
+            return {
+                'type': 'concept_scheme',
+                'uri': provider.concept_scheme.uri,
+                'id': provider.get_vocabulary_id()
+            }
+        c = self.skos_registry.get_by_uri(uri)
+        if c:
+            return {
+                'type': c.type,
+                'uri': c.uri,
+                'id': c.id,
+                'concept_scheme': {
+                    'uri': c.concept_scheme.uri,
+                    'id': self.skos_registry.get_provider(c.concept_scheme.uri).get_vocabulary_id()
+                }
+            }
+        if not c:
+            return HTTPNotFound()
 
     @view_config(route_name='skosprovider.conceptschemes', request_method='GET')
     def get_conceptschemes(self):

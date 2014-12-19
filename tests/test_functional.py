@@ -49,6 +49,35 @@ class FunctionalTests(unittest.TestCase):
 
 class RestFunctionalTests(FunctionalTests):
 
+    def test_get_uri_cs_json(self):
+        res = self.testapp.get(
+                '/uris/urn:x-skosprovider:trees',
+            {},
+            {ascii_native_('Accept'): ascii_native_('application/json')}
+        )
+        self.assertEqual('200 OK', res.status)
+        self.assertIn('application/json', res.headers['Content-Type'])
+        data = json.loads(res.body.decode('utf-8'))
+        self.assertIsInstance(data, dict)
+        self.assertIn('uri', data)
+        self.assertIn('id', data)
+        self.assertIn('type', data)
+
+    def test_get_uri_c_json(self):
+        res = self.testapp.get(
+            '/uris/http%3A%2F%2Fpython.com%2Ftrees%2Flarch',
+            {},
+            {ascii_native_('Accept'): ascii_native_('application/json')}
+        )
+        self.assertEqual('200 OK', res.status)
+        self.assertIn('application/json', res.headers['Content-Type'])
+        data = json.loads(res.body.decode('utf-8'))
+        self.assertIsInstance(data, dict)
+        self.assertIn('uri', data)
+        self.assertIn('id', data)
+        self.assertIn('type', data)
+        self.assertIn('concept_scheme', data)
+
     def test_get_conceptschemes_json(self):
         res = self.testapp.get(
             '/conceptschemes',

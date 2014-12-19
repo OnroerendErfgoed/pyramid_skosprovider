@@ -41,6 +41,63 @@ class ProviderViewTests(unittest.TestCase):
         from pyramid_skosprovider.views import ProviderView
         return ProviderView(request)
 
+    def test_get_unexisting_uri(self):
+        request = self._get_dummy_request()
+        request.matchdict = {'uri': 'urn:x-skosprovider:rain'}
+        pv = self._get_provider_view(request)
+        u = pv.get_uri()
+        self.assertIsInstance(u, HTTPNotFound)
+
+    def test_get_uri_conceptscheme(self):
+        request = self._get_dummy_request()
+        request.matchdict = {'uri': 'urn:x-skosprovider:trees'}
+        pv = self._get_provider_view(request)
+        u = pv.get_uri()
+        self.assertEqual(
+            {
+                'id': 'TREES',
+                'uri': 'urn:x-skosprovider:trees',
+                'type': 'concept_scheme'
+            },
+            u
+        )
+
+    def test_get_uri_concept(self):
+        request = self._get_dummy_request()
+        request.matchdict = {'uri': 'http://python.com/trees/larch'}
+        pv = self._get_provider_view(request)
+        u = pv.get_uri()
+        self.assertEqual(
+            {
+                'id': 1,
+                'uri': 'http://python.com/trees/larch',
+                'type': 'concept',
+                'concept_scheme': {
+                    'id': 'TREES',
+                    'uri': 'urn:x-skosprovider:trees',
+                }
+            },
+            u
+        )
+
+    def test_get_uri_collection(self):
+        request = self._get_dummy_request()
+        request.matchdict = {'uri': 'http://python.com/trees/species'}
+        pv = self._get_provider_view(request)
+        u = pv.get_uri()
+        self.assertEqual(
+            {
+                'id': 3,
+                'uri': 'http://python.com/trees/species',
+                'type': 'collection',
+                'concept_scheme': {
+                    'id': 'TREES',
+                    'uri': 'urn:x-skosprovider:trees',
+                }
+            },
+            u
+        )
+
     def test_get_conceptschemes(self):
         request = self._get_dummy_request()
         pv = self._get_provider_view(request)
