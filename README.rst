@@ -21,7 +21,7 @@ More information about this library can be found in `docs`. The docs can be
 built using `Sphinx <http://sphinx-doc.org>`_.
 
 Please make sure you have installed Sphinx in the same environment where 
-skosprovider is present.
+pyramid_skosprovider is present.
 
 .. code-block:: bash
 
