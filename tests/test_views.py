@@ -138,6 +138,23 @@ class ProviderViewTests(unittest.TestCase):
             self.assertIsInstance(c, dict)
             self.assertIn('id', c)
 
+    def test_get_concepts_language(self):
+        request = self._get_dummy_request({'language': 'nl-BE'})
+        request.matchdict = {
+            'scheme_id': 'TREES'
+        }
+        pv = self._get_provider_view(request)
+        children = pv.get_concepts()
+        request_locale= self._get_dummy_request()
+        request_locale.locale_name = 'en'
+        request_locale.matchdict = {
+            'scheme_id': 'TREES'
+        }
+        pv_locale = self._get_provider_view(request_locale)
+        children_locale = pv_locale.get_concepts()
+        self.assertEqual(children[0]['id'], children_locale[0]['id'])
+        self.assertNotEqual(children[0]['label'], children_locale[0]['label'])
+
     def test_get_concepts_provider_subjects(self):
         request = self._get_dummy_request({
             'providers.subject': 'doesnt exist'
@@ -200,7 +217,8 @@ class ProviderViewTests(unittest.TestCase):
         request = self._get_dummy_request({
             'type': 'concept',
             'mode': 'dijitFilteringSelect',
-            'label': 'De *'
+            'label': 'De *',
+            'language': 'nl-BE'
         })
         pv = self._get_provider_view(request)
         concepts = pv.get_concepts()
@@ -410,6 +428,25 @@ class ProviderViewTests(unittest.TestCase):
             self.assertIn('label', c)
             self.assertIn('type', c)
 
+    def test_get_concept_display_children_language(self):
+        request = self._get_dummy_request({'language': 'nl-BE'})
+        request.matchdict = {
+            'scheme_id': 'TREES',
+            'c_id': 3
+        }
+        pv = self._get_provider_view(request)
+        children = pv.get_concept_display_children()
+        request_locale= self._get_dummy_request()
+        request_locale.locale_name = 'en'
+        request_locale.matchdict = {
+            'scheme_id': 'TREES',
+            'c_id': 3
+        }
+        pv_locale = self._get_provider_view(request_locale)
+        children_locale = pv_locale.get_concept_display_children()
+        self.assertEqual(children[0]['id'], children_locale[0]['id'])
+        self.assertNotEqual(children[0]['label'], children_locale[0]['label'])
+
     def test_get_unexsisting_concept_display_children(self):
         request = self._get_dummy_request()
         request.matchdict = {
@@ -475,6 +512,25 @@ class ProviderViewTests(unittest.TestCase):
             self.assertIn('label', c)
             self.assertEqual('concept', c['type'])
 
+    def test_get_top_concepts_language(self):
+        request = self._get_dummy_request({'language': 'nl-BE'})
+        request.matchdict = {
+            'scheme_id': 'TREES',
+            'c_id': 1
+        }
+        pv = self._get_provider_view(request)
+        children = pv.get_conceptscheme_top_concepts()
+        request_locale= self._get_dummy_request()
+        request_locale.locale_name = 'en'
+        request_locale.matchdict = {
+            'scheme_id': 'TREES',
+            'c_id': 1
+        }
+        pv_locale = self._get_provider_view(request_locale)
+        children_locale = pv_locale.get_conceptscheme_top_concepts()
+        self.assertEqual(children[0]['id'], children_locale[0]['id'])
+        self.assertNotEqual(children[0]['label'], children_locale[0]['label'])
+
     def test_get_display_top_unexisting_conceptscheme(self):
         request = self._get_dummy_request()
         request.matchdict = {'scheme_id': 'PARROTS'}
@@ -496,6 +552,25 @@ class ProviderViewTests(unittest.TestCase):
             self.assertIn('uri', c)
             self.assertIn('label', c)
             self.assertIn('type', c)
+
+    def test_get_display_top_language(self):
+        request = self._get_dummy_request({'language': 'nl-BE'})
+        request.matchdict = {
+            'scheme_id': 'TREES',
+            'c_id': 1
+        }
+        pv = self._get_provider_view(request)
+        children = pv.get_conceptscheme_display_top()
+        request_locale= self._get_dummy_request()
+        request_locale.locale_name = 'en'
+        request_locale.matchdict = {
+            'scheme_id': 'TREES',
+            'c_id': 1
+        }
+        pv_locale = self._get_provider_view(request_locale)
+        children_locale = pv_locale.get_conceptscheme_display_top()
+        self.assertEqual(children[0]['id'], children_locale[0]['id'])
+        self.assertNotEqual(children[0]['label'], children_locale[0]['label'])
 
     def test_get_conceptscheme_concepts_search_sort_id_asc(self):
         request = self._get_dummy_request({
@@ -582,6 +657,23 @@ class ProviderViewTests(unittest.TestCase):
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
         self.assertIsInstance(concepts, list)
+
+    def test_get_concept_scheme_concepts_language(self):
+        request = self._get_dummy_request({'language': 'nl-BE'})
+        request.matchdict = {
+            'scheme_id': 'TREES'
+        }
+        pv = self._get_provider_view(request)
+        children = pv.get_conceptscheme_concepts()
+        request_locale= self._get_dummy_request()
+        request_locale.locale_name = 'en'
+        request_locale.matchdict = {
+            'scheme_id': 'TREES'
+        }
+        pv_locale = self._get_provider_view(request_locale)
+        children_locale = pv_locale.get_conceptscheme_concepts()
+        self.assertEqual(children[0]['id'], children_locale[0]['id'])
+        self.assertNotEqual(children[0]['label'], children_locale[0]['label'])
 
     def test_get_conceptscheme_concepts_search_sort_empty_result(self):
         request = self._get_dummy_request({

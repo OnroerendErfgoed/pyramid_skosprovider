@@ -125,6 +125,8 @@ The following API can be used by clients:
         Makes it possible to use wildcards in the label parameter.
     :query label: Shows all concepts and collections that have this search
         string in one of their labels.
+    :query language: Shows all concepts and collections that have this search
+        string in one of their labels.Eg. ``?language=nl-BE``
     :query sort: Define if you want to sort the results by a given field. Otherwise items are returned
         in an indeterminate order. Prefix with '+' to sort ascending, '-' to sort descending.
         eg. ``?sort=-label`` to sort all results descending by label.
@@ -503,4 +505,49 @@ The following API can be used by clients:
 
     :statuscode 200: The concept was found in the conceptscheme.
     :statuscode 404: The concept was not found in the conceptscheme or the 
+        conceptscheme was not found.
+
+
+.. http:get:: /conceptschemes/{scheme_id}/c/{c_id}/expand
+    :synopsis: Expand a concept or collection to all it's narrower concepts.
+
+    Expand a concept or collection to all it's narrower
+    concepts.
+
+    This method should recurse and also return narrower concepts
+    of narrower concepts.
+
+    If the id passed belongs to a :class:`skosprovider.skos.Concept`,
+    the id of the concept itself should be include in the return value.
+
+    If the id passed belongs to a :class:`skosprovider.skos.Collection`,
+    the id of the collection itself must not be present in the return value
+    In this case the return value includes all the member concepts and
+    their narrower concepts.
+
+    Returns A list of id's or :class:`HTTPNotFound` if the concept or collection doesn't
+        exist.
+
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        GET /conceptschemes/TREES/c/3/expand
+        Host: localhost:6543
+        Accept: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type:  application/json; charset=UTF-8
+        Date:  Mon, 14 Apr 2014 14:49:27 GMT
+        Server:  waitress
+
+        [1 , 2]
+
+    :statuscode 200: The concept/collection was found in the conceptscheme.
+    :statuscode 404: The concept/collection was not found in the conceptscheme or the
         conceptscheme was not found.
