@@ -1,23 +1,18 @@
 # -*- coding: utf8 -*-
 
+
 from __future__ import unicode_literals
-
 from pyramid import testing
-
 from pyramid.httpexceptions import (
-    HTTPNotFound
+HTTPNotFound
 )
-
-from .fixtures.data import (
-    trees
+from fixtures.data import (
+trees
 )
-
 from skosprovider.skos import (
-    Concept
+Concept
 )
-
 import unittest
-
 
 class ProviderViewTests(unittest.TestCase):
 
@@ -122,7 +117,7 @@ class ProviderViewTests(unittest.TestCase):
                 'subject': [],
                 'labels': [],
                 'notes': []
-            }, 
+            },
             cs
         )
 
@@ -335,7 +330,8 @@ class ProviderViewTests(unittest.TestCase):
         request = self._get_dummy_request({
             'type': 'concept',
             'mode': 'dijitFilteringSelect',
-            'label': 'De *'
+            'label': 'De *',
+            'language': 'nl-BE'
         })
         request.matchdict = {
             'scheme_id': 'TREES'
@@ -349,7 +345,8 @@ class ProviderViewTests(unittest.TestCase):
         request = self._get_dummy_request({
             'type': 'concept',
             'mode': 'dijitFilteringSelect',
-            'label': '*iks'
+            'label': '*iks',
+            'language': 'nl-BE'
         })
         request.matchdict = {
             'scheme_id': 'TREES'
@@ -363,7 +360,8 @@ class ProviderViewTests(unittest.TestCase):
         request = self._get_dummy_request({
             'type': 'concept',
             'mode': 'dijitFilteringSelect',
-            'label': '*Larik*'
+            'label': '*Larik*',
+            'language': 'nl-BE'
         })
         request.matchdict = {
             'scheme_id': 'TREES'
@@ -400,6 +398,9 @@ class ProviderViewTests(unittest.TestCase):
             'scheme_id': 'TREES',
             'c_id': 1
         }
+        request.params = {
+            'language': 'nl-BE'
+        }
         pv = self._get_provider_view(request)
         children = pv.get_concept_display_children()
         self.assertIsInstance(children, list)
@@ -418,6 +419,40 @@ class ProviderViewTests(unittest.TestCase):
         pv = self._get_provider_view(request)
         concept = pv.get_concept_display_children()
         self.assertIsInstance(concept, HTTPNotFound)
+
+    def test_get_concept_expand(self):
+        request = self._get_dummy_request()
+        request.matchdict = {
+            'scheme_id': 'TREES',
+            'c_id': 1
+        }
+        pv = self._get_provider_view(request)
+        expanded = pv.get_expand()
+        self.assertIsInstance(expanded, list)
+        self.assertIn(1, expanded)
+
+    def test_get_collection_expand(self):
+        request = self._get_dummy_request()
+        request.matchdict = {
+            'scheme_id': 'TREES',
+            'c_id': 3
+        }
+        pv = self._get_provider_view(request)
+        expanded = pv.get_expand()
+        self.assertIsInstance(expanded, list)
+        self.assertIn(1, expanded)
+        self.assertIn(2, expanded)
+        self.assertNotIn(3, expanded)
+
+    def test_get_expand_no_resource(self):
+        request = self._get_dummy_request()
+        request.matchdict = {
+            'scheme_id': 'TREES',
+            'c_id': 'no_resource'
+        }
+        pv = self._get_provider_view(request)
+        expanded = pv.get_expand()
+        self.assertIsInstance(expanded, HTTPNotFound)
 
     def test_get_top_concepts_unexisting_conceptscheme(self):
         request = self._get_dummy_request()
@@ -450,6 +485,9 @@ class ProviderViewTests(unittest.TestCase):
     def test_get_display_top(self):
         request = self._get_dummy_request()
         request.matchdict = {'scheme_id': 'TREES'}
+        request.params = {
+            'language': 'nl-BE'
+        }
         pv = self._get_provider_view(request)
         tc = pv.get_conceptscheme_display_top()
         self.assertIsInstance(tc, list)
@@ -461,7 +499,8 @@ class ProviderViewTests(unittest.TestCase):
 
     def test_get_conceptscheme_concepts_search_sort_id_asc(self):
         request = self._get_dummy_request({
-            'sort': '+id'
+            'sort': '+id',
+            'language': 'nl-BE'
         })
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
@@ -471,7 +510,8 @@ class ProviderViewTests(unittest.TestCase):
 
     def test_get_conceptscheme_concepts_search_sort_id_space_is_asc(self):
         request = self._get_dummy_request({
-            'sort': ' id'
+            'sort': ' id',
+            'language': 'nl-BE'
         })
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
@@ -481,7 +521,8 @@ class ProviderViewTests(unittest.TestCase):
 
     def test_get_conceptscheme_concepts_search_sort_id_undefined_is_asc(self):
         request = self._get_dummy_request({
-            'sort': 'id'
+            'sort': 'id',
+            'language': 'nl-BE'
         })
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
@@ -491,7 +532,8 @@ class ProviderViewTests(unittest.TestCase):
 
     def test_get_conceptscheme_concepts_search_sort_id_desc(self):
         request = self._get_dummy_request({
-            'sort': '-id'
+            'sort': '-id',
+            'language': 'nl-BE'
         })
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
@@ -501,7 +543,8 @@ class ProviderViewTests(unittest.TestCase):
 
     def test_get_conceptscheme_concepts_search_sort_label_default(self):
         request = self._get_dummy_request({
-            'sort': 'label'
+            'sort': 'label',
+            'language': 'nl-BE'
         })
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
@@ -511,7 +554,8 @@ class ProviderViewTests(unittest.TestCase):
 
     def test_get_conceptscheme_concepts_search_sort_label_asc(self):
         request = self._get_dummy_request({
-            'sort': '+label'
+            'sort': '+label',
+            'language': 'nl-BE'
         })
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
@@ -521,7 +565,8 @@ class ProviderViewTests(unittest.TestCase):
 
     def test_get_conceptscheme_concepts_search_sort_label_desc(self):
         request = self._get_dummy_request({
-            'sort': '-label'
+            'sort': '-label',
+            'language': 'nl-BE'
         })
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)

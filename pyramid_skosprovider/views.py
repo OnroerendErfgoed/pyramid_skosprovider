@@ -7,8 +7,7 @@ from pyramid.view import view_config, view_defaults
 from pyramid.compat import ascii_native_
 
 from pyramid.httpexceptions import (
-    HTTPNotFound,
-    HTTPBadRequest
+    HTTPNotFound
 )
 
 from pyramid_skosprovider.utils import (
@@ -85,7 +84,8 @@ class ProviderView(RestView):
         provider = self.skos_registry.get_provider(scheme_id)
         if not provider:
             return HTTPNotFound()
-        return provider.get_top_concepts()
+        language = self.request.params.get('language', self.request.locale_name)
+        return provider.get_top_concepts(language=language)
 
     @view_config(route_name='skosprovider.conceptscheme.display_top', request_method='GET')
     def get_conceptscheme_display_top(self):
@@ -93,7 +93,8 @@ class ProviderView(RestView):
         provider = self.skos_registry.get_provider(scheme_id)
         if not provider:
             return HTTPNotFound()
-        return provider.get_top_display()
+        language = self.request.params.get('language', self.request.locale_name)
+        return provider.get_top_display(language=language)
 
     @view_config(route_name='skosprovider.cs', request_method='GET')
     def get_concepts(self):
@@ -101,6 +102,7 @@ class ProviderView(RestView):
         mode = self.request.params.get('mode', 'default')
         label = self.request.params.get('label', None)
         postprocess = False
+        language = self.request.params.get('language', self.request.locale_name)
         if mode == 'dijitFilteringSelect' and label == '':
             concepts = []
         else:
@@ -124,9 +126,9 @@ class ProviderView(RestView):
             if subject:
                 providers['subject'] = subject
             if not (ids or subject):
-                concepts = self.skos_registry.find(query)
+                concepts = self.skos_registry.find(query, language=language)
             else:
-                concepts = self.skos_registry.find(query, providers=providers)
+                concepts = self.skos_registry.find(query, providers=providers, language=language)
             # Flatten it all
             cs = []
             for c in concepts:
@@ -165,7 +167,8 @@ class ProviderView(RestView):
             coll = self.request.params.get('collection', None)
             if coll is not None:
                 query['collection'] = {'id': coll, 'depth': 'all'}
-            concepts = provider.find(query)
+            language = self.request.params.get('language', self.request.locale_name)
+            concepts = provider.find(query, language=language)
 
         if postprocess:
             concepts = self._postprocess_wildcards(concepts, label)
@@ -229,7 +232,18 @@ class ProviderView(RestView):
         scheme_id = self.request.matchdict['scheme_id']
         concept_id = self.request.matchdict['c_id']
         provider = self.skos_registry.get_provider(scheme_id)
-        children = provider.get_children_display(concept_id)
+        language = self.request.params.get('language', self.request.locale_name)
+        children = provider.get_children_display(concept_id, language=language)
         if children == False:
             return HTTPNotFound()
         return children
+
+    @view_config(route_name='skosprovider.c.expand', request_method='GET')
+    def get_expand(self):
+        scheme_id = self.request.matchdict['scheme_id']
+        concept_id = self.request.matchdict['c_id']
+        provider = self.skos_registry.get_provider(scheme_id)
+        expanded = provider.expand(concept_id)
+        if expanded == False:
+            return HTTPNotFound()
+        return expanded

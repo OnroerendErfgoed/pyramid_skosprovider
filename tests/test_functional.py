@@ -15,7 +15,7 @@ from webtest import TestApp
 
 import unittest
 
-from .fixtures.data import (
+from fixtures.data import (
     trees
 )
 
@@ -163,7 +163,7 @@ class RestFunctionalTests(FunctionalTests):
 
     def test_get_conceptscheme_concepts_search_dfs_label_star(self):
         res = self.testapp.get(
-            '/conceptschemes/TREES/c',
+            '/conceptschemes/TREES/c?language=nl-BE',
             {
                 'type': 'concept',
                 'mode': 'dijitFilteringSelect',

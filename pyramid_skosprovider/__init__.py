@@ -82,5 +82,9 @@ def includeme(config):
         'skosprovider.c.display_children',
         '/conceptschemes/{scheme_id}/c/{c_id}/displaychildren'
     )
+    config.add_route(
+        'skosprovider.c.expand',
+        '/conceptschemes/{scheme_id}/c/{c_id}/expand'
+    )
 
     config.scan()
