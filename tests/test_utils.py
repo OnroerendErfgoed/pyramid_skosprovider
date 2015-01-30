@@ -6,7 +6,7 @@ from pyramid.compat import (
     text_type
 )
 
-from fixtures.data import (
+from .fixtures.data import (
     larch,
     species,
     trees

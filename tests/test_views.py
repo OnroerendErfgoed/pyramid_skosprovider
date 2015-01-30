@@ -6,7 +6,7 @@ from pyramid import testing
 from pyramid.httpexceptions import (
 HTTPNotFound
 )
-from fixtures.data import (
+from .fixtures.data import (
 trees
 )
 from skosprovider.skos import (

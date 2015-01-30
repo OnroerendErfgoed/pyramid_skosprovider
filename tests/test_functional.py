@@ -15,7 +15,7 @@ from webtest import TestApp
 
 import unittest
 
-from fixtures.data import (
+from .fixtures.data import (
     trees
 )
 
