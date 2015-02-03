@@ -142,7 +142,7 @@ class ProviderViewTests(unittest.TestCase):
             self.assertIsInstance(c, dict)
             self.assertIn('id', c)
 
-    #@pytest.mark.xfail
+    @pytest.mark.xfail
     def test_get_concepts_language(self):
         request = self._get_dummy_request(params={'language': 'en'})
         logging.warn(request.locale_name)
