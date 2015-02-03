@@ -7,7 +7,7 @@ import pyramid
 from pyramid.httpexceptions import (
 HTTPNotFound
 )
-from pyramid.i18n import make_localizer, get_localizer
+from pyramid.i18n import make_localizer, get_localizer, default_locale_negotiator
 from .fixtures.data import (
 trees
 )
@@ -141,15 +141,15 @@ class ProviderViewTests(unittest.TestCase):
             self.assertIn('id', c)
 
     def test_get_concepts_language(self):
-        request = self._get_dummy_request({'language': 'en'})
-        request._LOCALE_ = 'nl-BE'
+        request = self._get_dummy_request({'language': 'nl'})
+        request._LOCALE_ = 'en'
         request.matchdict = {
             'scheme_id': 'TREES'
         }
         pv = self._get_provider_view(request)
         children = pv.get_concepts()
         request_locale = self._get_dummy_request()
-        request_locale._LOCALE_ = 'nl-BE'
+        request_locale._LOCALE_ = 'en'
         request_locale.matchdict = {
             'scheme_id': 'TREES'
         }
