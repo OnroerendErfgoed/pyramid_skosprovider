@@ -1,2 +1,3 @@
 pyramid==1.5.1
-skosprovider==0.4.2
+#skosprovider==0.4.2
+-e git+https://github.com/koenedaele/skosprovider.git#egg=skosprovider
