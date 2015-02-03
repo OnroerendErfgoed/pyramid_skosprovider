@@ -3,9 +3,11 @@
 
 from __future__ import unicode_literals
 from pyramid import testing
+import pyramid
 from pyramid.httpexceptions import (
 HTTPNotFound
 )
+from pyramid.i18n import make_localizer, get_localizer
 from .fixtures.data import (
 trees
 )
@@ -140,14 +142,14 @@ class ProviderViewTests(unittest.TestCase):
 
     def test_get_concepts_language(self):
         request = self._get_dummy_request({'language': 'en'})
-        request.locale_name = 'nl-BE'
+        request._LOCALE_ = 'nl-BE'
         request.matchdict = {
             'scheme_id': 'TREES'
         }
         pv = self._get_provider_view(request)
         children = pv.get_concepts()
         request_locale = self._get_dummy_request()
-        request_locale.locale_name = 'nl-BE'
+        request_locale._LOCALE_ = 'nl-BE'
         request_locale.matchdict = {
             'scheme_id': 'TREES'
         }
