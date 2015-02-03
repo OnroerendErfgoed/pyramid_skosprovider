@@ -139,14 +139,15 @@ class ProviderViewTests(unittest.TestCase):
             self.assertIn('id', c)
 
     def test_get_concepts_language(self):
-        request = self._get_dummy_request({'language': 'nl-BE'})
+        request = self._get_dummy_request({'language': 'en'})
+        request.locale_name = 'nl-BE'
         request.matchdict = {
             'scheme_id': 'TREES'
         }
         pv = self._get_provider_view(request)
         children = pv.get_concepts()
-        request_locale= self._get_dummy_request()
-        request_locale.locale_name = 'en'
+        request_locale = self._get_dummy_request()
+        request_locale.locale_name = 'nl-BE'
         request_locale.matchdict = {
             'scheme_id': 'TREES'
         }
