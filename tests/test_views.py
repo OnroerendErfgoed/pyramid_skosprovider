@@ -2,12 +2,14 @@
 
 
 from __future__ import unicode_literals
+import logging
 from pyramid import testing
 import pyramid
 from pyramid.httpexceptions import (
 HTTPNotFound
 )
 from pyramid.i18n import make_localizer, get_localizer, default_locale_negotiator
+import pytest
 from .fixtures.data import (
 trees
 )
@@ -140,14 +142,21 @@ class ProviderViewTests(unittest.TestCase):
             self.assertIsInstance(c, dict)
             self.assertIn('id', c)
 
+    #@pytest.mark.xfail
     def test_get_concepts_language(self):
-        request = self._get_dummy_request(params={'language': 'nl', '_LOCALE_': 'en'})
+        request = self._get_dummy_request(params={'language': 'en'})
+        logging.warn(request.locale_name)
+        request.locale_name = 'nl'
+        logging.warn(request.locale_name)
         request.matchdict = {
             'scheme_id': 'TREES'
         }
         pv = self._get_provider_view(request)
         children = pv.get_concepts()
-        request_locale = self._get_dummy_request(params={'_LOCALE_': 'en'})
+        request_locale = self._get_dummy_request()
+        logging.warn(request_locale.locale_name)
+        request_locale.locale_name = 'nl'
+        logging.warn(request_locale.locale_name)
         request_locale.matchdict = {
             'scheme_id': 'TREES'
         }

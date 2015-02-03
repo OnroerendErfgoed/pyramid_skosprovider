@@ -103,6 +103,7 @@ class ProviderView(RestView):
         label = self.request.params.get('label', None)
         postprocess = False
         language = self.request.params.get('language', self.request.locale_name)
+        logging.warn(language)
         if mode == 'dijitFilteringSelect' and label == '':
             concepts = []
         else:

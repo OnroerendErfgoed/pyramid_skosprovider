@@ -12,3 +12,4 @@ flake8==2.1.0
 pytest
 webtest
 pytest-cov
+logging
