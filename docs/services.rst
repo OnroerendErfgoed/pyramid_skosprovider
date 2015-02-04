@@ -125,10 +125,10 @@ The following API can be used by clients:
         Makes it possible to use wildcards in the label parameter.
     :query label: Shows all concepts and collections that have this search
         string in one of their labels.
-    :query language: Gives back the label with the corresponding language-tag if present.
+    :query language: Returns the label with the corresponding language-tag if present.
         If the language is not present for this concept/collection, it falls back to
         1) the default language of the provider. 2) 'en' 3) any label.
-        Eg. ``?language=nl-BE`` to show the dutch labels of the concepts/collections.
+        Eg. ``?language=nl`` to show the dutch labels of the concepts/collections.
     :query sort: Define if you want to sort the results by a given field. Otherwise items are returned
         in an indeterminate order. Prefix with '+' to sort ascending, '-' to sort descending.
         eg. ``?sort=-label`` to sort all results descending by label.
@@ -272,6 +272,11 @@ The following API can be used by clients:
             }
         ]
 
+    :query language: Returns the label with the corresponding language-tag if present.
+        If the language is not present for this concept/collection, it falls back to
+        1) the default language of the provider. 2) 'en' 3) any label.
+        Eg. ``?language=nl`` to show the dutch labels of the concepts/collections.
+
     :statuscode 200: The topconcepts in this conceptscheme were found.
     :statuscode 404: The conceptscheme was not found.
 
@@ -311,6 +316,11 @@ The following API can be used by clients:
                 "label": "De Paardekastanje"
             }
         ]
+
+    :query language: Returns the label with the corresponding language-tag if present.
+        If the language is not present for this concept/collection, it falls back to
+        1) the default language of the provider. 2) 'en' 3) any label.
+        Eg. ``?language=nl`` to show the dutch labels of the concepts/collections.
 
     :statuscode 200: The concepts and collections were found.
     :statuscode 404: The conceptscheme was not found.
@@ -386,10 +396,10 @@ The following API can be used by clients:
         Expects to be passed an id of a collection in this scheme. Will restrict
         the search to concepts or collections that are a member of this collection
         or a narrower concept of a member.
-    :query language: Gives back the label with the corresponding language-tag if present.
+    :query language: Returns the label with the corresponding language-tag if present.
         If the language is not present for this concept/collection, it falls back to
         1) the default language of the provider. 2) 'en' 3) any label.
-        Eg. ``?language=nl-BE`` to show the dutch labels of the concepts/collections.
+        Eg. ``?language=nl`` to show the dutch labels of the concepts/collections.
     :query sort: Define if you want to sort the results by a given field. Otherwise items are returned
         in an indeterminate order. Prefix with '+' to sort ascending, '-' to sort descending.
         eg. ``?sort=-label`` to sort all results descending by label.
@@ -508,6 +518,11 @@ The following API can be used by clients:
                 "label": "De Paardekastanje"
             }
         ]
+
+    :query language: Returns the label with the corresponding language-tag if present.
+        If the language is not present for this concept/collection, it falls back to
+        1) the default language of the provider. 2) 'en' 3) any label.
+        Eg. ``?language=nl`` to show the dutch labels of the concepts/collections.
 
     :statuscode 200: The concept was found in the conceptscheme.
     :statuscode 404: The concept was not found in the conceptscheme or the 
