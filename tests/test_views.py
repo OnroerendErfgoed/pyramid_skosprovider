@@ -1,22 +1,23 @@
 # -*- coding: utf8 -*-
 
-
 from __future__ import unicode_literals
+
 import logging
 from pyramid import testing
-import pyramid
+
 from pyramid.httpexceptions import (
-HTTPNotFound
+    HTTPNotFound
 )
-from pyramid.i18n import make_localizer, get_localizer, default_locale_negotiator
+
+import unittest
 import pytest
 from .fixtures.data import (
-trees
+    trees
 )
+
 from skosprovider.skos import (
-Concept
+    Concept
 )
-import unittest
 
 class ProviderViewTests(unittest.TestCase):
 
@@ -142,21 +143,21 @@ class ProviderViewTests(unittest.TestCase):
             self.assertIsInstance(c, dict)
             self.assertIn('id', c)
 
-    @pytest.mark.xfail
+    #@pytest.mark.xfail
     def test_get_concepts_language(self):
-        request = self._get_dummy_request(params={'language': 'en'})
-        logging.warn(request.locale_name)
-        request.locale_name = 'nl'
-        logging.warn(request.locale_name)
+        request = self._get_dummy_request({
+            'language': 'en'
+        },
+            locale_name='nl'
+        )
         request.matchdict = {
             'scheme_id': 'TREES'
         }
         pv = self._get_provider_view(request)
         children = pv.get_concepts()
-        request_locale = self._get_dummy_request()
-        logging.warn(request_locale.locale_name)
-        request_locale.locale_name = 'nl'
-        logging.warn(request_locale.locale_name)
+        request_locale = self._get_dummy_request(
+            locale_name='nl'
+        )
         request_locale.matchdict = {
             'scheme_id': 'TREES'
         }
