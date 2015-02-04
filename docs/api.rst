@@ -4,14 +4,20 @@
 API Documentation
 =================
 
-Pyramid_skosprovider module
----------------------------
+General
+-------
 
 .. automodule:: pyramid_skosprovider
-   :members:
+   :members: get_skos_registry
 
-Utils module
-------------
+Utils
+-----
 
 .. automodule:: pyramid_skosprovider.utils
+   :members:
+
+Views
+-----
+
+.. automodule:: pyramid_skosprovider.views
    :members:

@@ -1,4 +1,7 @@
 # -*- coding: utf8 -*-
+'''
+This module contains the pyramid views that expose services.
+'''
 
 from __future__ import unicode_literals
 
@@ -27,6 +30,9 @@ class RestView(object):
 
 @view_defaults(renderer='skosjson', accept='application/json')
 class ProviderView(RestView):
+    '''
+    A set of views that expose information from a certain provider.
+    '''
 
     @view_config(route_name='skosprovider.uri', request_method='GET')
     def get_uri(self):

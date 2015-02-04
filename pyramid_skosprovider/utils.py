@@ -1,4 +1,7 @@
 # -*- coding: utf8 -*-
+'''
+This module contains a few utility functions.
+'''
 
 import re
 
