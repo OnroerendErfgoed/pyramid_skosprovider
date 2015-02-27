@@ -4,7 +4,7 @@ python:
  - 3.3
  - 3.4
 install:
- - python setup.py develop
  - pip install -r requirements-dev.txt
+ - python setup.py develop
 script: py.test --cov pyramid_skosprovider --cov-report term-missing
 after_success: coveralls
