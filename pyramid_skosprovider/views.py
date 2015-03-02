@@ -60,11 +60,12 @@ class ProviderView(RestView):
 
     @view_config(route_name='skosprovider.conceptschemes', request_method='GET')
     def get_conceptschemes(self):
+        language = self.request.params.get('language', self.request.locale_name)
         return [
             {
                 'id': p.get_vocabulary_id(),
                 'uri': p.concept_scheme.uri,
-                'label': p.concept_scheme.label().label if p.concept_scheme.label() else None,
+                'label': p.concept_scheme.label(language).label if p.concept_scheme.label(language) else None,
                 'subject': p.metadata['subject'] if p.metadata['subject'] else []
             } for p in self.skos_registry.get_providers()
         ]
@@ -75,10 +76,11 @@ class ProviderView(RestView):
         provider = self.skos_registry.get_provider(scheme_id)
         if not provider:
             return HTTPNotFound()
+        language = self.request.params.get('language', self.request.locale_name)
         return {
             'id': provider.get_vocabulary_id(),
             'uri': provider.concept_scheme.uri,
-            'label': provider.concept_scheme.label().label if provider.concept_scheme.label() else None,
+            'label': provider.concept_scheme.label(language).label if provider.concept_scheme.label(language) else None,
             'subject': provider.metadata['subject'] if provider.metadata['subject'] else [],
             'labels': provider.concept_scheme.labels,
             'notes': provider.concept_scheme.notes

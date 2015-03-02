@@ -7,7 +7,8 @@ from skosprovider.providers import (
 )
 
 from skosprovider.skos import (
-    ConceptScheme
+    ConceptScheme,
+    Label
 )
 
 larch = {
@@ -64,6 +65,10 @@ trees = DictionaryProvider(
     {'id': 'TREES', 'default_language': 'nl'},
     [larch, chestnut, species],
     concept_scheme=ConceptScheme(
-        uri='http://python.com/trees'
+        uri='http://python.com/trees',
+        labels=[
+            Label('Different types of trees', 'prefLabel', 'en'),
+            Label('Verschillende soorten bomen', 'prefLabel', 'nl')
+        ]
     )
 )

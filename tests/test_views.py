@@ -16,7 +16,8 @@ from .fixtures.data import (
 )
 
 from skosprovider.skos import (
-    Concept
+    Concept,
+    Label
 )
 
 class ProviderViewTests(unittest.TestCase):
@@ -118,9 +119,12 @@ class ProviderViewTests(unittest.TestCase):
             {
                 'id': 'TREES',
                 'uri': 'http://python.com/trees',
-                'label': None,
+                'label': 'Different types of trees',
                 'subject': [],
-                'labels': [],
+                'labels': [
+                    Label('Different types of trees', 'prefLabel', 'en'),
+                    Label('Verschillende soorten bomen', 'prefLabel', 'nl')
+                ],
                 'notes': []
             },
             cs
