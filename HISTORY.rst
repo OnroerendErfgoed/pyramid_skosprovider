@@ -1,10 +1,10 @@
-0.6.0 (2015-??-??)
+0.6.0 (2015-03-02)
 ------------------
 
 - Allow the client to specify in which language labels should preferentially
   be returned. This can be chosen by adding a ``language`` parameter to
   certain query strings. If not present, pyramid_skosprovider falls back on 
-  pyramid's locale negotiation. (#10) [dieuska]
+  pyramid's locale negotiation. (#10) (#14) [dieuska]
 - Expose a provider's expand method. This returns the narrower transitive 
   closure for a certain concept or collection. (#11) [dieuska]
 - Some documentation updates.

@@ -31,3 +31,6 @@ nosetests.xml
 
 #intellij
 .idea
+
+#rope
+.ropeproject
