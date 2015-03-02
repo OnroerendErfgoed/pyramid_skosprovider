@@ -50,13 +50,13 @@ class ProviderViewTests(unittest.TestCase):
 
     def test_get_uri_conceptscheme(self):
         request = self._get_dummy_request()
-        request.matchdict = {'uri': 'urn:x-skosprovider:trees'}
+        request.matchdict = {'uri': 'http://python.com/trees'}
         pv = self._get_provider_view(request)
         u = pv.get_uri()
         self.assertEqual(
             {
                 'id': 'TREES',
-                'uri': 'urn:x-skosprovider:trees',
+                'uri': 'http://python.com/trees',
                 'type': 'concept_scheme'
             },
             u
@@ -74,7 +74,7 @@ class ProviderViewTests(unittest.TestCase):
                 'type': 'concept',
                 'concept_scheme': {
                     'id': 'TREES',
-                    'uri': 'urn:x-skosprovider:trees',
+                    'uri': 'http://python.com/trees',
                 }
             },
             u
@@ -92,7 +92,7 @@ class ProviderViewTests(unittest.TestCase):
                 'type': 'collection',
                 'concept_scheme': {
                     'id': 'TREES',
-                    'uri': 'urn:x-skosprovider:trees',
+                    'uri': 'http://python.com/trees',
                 }
             },
             u
@@ -117,7 +117,7 @@ class ProviderViewTests(unittest.TestCase):
         self.assertEqual(
             {
                 'id': 'TREES',
-                'uri': 'urn:x-skosprovider:trees',
+                'uri': 'http://python.com/trees',
                 'label': None,
                 'subject': [],
                 'labels': [],
@@ -143,7 +143,6 @@ class ProviderViewTests(unittest.TestCase):
             self.assertIsInstance(c, dict)
             self.assertIn('id', c)
 
-    #@pytest.mark.xfail
     def test_get_concepts_language(self):
         request = self._get_dummy_request({
             'language': 'en'

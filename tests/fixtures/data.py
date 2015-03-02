@@ -6,6 +6,10 @@ from skosprovider.providers import (
     DictionaryProvider
 )
 
+from skosprovider.skos import (
+    ConceptScheme
+)
+
 larch = {
     'id': 1,
     'uri': 'http://python.com/trees/larch',
@@ -51,12 +55,15 @@ species = {
             'type': 'scopeNote', 'language': 'en',
             'note': 'A division of trees.'
         }
-    ],    
+    ],
     'type': 'collection',
     'members': ['1', '2']
 }
 
 trees = DictionaryProvider(
     {'id': 'TREES', 'default_language': 'nl'},
-    [larch, chestnut, species]
+    [larch, chestnut, species],
+    concept_scheme=ConceptScheme(
+        uri='http://python.com/trees'
+    )
 )

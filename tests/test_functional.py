@@ -51,7 +51,7 @@ class RestFunctionalTests(FunctionalTests):
 
     def test_get_uri_cs_json(self):
         res = self.testapp.get(
-                '/uris/urn:x-skosprovider:trees',
+            '/uris/http://python.com/trees',
             {},
             {ascii_native_('Accept'): ascii_native_('application/json')}
         )
