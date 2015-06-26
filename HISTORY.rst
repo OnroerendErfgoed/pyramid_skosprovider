@@ -1,3 +1,9 @@
+0.7.0 (2015-??-??)
+------------------
+
+- Sort case insensitive when sorting by label. This is a BC break, although 
+  to most users it might actually be a bug fix. (#16) [TalissaJoly]
+
 0.6.0 (2015-03-02)
 ------------------
 
