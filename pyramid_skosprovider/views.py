@@ -98,7 +98,10 @@ class ProviderView(RestView):
             sort = sort[1:] if sort[0:1] in ['-', '+'] else sort
             sort = sort.strip() # dojo store does not encode '+'
             if (len(concepts) > 0) and (sort in concepts[0]):
-                concepts.sort(key=lambda concept: concept[sort], reverse=sort_desc)
+                if sort == 'label':
+                    concepts.sort(key=lambda concept: concept[sort].lower(), reverse=sort_desc)
+                else:
+                    concepts.sort(key=lambda concept: concept[sort], reverse=sort_desc)
 
         # Result paging
         paging_data = False
