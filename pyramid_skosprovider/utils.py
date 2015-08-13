@@ -117,7 +117,8 @@ def note_adapter(obj, request):
     return {
         'note': obj.note,
         'type': obj.type,
-        'language': obj.language
+        'language': obj.language,
+        'markup': obj.markup
     }
 
 json_renderer.add_adapter(Concept, concept_adapter)

@@ -3,6 +3,9 @@
 
 - Sort case insensitive when sorting by label. This is a BC break, although 
   to most users it might actually be a bug fix. (#16) [TalissaJoly]
+- Add the markup attribute to Note json representations. This is a new addition
+  to skosprovider 0.6.0 that allows marking that a note contains some markup
+  (currently only HTML).
 
 0.6.0 (2015-03-02)
 ------------------

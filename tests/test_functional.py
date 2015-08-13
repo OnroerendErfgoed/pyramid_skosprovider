@@ -173,6 +173,7 @@ class RestFunctionalTests(FunctionalTests):
         self.assertIn('id', data)
         self.assertIn('label', data)
         self.assertIn('labels', data)
+        self.assertIn('notes', data)
         self.assertEqual('collection', data['type'])
         self.assertNotIn('narrower', data)
         self.assertNotIn('broader', data)

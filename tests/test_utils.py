@@ -141,6 +141,7 @@ class TestUtils(unittest.TestCase):
             self.assertIn('note', n)
             self.assertIn('type', n)
             self.assertIn('language', n)
+            self.assertIn('markup', n)
         self.assertIsInstance(concept['broader'], list)
         self.assertIsInstance(concept['related'], list)
         self.assertIsInstance(concept['narrower'], list)
@@ -181,4 +182,5 @@ class TestUtils(unittest.TestCase):
             self.assertIn('note', n)
             self.assertIn('type', n)
             self.assertIn('language', n)
+            self.assertIn('markup', n)
         assert 'matches' not in coll
