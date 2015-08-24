@@ -83,7 +83,8 @@ class ProviderView(RestView):
             'label': provider.concept_scheme.label(language).label if provider.concept_scheme.label(language) else None,
             'subject': provider.metadata['subject'] if provider.metadata['subject'] else [],
             'labels': provider.concept_scheme.labels,
-            'notes': provider.concept_scheme.notes
+            'notes': provider.concept_scheme.notes,
+            'languages': provider.concept_scheme.languages
         }
 
     @view_config(route_name='skosprovider.conceptscheme.tc', request_method='GET')
