@@ -10,7 +10,8 @@ from pyramid.view import view_config, view_defaults
 from pyramid.compat import ascii_native_
 
 from pyramid.httpexceptions import (
-    HTTPNotFound
+    HTTPNotFound,
+    HTTPBadRequest
 )
 
 from pyramid_skosprovider.utils import (
@@ -35,8 +36,14 @@ class ProviderView(RestView):
     '''
 
     @view_config(route_name='skosprovider.uri', request_method='GET')
+    @view_config(route_name='skosprovider.uri.deprecated', request_method='GET')
     def get_uri(self):
-        uri = self.request.matchdict['uri']
+        uri = self.request.params.get('uri')
+        if not uri:
+            if 'uri' in self.request.matchdict:
+                uri = self.request.matchdict['uri']
+            else:
+                return HTTPBadRequest()
         provider = self.skos_registry.get_provider(uri)
         if provider:
             return {

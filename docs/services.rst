@@ -10,7 +10,7 @@ easily inside a AJAX webbrowser call or by an external program.
 
 The following API can be used by clients:
 
-.. http:get:: /uris/{uri}
+.. http:get:: /uris
     :synopsis: Look up where a certain URI can be found.
 
     Find more information on a certain :term:`URI`. This can map to eiter
@@ -21,7 +21,7 @@ The following API can be used by clients:
     
     .. sourcecode:: http
     
-        GET /uris/urn:x-skosprovider:trees HTTP/1.1
+        GET /uris?uri=urn:x-skosprovider:trees HTTP/1.1
         Host: localhost:6543
         Accept: application/json
 
@@ -42,7 +42,7 @@ The following API can be used by clients:
     
     .. sourcecode:: http
     
-        GET /uris/http://python.com/trees/larch HTTP/1.1
+        GET /uris/?uri=http://python.com/trees/larch HTTP/1.1
         Host: localhost:6543
         Accept: application/json
 
@@ -62,6 +62,8 @@ The following API can be used by clients:
                 "uri": "urn:x-skosprovider:trees"
             }
         }
+
+    :query uri: The URI to search for.
 
     :statuscode 200: The URI maps to something known by pyramid_skosprovider, 
         either a conceptscheme, a concept or collection.

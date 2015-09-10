@@ -51,7 +51,7 @@ class RestFunctionalTests(FunctionalTests):
 
     def test_get_uri_cs_json(self):
         res = self.testapp.get(
-            '/uris/http://python.com/trees',
+            '/uris?uri=http://python.com/trees',
             {},
             {ascii_native_('Accept'): ascii_native_('application/json')}
         )
@@ -65,7 +65,7 @@ class RestFunctionalTests(FunctionalTests):
 
     def test_get_uri_c_json(self):
         res = self.testapp.get(
-            '/uris/http%3A%2F%2Fpython.com%2Ftrees%2Flarch',
+            '/uris?uri=http%3A%2F%2Fpython.com%2Ftrees%2Flarch',
             {},
             {ascii_native_('Accept'): ascii_native_('application/json')}
         )
@@ -77,6 +77,28 @@ class RestFunctionalTests(FunctionalTests):
         self.assertIn('id', data)
         self.assertIn('type', data)
         self.assertIn('concept_scheme', data)
+
+    def test_get_uri_deprecated_way(self):
+        res1 = self.testapp.get(
+            '/uris?uri=http://python.com/trees',
+            {},
+            {ascii_native_('Accept'): ascii_native_('application/json')}
+        )
+        res2 = self.testapp.get(
+            '/uris/http://python.com/trees',
+            {},
+            {ascii_native_('Accept'): ascii_native_('application/json')}
+        )
+        self.assertEqual(res1.body, res2.body)
+
+    def test_get_uri_no_uri(self):
+        res = self.testapp.get(
+            '/uris',
+            {},
+            {ascii_native_('Accept'): ascii_native_('application/json')},
+            status=400
+        )
+        self.assertEqual('400 Bad Request', res.status)
 
     def test_get_conceptschemes_json(self):
         res = self.testapp.get(

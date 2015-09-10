@@ -47,8 +47,12 @@ def includeme(config):
     config.add_request_method(get_skos_registry, 'skos_registry', reify=True)
 
     config.add_route(
-        'skosprovider.uri',
+        'skosprovider.uri.deprecated',
         '/uris/{uri:.*}'
+    )
+    config.add_route(
+        'skosprovider.uri',
+        '/uris'
     )
     config.add_route(
         'skosprovider.cs',
