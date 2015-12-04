@@ -11,6 +11,7 @@
   called as `/uris?uri=urn:x-skosprovider:trees`. The old way is deprecated. It
   will still function under version `0.7.0`, but will be removed in a future
   version. (#19)
+- Add support for the sources attribute, a new feature in skosprovider 0.6.0
 
 0.6.0 (2015-03-02)
 ------------------

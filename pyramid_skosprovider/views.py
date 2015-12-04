@@ -91,6 +91,7 @@ class ProviderView(RestView):
             'subject': provider.metadata['subject'] if provider.metadata['subject'] else [],
             'labels': provider.concept_scheme.labels,
             'notes': provider.concept_scheme.notes,
+            'sources': provider.concept_scheme.sources,
             'languages': provider.concept_scheme.languages
         }
 

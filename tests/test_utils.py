@@ -67,6 +67,7 @@ class TestUtils(unittest.TestCase):
             id=larch['id'],
             labels=larch['labels'],
             notes=larch['notes'],
+            sources=larch['sources'],
             concept_scheme=trees.concept_scheme,
             matches=larch['matches']
         )
@@ -86,6 +87,8 @@ class TestUtils(unittest.TestCase):
         assert 1 == len(concept['matches']['close'])
         assert 'subordinate_arrays' in concept
         assert 0 == len(concept['subordinate_arrays'])
+        assert 'sources' in concept
+        assert 1 == len(concept['sources'])
 
     def test_collection_adapter(self):
         from pyramid_skosprovider.utils import collection_adapter
@@ -108,6 +111,7 @@ class TestUtils(unittest.TestCase):
         assert not 'matches' in collection
         assert 'superordinates' in collection
         assert 0 == len(collection['superordinates'])
+        assert 0 == len(collection['sources'])
 
     def test_json_concept(self):
         from pyramid_skosprovider.utils import json_renderer

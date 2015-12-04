@@ -11,7 +11,8 @@ from skosprovider.skos import (
     Concept,
     Collection,
     Label,
-    Note
+    Note,
+    Source
 )
 
 
@@ -59,6 +60,7 @@ def concept_adapter(obj, request):
         },
         'labels': obj.labels,
         'notes': obj.notes,
+        'sources': obj.sources,
         'narrower': obj.narrower,
         'broader': obj.broader,
         'related': obj.related,
@@ -86,6 +88,7 @@ def collection_adapter(obj, request):
         },
         'labels': obj.labels,
         'notes': obj.notes,
+        'sources': obj.sources,
         'members': obj.members,
         'member_of': obj.member_of,
         'superordinates': obj.superordinates,
@@ -121,7 +124,21 @@ def note_adapter(obj, request):
         'markup': obj.markup
     }
 
+
+def source_adapter(obj, request):
+    '''
+    Adapter for rendering a :class:`skosprovider.skos.Source` to json.
+
+    :param skosprovider.skos.Source obj: The source to be rendered.
+    :rtype: :class:`dict`
+    '''
+    return {
+        'citation': obj.citation
+    }
+
+
 json_renderer.add_adapter(Concept, concept_adapter)
 json_renderer.add_adapter(Collection, collection_adapter)
 json_renderer.add_adapter(Label, label_adapter)
 json_renderer.add_adapter(Note, note_adapter)
+json_renderer.add_adapter(Source, source_adapter)

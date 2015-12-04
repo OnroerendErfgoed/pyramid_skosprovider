@@ -125,6 +125,7 @@ class RestFunctionalTests(FunctionalTests):
         self.assertIn('subject', data)
         self.assertIn('label', data)
         self.assertIn('labels', data)
+        self.assertIn('sources', data)
         self.assertEqual(len(data['labels']), 2)
         for l in data['labels']:
             self.assertIsInstance(l, dict)
@@ -175,6 +176,7 @@ class RestFunctionalTests(FunctionalTests):
         self.assertIn('label', data)
         self.assertIn('labels', data)
         self.assertIn('notes', data)
+        self.assertIn('sources', data)
         self.assertEqual('concept', data['type'])
         self.assertIn('narrower', data)
         self.assertIn('broader', data)

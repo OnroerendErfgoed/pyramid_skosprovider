@@ -21,6 +21,9 @@ larch = {
     'notes': [
         {'type': 'definition', 'language': 'en', 'note': 'A type of tree.'}
     ],
+    'sources': [
+        {'citation': 'Monthy Python. Episode Three: How to recognise different types of trees from quite a long way away.'}
+    ],
     'matches': {
         'close': ['http://id.python.org/different/types/of/trees/nr/1/the/larch']
     }

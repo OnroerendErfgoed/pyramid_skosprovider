@@ -126,6 +126,7 @@ class ProviderViewTests(unittest.TestCase):
                     Label('Verschillende soorten bomen', 'prefLabel', 'nl')
                 ],
                 'notes': [],
+                'sources': [],
                 'languages': []
             },
             cs
