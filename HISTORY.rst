@@ -12,6 +12,8 @@
   will still function under version `0.7.0`, but will be removed in a future
   version. (#19)
 - Add support for the sources attribute, a new feature in skosprovider 0.6.0
+- Add support for languages to Conceptschemes, a new feature in skosprovider
+  0.6.0 that allows detailing what languages a conceptscheme uses.
 
 0.6.0 (2015-03-02)
 ------------------
