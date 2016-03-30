@@ -1,4 +1,4 @@
-0.7.0 (2015-??-??)
+0.7.0 (2016-??-??)
 ------------------
 
 - Sort case insensitive when sorting by label. This is a BC break, although 
@@ -14,6 +14,7 @@
 - Add support for the sources attribute, a new feature in skosprovider 0.6.0
 - Add support for languages to Conceptschemes, a new feature in skosprovider
   0.6.0 that allows detailing what languages a conceptscheme uses.
+- Add support for Python 3.5
 
 0.6.0 (2015-03-02)
 ------------------
