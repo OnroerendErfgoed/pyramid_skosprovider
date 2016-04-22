@@ -260,7 +260,7 @@ class ProviderView(RestView):
         provider = self.skos_registry.get_provider(scheme_id)
         language = self.request.params.get('language', self.request.locale_name)
         children = provider.get_children_display(concept_id, language=language)
-        if not children:
+        if children is False:
             return HTTPNotFound()
         return children
 
