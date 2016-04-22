@@ -31,7 +31,7 @@ def get_skos_registry(registry):
 
     :rtype: :class:`skosprovider.registry.Registry`
     '''
-    #Argument might be a config or request
+    # Argument might be a config or request
     regis = getattr(registry, 'registry', None)
     if regis is None:
         regis = registry

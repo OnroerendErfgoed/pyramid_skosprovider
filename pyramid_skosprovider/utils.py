@@ -20,7 +20,7 @@ def parse_range_header(range):
     '''
     Parse a range header as used by the dojo Json Rest store.
 
-    :param str range: The content of the range header to be parsed. 
+    :param str range: The content of the range header to be parsed.
         eg. `items=0-9`
     :returns: A dict with keys start, finish and number or `False` if the
         range is invalid.

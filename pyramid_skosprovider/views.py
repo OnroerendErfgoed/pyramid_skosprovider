@@ -206,16 +206,22 @@ class ProviderView(RestView):
 
     def _sort_concepts(self, concepts):
         sort = self.request.params.get('sort', None)
-        #Result sorting
+        # Result sorting
         if sort:
             sort_desc = (sort[0:1] == '-')
             sort = sort[1:] if sort[0:1] in ['-', '+'] else sort
-            sort = sort.strip() # dojo store does not encode '+'
+            sort = sort.strip()  # dojo store does not encode '+'
             if (len(concepts) > 0) and (sort in concepts[0]):
                 if sort == 'label':
-                    concepts.sort(key=lambda concept: concept[sort].lower(), reverse=sort_desc)
+                    concepts.sort(
+                        key=lambda concept: concept[sort].lower(),
+                        reverse=sort_desc
+                    )
                 else:
-                    concepts.sort(key=lambda concept: concept[sort], reverse=sort_desc)
+                    concepts.sort(
+                        key=lambda concept: concept[sort],
+                        reverse=sort_desc
+                    )
         return concepts
 
     def _page_results(self, concepts):
@@ -254,7 +260,7 @@ class ProviderView(RestView):
         provider = self.skos_registry.get_provider(scheme_id)
         language = self.request.params.get('language', self.request.locale_name)
         children = provider.get_children_display(concept_id, language=language)
-        if children == False:
+        if not children:
             return HTTPNotFound()
         return children
 
@@ -264,6 +270,6 @@ class ProviderView(RestView):
         concept_id = self.request.matchdict['c_id']
         provider = self.skos_registry.get_provider(scheme_id)
         expanded = provider.expand(concept_id)
-        if expanded == False:
+        if not expanded:
             return HTTPNotFound()
         return expanded
