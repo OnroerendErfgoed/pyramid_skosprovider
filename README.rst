@@ -3,16 +3,17 @@ pyramid_skosprovider
 
 This library integrates skosprovider_ in a pyramid application.
 
+.. image:: https://img.shields.io/pypi/v/pyramid_skosprovider.png
+        :target: https://pypi.python.org/pypi/pyramid_skosprovider
+.. image:: https://readthedocs.org/projects/pyramid-skosprovider/badge/?version=latest
+        :target: https://readthedocs.org/projects/pyramid-skosprovider/?badge=latest
+        :alt: Documentation Status
+
 .. image:: https://travis-ci.org/koenedaele/pyramid_skosprovider.png
         :target: https://travis-ci.org/koenedaele/pyramid_skosprovider
 .. image:: https://coveralls.io/repos/koenedaele/pyramid_skosprovider/badge.png?branch=master
         :target: https://coveralls.io/r/koenedaele/pyramid_skosprovider
 
-.. image:: https://readthedocs.org/projects/pyramid-skosprovider/badge/?version=latest
-        :target: https://readthedocs.org/projects/pyramid-skosprovider/?badge=latest
-        :alt: Documentation Status
-.. image:: https://badge.fury.io/py/pyramid_skosprovider.png
-        :target: http://badge.fury.io/py/pyramid_skosprovider
 
 Building the docs
 -----------------
