@@ -49,11 +49,12 @@ def concept_adapter(obj, request):
     :param skosprovider.skos.Concept obj: The concept to be rendered.
     :rtype: :class:`dict`
     '''
+    p = request.skos_registry.get_provider(obj.concept_scheme.uri)
     return {
         'id': obj.id,
         'type': 'concept',
         'uri': obj.uri,
-        'label': obj.label().label,
+        'label': obj.label().label if obj.label() else None,
         'concept_scheme': {
             'uri': obj.concept_scheme.uri,
             'labels': obj.concept_scheme.labels
@@ -61,11 +62,11 @@ def concept_adapter(obj, request):
         'labels': obj.labels,
         'notes': obj.notes,
         'sources': obj.sources,
-        'narrower': obj.narrower,
-        'broader': obj.broader,
-        'related': obj.related,
-        'member_of': obj.member_of,
-        'subordinate_arrays': obj.subordinate_arrays,
+        'narrower': [_map_relation(p.get_by_id(n)) for n in obj.narrower],
+        'broader': [_map_relation(p.get_by_id(b)) for b in obj.broader],
+        'related': [_map_relation(p.get_by_id(r)) for r in obj.related],
+        'member_of': [_map_relation(p.get_by_id(m)) for m in obj.member_of],
+        'subordinate_arrays':  [_map_relation(p.get_by_id(sa)) for sa in obj.subordinate_arrays],
         'matches': obj.matches
     }
 
@@ -77,11 +78,12 @@ def collection_adapter(obj, request):
     :param skosprovider.skos.Collection obj: The collection to be rendered.
     :rtype: :class:`dict`
     '''
+    p = request.skos_registry.get_provider(obj.concept_scheme.uri)
     return {
         'id': obj.id,
         'type': 'collection',
         'uri': obj.uri,
-        'label': obj.label().label,
+        'label': obj.label().label if obj.label() else None,
         'concept_scheme': {
             'uri': obj.concept_scheme.uri,
             'labels': obj.concept_scheme.labels
@@ -89,10 +91,24 @@ def collection_adapter(obj, request):
         'labels': obj.labels,
         'notes': obj.notes,
         'sources': obj.sources,
-        'members': obj.members,
-        'member_of': obj.member_of,
-        'superordinates': obj.superordinates,
+        'members': [_map_relation(p.get_by_id(m)) for m in obj.members],
+        'member_of': [_map_relation(p.get_by_id(m)) for m in obj.member_of],
+        'superordinates':  [_map_relation(p.get_by_id(so)) for so in obj.superordinates],
+    }
 
+
+def _map_relation(c):
+    """
+    Map related concept or collection, leaving out the relations (to avoid circular dependencies)
+
+    :param c: the concept or collection to map
+    :rtype: :class:`dict`
+    """
+    return {
+        'id': c.id,
+        'type': c.type,
+        'uri': c.uri,
+        'label': c.label().label if c.label() else None
     }
 
 

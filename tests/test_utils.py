@@ -2,12 +2,15 @@
 
 from __future__ import unicode_literals
 
+from pyramid import testing
+
 from pyramid.compat import (
     text_type
 )
 
 from .fixtures.data import (
     larch,
+    chestnut,
     species,
     trees
 )
@@ -21,6 +24,7 @@ from skosprovider.skos import (
 import json
 
 import unittest
+from mock import Mock
 
 
 class TestUtils(unittest.TestCase):
@@ -71,7 +75,7 @@ class TestUtils(unittest.TestCase):
             concept_scheme=trees.concept_scheme,
             matches=larch['matches']
         )
-        concept = concept_adapter(c, {})
+        concept = concept_adapter(c, Mock())
         self.assertIsInstance(concept, dict)
         self.assertEqual(concept['id'], 1)
         self.assertIn('uri', concept)
@@ -98,7 +102,7 @@ class TestUtils(unittest.TestCase):
             members=species['members'],
             concept_scheme=trees.concept_scheme
         )
-        collection = collection_adapter(c, {})
+        collection = collection_adapter(c, Mock())
         self.assertIsInstance(collection, dict)
         self.assertEqual(collection['id'], 3)
         self.assertIsInstance(collection['label'], text_type)
@@ -124,7 +128,7 @@ class TestUtils(unittest.TestCase):
             matches=larch['matches']
         )
         r = json_renderer({})
-        jsonstring = r(c, {})
+        jsonstring = r(c, Mock())
         concept = json.loads(jsonstring)
         self.assertIsInstance(concept, dict)
         self.assertEqual(concept['id'], 1)
@@ -162,29 +166,42 @@ class TestUtils(unittest.TestCase):
             uri=species['uri'],
             labels=species['labels'],
             notes=species['notes'],
-            members=species['members'],
+            members=[larch['id']],
             concept_scheme=trees.concept_scheme
         )
         r = json_renderer({})
-        jsonstring = r(c, {})
+        m = Mock()
+        config = {
+            'get_provider.return_value.get_by_id.return_value': Concept(id=larch['id'], uri=larch['uri'], labels=larch['labels'])
+        }
+        m.configure_mock(**config)
+        request = testing.DummyRequest()
+        request.skos_registry = m
+        sys = {}
+        sys['request'] = request
+        jsonstring = r(c, sys)
         coll = json.loads(jsonstring)
-        self.assertIsInstance(coll, dict)
-        self.assertEqual(coll['id'], 3)
-        self.assertEqual(coll['uri'], 'http://python.com/trees/species')
-        self.assertIsInstance(coll['label'], text_type)
-        self.assertEqual(coll['type'], 'collection')
-        self.assertIsInstance(coll['labels'], list)
-        self.assertEqual(len(coll['labels']), 2)
+        assert isinstance(coll, dict)
+        assert coll['id'] == 3
+        assert coll['uri'] == 'http://python.com/trees/species'
+        assert isinstance(coll['label'], text_type)
+        assert coll['type'] == 'collection'
+        assert isinstance(coll['labels'], list)
+        assert len(coll['labels']) == 2
         for l in coll['labels']:
-            self.assertIsInstance(l, dict)
-            self.assertIn('label', l)
-            self.assertIn('type', l)
-            self.assertIn('language', l)
-        self.assertEqual(len(coll['notes']), 1)
+            assert 'label' in l
+            assert 'type' in l
+            assert 'language' in l
+        assert len(coll['notes']) == 1
         for n in coll['notes']:
-            self.assertIsInstance(n, dict)
-            self.assertIn('note', n)
-            self.assertIn('type', n)
-            self.assertIn('language', n)
-            self.assertIn('markup', n)
+            assert 'note' in n
+            assert 'type' in n
+            assert 'language' in n
+            assert 'markup' in n
+        assert len(coll['members']) == 1
+        m = coll['members'][0]
+        assert 'id' in m
+        assert 'uri' in m
+        assert 'type' in m
+        assert 'label' in m
         assert 'matches' not in coll
