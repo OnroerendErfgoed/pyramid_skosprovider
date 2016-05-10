@@ -5,6 +5,8 @@ This module contains the pyramid views that expose services.
 
 from __future__ import unicode_literals
 
+import itertools
+
 from pyramid.view import view_config, view_defaults
 
 from pyramid.compat import ascii_native_
@@ -155,10 +157,7 @@ class ProviderView(RestView):
                 language=language
             )
             # Flatten it all
-            cs = []
-            for c in concepts:
-                cs += c['concepts']
-            concepts = cs
+            concepts = list(itertools.chain.from_iterable([c['concepts'] for c in concepts]))
 
         if postprocess:
             concepts = self._postprocess_wildcards(concepts, label)
