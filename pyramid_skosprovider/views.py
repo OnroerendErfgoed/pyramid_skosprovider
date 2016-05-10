@@ -142,10 +142,7 @@ class ProviderView(RestView):
             subject = self.request.params.get('providers.subject', None)
             if subject:
                 providers['subject'] = subject
-            if not (ids or subject):
-                concepts = self.skos_registry.find(query, language=language)
-            else:
-                concepts = self.skos_registry.find(query, providers=providers, language=language)
+            concepts = self.skos_registry.find(query, providers=providers, language=language)
             # Flatten it all
             cs = []
             for c in concepts:
