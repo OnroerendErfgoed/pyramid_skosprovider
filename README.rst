@@ -13,6 +13,8 @@ This library integrates skosprovider_ in a pyramid application.
         :target: https://travis-ci.org/koenedaele/pyramid_skosprovider
 .. image:: https://img.shields.io/coveralls/koenedaele/pyramid_skosprovider.svg
         :target: https://coveralls.io/r/koenedaele/pyramid_skosprovider
+.. image:: https://scrutinizer-ci.com/g/koenedaele/pyramid_skosprovider/badges/quality-score.png?b=master
+        :target: https://scrutinizer-ci.com/g/koenedaele/skosprovider/?branch=master
 
 
 Building the docs
