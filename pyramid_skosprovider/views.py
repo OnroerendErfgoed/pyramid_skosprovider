@@ -113,6 +113,22 @@ class ProviderView(RestView):
         language = self.request.params.get('language', self.request.locale_name)
         return provider.get_top_display(language=language)
 
+    def _build_providers(self, request):
+        '''
+        :param pyramid.request.Request request:
+        :rtype: :class:`dict`
+        '''
+        # determine targets
+        providers = {}
+        ids = request.params.get('providers.ids', None)
+        if ids:
+            ids = ids.split(',')
+            providers['ids'] = ids
+        subject = self.request.params.get('providers.subject', None)
+        if subject:
+            providers['subject'] = subject
+        return providers
+
     @view_config(route_name='skosprovider.cs', request_method='GET')
     def get_concepts(self):
         query = {}
@@ -133,16 +149,11 @@ class ProviderView(RestView):
             if type in ['concept', 'collection']:
                 query['type'] = type
 
-            # determine targets
-            providers = {}
-            ids = self.request.params.get('providers.ids', None)
-            if ids:
-                ids = ids.split(',')
-                providers['ids'] = ids
-            subject = self.request.params.get('providers.subject', None)
-            if subject:
-                providers['subject'] = subject
-            concepts = self.skos_registry.find(query, providers=providers, language=language)
+            concepts = self.skos_registry.find(
+                query,
+                providers=self._build_providers(self.request),
+                language=language
+            )
             # Flatten it all
             cs = []
             for c in concepts:
