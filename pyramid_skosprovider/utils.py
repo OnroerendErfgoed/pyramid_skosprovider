@@ -5,6 +5,9 @@ This module contains a few utility functions.
 
 import re
 
+import logging
+log = logging.getLogger(__name__)
+
 from pyramid.renderers import JSON
 
 from skosprovider.skos import (
@@ -62,11 +65,11 @@ def concept_adapter(obj, request):
         'labels': obj.labels,
         'notes': obj.notes,
         'sources': obj.sources,
-        'narrower': [_map_relation(p.get_by_id(n)) for n in obj.narrower],
-        'broader': [_map_relation(p.get_by_id(b)) for b in obj.broader],
-        'related': [_map_relation(p.get_by_id(r)) for r in obj.related],
-        'member_of': [_map_relation(p.get_by_id(m)) for m in obj.member_of],
-        'subordinate_arrays':  [_map_relation(p.get_by_id(sa)) for sa in obj.subordinate_arrays],
+        'narrower': _map_relations(obj.narrower, p),
+        'broader': _map_relations(obj.broader, p),
+        'related': _map_relations(obj.related, p),
+        'member_of': _map_relations(obj.member_of, p),
+        'subordinate_arrays':  _map_relations(obj.subordinate_arrays, p),
         'matches': obj.matches
     }
 
@@ -91,11 +94,28 @@ def collection_adapter(obj, request):
         'labels': obj.labels,
         'notes': obj.notes,
         'sources': obj.sources,
-        'members': [_map_relation(p.get_by_id(m)) for m in obj.members],
-        'member_of': [_map_relation(p.get_by_id(m)) for m in obj.member_of],
-        'superordinates':  [_map_relation(p.get_by_id(so)) for so in obj.superordinates],
+        'members': _map_relations(obj.members, p),
+        'member_of': _map_relations(obj.member_of, p),
+        'superordinates':  _map_relations(obj.superordinates, p),
     }
 
+def _map_relations(relations, p):
+    '''
+    :param: :class:`list` relations: Relations to be mapped. These are concept or collection id's.
+    :param: :class:`skosprovider.providers.VocabularyProvider` p: Provider to look up id's.
+    :rtype: :class:`list`
+    '''
+    ret = []
+    for r in relations:
+        c = p.get_by_id(r)
+        if c:
+            ret.append(_map_relation(c))
+        else:
+            log.warning(
+                'A relation references a concept or collection %d in provider %s that can not be found. Please check the integrity of your data.' % 
+                (r, p.get_vocabulary_id())
+            )
+    return ret
 
 def _map_relation(c):
     """

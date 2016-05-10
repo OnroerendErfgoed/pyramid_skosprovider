@@ -205,3 +205,14 @@ class TestUtils(unittest.TestCase):
         assert 'type' in m
         assert 'label' in m
         assert 'matches' not in coll
+
+    def test_map_relations_invalid_id(self):
+        from pyramid_skosprovider.utils import _map_relations
+        p = Mock()
+        config = {
+            'get_by_id.return_value': False,
+            'get_vocabulary_id.return_value': 'TESTPROVIDER'
+        }
+        p.configure_mock(**config)
+        rels = _map_relations([5], p)
+        assert len(rels) == 0
