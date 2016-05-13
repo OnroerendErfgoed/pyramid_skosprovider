@@ -168,7 +168,7 @@ class ProviderView(RestView):
         if qb.postprocess:
             concepts = self._postprocess_wildcards(concepts, qb.label)
 
-        return self._page_results(self._sort_concepts(concepts));
+        return self._page_results(self._sort_concepts(concepts))
 
     def _postprocess_wildcards(self, concepts, label):
         # We need to refine results further

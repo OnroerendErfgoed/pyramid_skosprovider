@@ -5,9 +5,6 @@ This module contains a few utility functions.
 
 import re
 
-import logging
-log = logging.getLogger(__name__)
-
 from pyramid.renderers import JSON
 
 from skosprovider.skos import (
@@ -18,6 +15,9 @@ from skosprovider.skos import (
     Source
 )
 
+import logging
+log = logging.getLogger(__name__)
+
 
 class QueryBuilder:
 
@@ -26,7 +26,10 @@ class QueryBuilder:
         self.postprocess = postprocess
         self.no_result = False
         self.mode = self.request.params.get('mode', 'default')
-        self.language = self.request.params.get('language', self.request.locale_name)
+        self.language = self.request.params.get(
+            'language',
+            self.request.locale_name
+        )
         self.label = self.request.params.get('label', None)
 
     def _build_type(self, query):
@@ -140,10 +143,13 @@ def collection_adapter(obj, request):
         'superordinates':  _map_relations(obj.superordinates, p),
     }
 
+
 def _map_relations(relations, p):
     '''
-    :param: :class:`list` relations: Relations to be mapped. These are concept or collection id's.
-    :param: :class:`skosprovider.providers.VocabularyProvider` p: Provider to look up id's.
+    :param: :class:`list` relations: Relations to be mapped. These are
+        concept or collection id's.
+    :param: :class:`skosprovider.providers.VocabularyProvider` p: Provider
+        to look up id's.
     :rtype: :class:`list`
     '''
     ret = []
@@ -153,14 +159,15 @@ def _map_relations(relations, p):
             ret.append(_map_relation(c))
         else:
             log.warning(
-                'A relation references a concept or collection %d in provider %s that can not be found. Please check the integrity of your data.' % 
+                'A relation references a concept or collection %d in provider %s that can not be found. Please check the integrity of your data.' %
                 (r, p.get_vocabulary_id())
             )
     return ret
 
+
 def _map_relation(c):
     """
-    Map related concept or collection, leaving out the relations (to avoid circular dependencies)
+    Map related concept or collection, leaving out the relations.
 
     :param c: the concept or collection to map
     :rtype: :class:`dict`
