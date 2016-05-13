@@ -41,12 +41,9 @@ class ProviderView(RestView):
     @view_config(route_name='skosprovider.uri', request_method='GET')
     @view_config(route_name='skosprovider.uri.deprecated', request_method='GET')
     def get_uri(self):
-        uri = self.request.params.get('uri')
+        uri = self.request.params.get('uri', self.request.matchdict.get('uri', None))
         if not uri:
-            if 'uri' in self.request.matchdict:
-                uri = self.request.matchdict['uri']
-            else:
-                return HTTPBadRequest()
+            return HTTPBadRequest()
         provider = self.skos_registry.get_provider(uri)
         if provider:
             return {
@@ -55,18 +52,17 @@ class ProviderView(RestView):
                 'id': provider.get_vocabulary_id()
             }
         c = self.skos_registry.get_by_uri(uri)
-        if c:
-            return {
-                'type': c.type,
-                'uri': c.uri,
-                'id': c.id,
-                'concept_scheme': {
-                    'uri': c.concept_scheme.uri,
-                    'id': self.skos_registry.get_provider(c.concept_scheme.uri).get_vocabulary_id()
-                }
-            }
         if not c:
             return HTTPNotFound()
+        return {
+            'type': c.type,
+            'uri': c.uri,
+            'id': c.id,
+            'concept_scheme': {
+                'uri': c.concept_scheme.uri,
+                'id': self.skos_registry.get_provider(c.concept_scheme.uri).get_vocabulary_id()
+            }
+        }
 
     @view_config(route_name='skosprovider.conceptschemes', request_method='GET')
     def get_conceptschemes(self):
