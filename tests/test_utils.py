@@ -26,8 +26,62 @@ import json
 import unittest
 from mock import Mock
 
+class TestQueryBuilder:
 
-class TestUtils(unittest.TestCase):
+    def _get_dummy_request(self, *args, **kwargs):
+        request = testing.DummyRequest(*args, **kwargs)
+        return request
+
+    def _get_fut(self, request=None, postprocess=False):
+        from pyramid_skosprovider.utils import QueryBuilder
+        if not request:
+            request = self._get_dummy_request()
+        qb = QueryBuilder(request, postprocess)
+        return qb
+
+    def test_simple(self):
+        qb = self._get_fut()
+        assert qb.postprocess is False
+        q = qb()
+        assert isinstance(q, dict)
+
+    def test_build_type(self):
+        request = self._get_dummy_request({'type': 'concept'})
+        qb = self._get_fut(request)
+        q = qb()
+        assert isinstance(q, dict)
+        assert 'type' in q
+        assert q['type'] == 'concept'
+
+    def test_build_invalid_type(self):
+        request = self._get_dummy_request({'type': 'conceptscheme'})
+        qb = self._get_fut(request)
+        q = qb()
+        assert isinstance(q, dict)
+        assert 'type' not in q
+
+    def test_build_label_dfs_with_star(self):
+        request = self._get_dummy_request({
+            'mode': 'dijitFilteringSelect',
+            'label': 'Di*'
+        })
+        qb = self._get_fut(request)
+        q = qb()
+        assert isinstance(q, dict)
+        assert 'label' in q
+        assert q['label'] == 'Di'
+
+    def test_build_collection(self):
+        request = self._get_dummy_request({
+            'collection': 3
+        })
+        qb = self._get_fut(request)
+        q = qb()
+        assert isinstance(q, dict)
+        assert 'collection' in q
+        assert q['collection'] == {'id': 3, 'depth': 'all'}
+
+class TestRangeHeaders(unittest.TestCase):
 
     def test_parse_range_header(self):
         from pyramid_skosprovider.utils import parse_range_header
@@ -59,6 +113,9 @@ class TestUtils(unittest.TestCase):
         for header in headers:
             res = parse_range_header(header['header'])
             self.assertEqual(res, header['result'])
+
+
+class TestUtils(unittest.TestCase):
 
     def _assert_is_labels(self, labels):
         self.assertIsInstance(labels, list)

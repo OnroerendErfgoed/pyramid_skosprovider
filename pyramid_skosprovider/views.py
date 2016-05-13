@@ -17,7 +17,8 @@ from pyramid.httpexceptions import (
 )
 
 from pyramid_skosprovider.utils import (
-    parse_range_header
+    parse_range_header,
+    QueryBuilder
 )
 
 import logging
@@ -133,38 +134,23 @@ class ProviderView(RestView):
 
     @view_config(route_name='skosprovider.cs', request_method='GET')
     def get_concepts(self):
-        query = {}
-        mode = self.request.params.get('mode', 'default')
-        label = self.request.params.get('label', None)
-        postprocess = False
-        language = self.request.params.get('language', self.request.locale_name)
-        if mode == 'dijitFilteringSelect' and label == '':
+        qb = QueryBuilder(self.request)
+        query = qb()
+        if qb.no_result:
             concepts = []
         else:
-            if label not in [None, '*', '']:
-                if mode == 'dijitFilteringSelect' and '*' in label:
-                    postprocess = True
-                    query['label'] = label.replace('*', '')
-                else:
-                    query['label'] = label
-            type = self.request.params.get('type', None)
-            if type in ['concept', 'collection']:
-                query['type'] = type
-
             concepts = self.skos_registry.find(
                 query,
                 providers=self._build_providers(self.request),
-                language=language
+                language=qb.language
             )
             # Flatten it all
             concepts = list(itertools.chain.from_iterable([c['concepts'] for c in concepts]))
 
-        if postprocess:
-            concepts = self._postprocess_wildcards(concepts, label)
+        if qb.postprocess:
+            concepts = self._postprocess_wildcards(concepts, qb.label)
 
-        concepts = self._sort_concepts(concepts)
-
-        return self._page_results(concepts)
+        return self._page_results(self._sort_concepts(concepts))
 
     @view_config(route_name='skosprovider.conceptscheme.cs', request_method='GET')
     def get_conceptscheme_concepts(self):
@@ -172,34 +158,17 @@ class ProviderView(RestView):
         provider = self.skos_registry.get_provider(scheme_id)
         if not provider:
             return HTTPNotFound()
-        query = {}
-        mode = self.request.params.get('mode', 'default')
-        label = self.request.params.get('label', None)
-        postprocess = False
-        if mode == 'dijitFilteringSelect' and label == '':
+        qb = QueryBuilder(self.request)
+        query = qb()
+        if qb.no_result:
             concepts = []
         else:
-            if label not in [None, '*', '']:
-                if mode == 'dijitFilteringSelect' and '*' in label:
-                    postprocess = True
-                    query['label'] = label.replace('*', '')
-                else:
-                    query['label'] = label
-            type = self.request.params.get('type', None)
-            if type in ['concept', 'collection']:
-                query['type'] = type
-            coll = self.request.params.get('collection', None)
-            if coll is not None:
-                query['collection'] = {'id': coll, 'depth': 'all'}
-            language = self.request.params.get('language', self.request.locale_name)
-            concepts = provider.find(query, language=language)
+            concepts = provider.find(query, language=qb.language)
 
-        if postprocess:
-            concepts = self._postprocess_wildcards(concepts, label)
+        if qb.postprocess:
+            concepts = self._postprocess_wildcards(concepts, qb.label)
 
-        concepts = self._sort_concepts(concepts)
-
-        return self._page_results(concepts)
+        return self._page_results(self._sort_concepts(concepts));
 
     def _postprocess_wildcards(self, concepts, label):
         # We need to refine results further
