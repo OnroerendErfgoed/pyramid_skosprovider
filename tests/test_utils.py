@@ -18,7 +18,8 @@ from .fixtures.data import (
 from skosprovider.skos import (
     Concept,
     Collection,
-    Label
+    Label,
+    Source
 )
 
 import json
@@ -173,6 +174,15 @@ class TestUtils(unittest.TestCase):
         assert 'superordinates' in collection
         assert 0 == len(collection['superordinates'])
         assert 0 == len(collection['sources'])
+
+    def test_source_adapter(self):
+        from pyramid_skosprovider.utils import source_adapter
+        s = Source('<em>My citation</em>', 'HTML')
+        source = source_adapter(s, Mock())
+        assert isinstance(source, dict)
+        assert 'citation' in source
+        assert 'markup' in source
+        assert source['markup'] == 'HTML'
 
     def test_json_concept(self):
         from pyramid_skosprovider.utils import json_renderer

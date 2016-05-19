@@ -217,7 +217,8 @@ def source_adapter(obj, request):
     :rtype: :class:`dict`
     '''
     return {
-        'citation': obj.citation
+        'citation': obj.citation,
+        'markup': obj.markup
     }
 
 
