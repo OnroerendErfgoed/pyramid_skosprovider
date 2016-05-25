@@ -48,6 +48,7 @@ class TestRenderers(unittest.TestCase):
         request = testing.DummyRequest()
         m = Mock()
         request.skos_registry = m
+        request.locale_name = 'nl'
         concept = concept_adapter(c, request)
         self.assertIsInstance(concept, dict)
         self.assertEqual(concept['id'], 1)
@@ -66,6 +67,23 @@ class TestRenderers(unittest.TestCase):
         assert 0 == len(concept['subordinate_arrays'])
         assert 'sources' in concept
         assert 1 == len(concept['sources'])
+        assert 'label' in concept
+        assert concept['label'] == 'De Lariks'
+
+    def test_concept_adapter_en(self):
+        from pyramid_skosprovider.renderers import concept_adapter
+        c = Concept(
+            id=larch['id'],
+            labels=larch['labels'],
+            concept_scheme=trees.concept_scheme,
+        )
+        request = testing.DummyRequest()
+        m = Mock()
+        request.skos_registry = m
+        request.locale_name = 'en'
+        concept = concept_adapter(c, request)
+        assert 'label' in concept
+        assert concept['label'] == 'The Larch'
 
     def test_collection_adapter(self):
         from pyramid_skosprovider.renderers import collection_adapter
@@ -78,6 +96,7 @@ class TestRenderers(unittest.TestCase):
         request = testing.DummyRequest()
         m = Mock()
         request.skos_registry = m
+        request.locale_name = 'nl'
         collection = collection_adapter(c, request)
         self.assertIsInstance(collection, dict)
         self.assertEqual(collection['id'], 3)
@@ -92,6 +111,7 @@ class TestRenderers(unittest.TestCase):
         assert 'superordinates' in collection
         assert 0 == len(collection['superordinates'])
         assert 0 == len(collection['sources'])
+        assert collection['label'] == 'Bomen per soort'
 
     def test_source_adapter(self):
         from pyramid_skosprovider.renderers import source_adapter

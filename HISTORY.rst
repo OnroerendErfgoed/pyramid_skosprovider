@@ -14,6 +14,8 @@
 - Add support for the sources attribute, a new feature in skosprovider 0.6.0
 - Add support for languages to Conceptschemes, a new feature in skosprovider
   0.6.0 that allows detailing what languages a conceptscheme uses.
+- Move JSON renderers to their own file and fix some language handling issues.
+  (#22)
 - Add support for Python 3.5
 
 0.6.0 (2015-03-02)

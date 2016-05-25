@@ -16,6 +16,12 @@ Utils
 .. automodule:: pyramid_skosprovider.utils
    :members:
 
+Renderers
+---------
+
+.. automodule:: pyramid_skosprovider.renderers
+   :members:
+
 Views
 -----
 
