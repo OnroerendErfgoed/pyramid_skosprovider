@@ -45,7 +45,10 @@ class TestRenderers(unittest.TestCase):
             concept_scheme=trees.concept_scheme,
             matches=larch['matches']
         )
-        concept = concept_adapter(c, Mock())
+        request = testing.DummyRequest()
+        m = Mock()
+        request.skos_registry = m
+        concept = concept_adapter(c, request)
         self.assertIsInstance(concept, dict)
         self.assertEqual(concept['id'], 1)
         self.assertIn('uri', concept)
@@ -72,7 +75,10 @@ class TestRenderers(unittest.TestCase):
             members=species['members'],
             concept_scheme=trees.concept_scheme
         )
-        collection = collection_adapter(c, Mock())
+        request = testing.DummyRequest()
+        m = Mock()
+        request.skos_registry = m
+        collection = collection_adapter(c, request)
         self.assertIsInstance(collection, dict)
         self.assertEqual(collection['id'], 3)
         self.assertIsInstance(collection['label'], text_type)
@@ -107,7 +113,12 @@ class TestRenderers(unittest.TestCase):
             matches=larch['matches']
         )
         r = json_renderer({})
-        jsonstring = r(c, Mock())
+        request = testing.DummyRequest()
+        m = Mock()
+        request.skos_registry = m
+        sys = {}
+        sys['request'] = request
+        jsonstring = r(c, sys)
         concept = json.loads(jsonstring)
         self.assertIsInstance(concept, dict)
         self.assertEqual(concept['id'], 1)

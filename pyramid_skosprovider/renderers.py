@@ -27,11 +27,13 @@ def concept_adapter(obj, request):
     :rtype: :class:`dict`
     '''
     p = request.skos_registry.get_provider(obj.concept_scheme.uri)
+    language = request.params.get('language', request.locale_name)
+    label = obj.label(language)
     return {
         'id': obj.id,
         'type': 'concept',
         'uri': obj.uri,
-        'label': obj.label().label if obj.label() else None,
+        'label': label.label if label else None,
         'concept_scheme': {
             'uri': obj.concept_scheme.uri,
             'labels': obj.concept_scheme.labels
@@ -39,11 +41,11 @@ def concept_adapter(obj, request):
         'labels': obj.labels,
         'notes': obj.notes,
         'sources': obj.sources,
-        'narrower': _map_relations(obj.narrower, p),
-        'broader': _map_relations(obj.broader, p),
-        'related': _map_relations(obj.related, p),
-        'member_of': _map_relations(obj.member_of, p),
-        'subordinate_arrays':  _map_relations(obj.subordinate_arrays, p),
+        'narrower': _map_relations(obj.narrower, p, language),
+        'broader': _map_relations(obj.broader, p, language),
+        'related': _map_relations(obj.related, p, language),
+        'member_of': _map_relations(obj.member_of, p, language),
+        'subordinate_arrays':  _map_relations(obj.subordinate_arrays, p, language),
         'matches': obj.matches
     }
 
@@ -56,11 +58,13 @@ def collection_adapter(obj, request):
     :rtype: :class:`dict`
     '''
     p = request.skos_registry.get_provider(obj.concept_scheme.uri)
+    language = request.params.get('language', request.locale_name)
+    label = obj.label(language)
     return {
         'id': obj.id,
         'type': 'collection',
         'uri': obj.uri,
-        'label': obj.label().label if obj.label() else None,
+        'label': label.label if label else None,
         'concept_scheme': {
             'uri': obj.concept_scheme.uri,
             'labels': obj.concept_scheme.labels
@@ -68,25 +72,26 @@ def collection_adapter(obj, request):
         'labels': obj.labels,
         'notes': obj.notes,
         'sources': obj.sources,
-        'members': _map_relations(obj.members, p),
-        'member_of': _map_relations(obj.member_of, p),
-        'superordinates':  _map_relations(obj.superordinates, p),
+        'members': _map_relations(obj.members, p, language),
+        'member_of': _map_relations(obj.member_of, p, language),
+        'superordinates':  _map_relations(obj.superordinates, p, language)
     }
 
 
-def _map_relations(relations, p):
+def _map_relations(relations, p, language='any'):
     '''
     :param: :class:`list` relations: Relations to be mapped. These are
         concept or collection id's.
     :param: :class:`skosprovider.providers.VocabularyProvider` p: Provider
         to look up id's.
+    :param string language: Language to render the relations' labels in
     :rtype: :class:`list`
     '''
     ret = []
     for r in relations:
         c = p.get_by_id(r)
         if c:
-            ret.append(_map_relation(c))
+            ret.append(_map_relation(c, language))
         else:
             log.warning(
                 'A relation references a concept or collection %d in provider %s that can not be found. Please check the integrity of your data.' %
@@ -95,18 +100,20 @@ def _map_relations(relations, p):
     return ret
 
 
-def _map_relation(c):
+def _map_relation(c, language='any'):
     """
     Map related concept or collection, leaving out the relations.
 
     :param c: the concept or collection to map
+    :param string language: Language to render the relation's label in
     :rtype: :class:`dict`
     """
+    label = c.label(language)
     return {
         'id': c.id,
         'type': c.type,
         'uri': c.uri,
-        'label': c.label().label if c.label() else None
+        'label': label.label if label else None
     }
 
 
