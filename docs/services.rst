@@ -4,8 +4,8 @@
 Service Documentation
 =====================
 
-This library takes your skosproviders and makes them available as REST services. 
-The pyramid_skosprovider serves JSON as a REST service so it can be used 
+This library takes your skosproviders and makes them available as REST services.
+The pyramid_skosprovider serves JSON as a REST service so it can be used
 easily inside a AJAX webbrowser call or by an external program.
 
 The following API can be used by clients:
@@ -18,9 +18,9 @@ The following API can be used by clients:
     registry.
 
     **Example request**:
-    
+
     .. sourcecode:: http
-    
+
         GET /uris?uri=urn:x-skosprovider:trees HTTP/1.1
         Host: localhost:6543
         Accept: application/json
@@ -39,9 +39,9 @@ The following API can be used by clients:
         }
 
     **Example request**:
-    
+
     .. sourcecode:: http
-    
+
         GET /uris/?uri=http://python.com/trees/larch HTTP/1.1
         Host: localhost:6543
         Accept: application/json
@@ -65,7 +65,7 @@ The following API can be used by clients:
 
     :query uri: The URI to search for.
 
-    :statuscode 200: The URI maps to something known by pyramid_skosprovider, 
+    :statuscode 200: The URI maps to something known by pyramid_skosprovider,
         either a conceptscheme, a concept or collection.
     :statuscode 404: The URI can't be found by pyramid_skosprovider.
 
@@ -75,13 +75,13 @@ The following API can be used by clients:
     Search for concepts or collections, no matter what scheme they're a part of.
 
     Although it is possible to search a single conceptscheme with just this
-    endpoint, for performance reasons it is advised to use 
+    endpoint, for performance reasons it is advised to use
     :http:get:`/conceptschemes/{scheme_id}/c`.
-    
+
     **Example request**:
-    
+
     .. sourcecode:: http
-    
+
         GET /c HTTP/1.1
         Host: localhost:6543
         Accept: application/json
@@ -100,12 +100,12 @@ The following API can be used by clients:
                 "uri": "urn:x-skosprovider:TREES:1",
                 "type": "concept",
                 "label": "De Lariks"
-            }, {   
+            }, {
                 "id": "2",
                 "uri": "urn:x-skosprovider:TREES:2",
                 "type": "concept",
                 "label": "De Paardekastanje"
-            }, {   
+            }, {
                 "id": 3,
                 "uri": "urn:x-skosprovider:TREES:3",
                 "type": "collection",
@@ -114,16 +114,16 @@ The following API can be used by clients:
         ]
 
     **Example request**:
-    
+
     .. sourcecode:: http
-    
+
         GET /c?type=concept&providers.subject=external&sort=uri HTTP/1.1
         Host: localhost:6543
         Accept: application/json
 
-    :query type: Define if you want to show concepts or collections. Leave 
+    :query type: Define if you want to show concepts or collections. Leave
         blank to show both.
-    :query mode: Allows for special processing mode for dijitFilteringSelect. 
+    :query mode: Allows for special processing mode for dijitFilteringSelect.
         Makes it possible to use wildcards in the label parameter.
     :query label: Shows all concepts and collections that have this search
         string in one of their labels.
@@ -135,7 +135,7 @@ The following API can be used by clients:
         in an indeterminate order. Prefix with '+' to sort ascending, '-' to sort descending.
         eg. ``?sort=-label`` to sort all results descending by label.
     :query providers.ids: A comma separated list of concept scheme id's. The query
-        will only be passed to the providers with these id's. eg. 
+        will only be passed to the providers with these id's. eg.
         ``?providers.ids=TREES, PARROTS`` will only list concepts from these two providers.
     :query providers.subject: A subject can be registered with a skosprovider in
         the registry. Adding this search parameter means that the query will only
@@ -152,19 +152,19 @@ The following API can be used by clients:
 
 .. http:get:: /conceptschemes
     :synopsis: Get all registered conceptschemes.
-    
+
     Get all registered conceptschemes.
-    
+
     **Example request**:
-    
+
     .. sourcecode:: http
-    
+
         GET /conceptschemes HTTP/1.1
         Host: localhost:6543
         Accept: application/json
-    
+
     **Example response**:
-    
+
     .. sourcecode:: http
 
         HTTP/1.1 200 OK
@@ -182,17 +182,17 @@ The following API can be used by clients:
 
     :statuscode 200: The list of conceptschemes was found.
 
-   
+
 .. http:get:: /conceptschemes/{scheme_id}
     :synopsis: Get information about a concept scheme.
-    
+
     Get information about a concept scheme.
-    
+
     **Example request**:
-    
+
     .. sourcecode:: http
-    
-        GET /conceptschemes/TREES
+
+        GET /conceptschemes/TREES HTTP/1.1
         Host: localhost:6543
         Accept: application/json
 
@@ -217,9 +217,9 @@ The following API can be used by clients:
         }
 
     **Example request**:
-    
+
     -.. sourcecode:: http
-    
+
         GET /conceptschemes/PLANTS
         Host: localhost:6543
         Accept: application/json
@@ -239,15 +239,15 @@ The following API can be used by clients:
 
 .. http:get:: /conceptschemes/{scheme_id}/topconcepts
     :synopsis: Get the top concepts in a scheme.
-    
+
     Get all top concepts in a certain conceptscheme. These are all the concepts
     in the conceptscheme that have no broader concept.
-    
+
     **Example request**:
-    
+
     .. sourcecode:: http
-    
-        GET /conceptschemes/TREES/topconcepts
+
+        GET /conceptschemes/TREES/topconcepts HTTP/1.1
         Host: localhost:6543
         Accept: application/json
 
@@ -262,12 +262,12 @@ The following API can be used by clients:
 
         [
             {
-                "id": "1", 
+                "id": "1",
                 "uri": "urn:x-skosprovider:TREES:1",
                 "type": "concept",
                 "label": "De Lariks"
             }, {
-                "id": "2", 
+                "id": "2",
                 "uri": "urn:x-skosprovider:TREES:2",
                 "type": "concept",
                 "label": "De Paardekastanje"
@@ -284,15 +284,15 @@ The following API can be used by clients:
 
 .. http:get:: /conceptschemes/{scheme_id}/displaytop
     :synopsis: Get the top of a display hierarchy.
-    
+
     Get the top of a display hierarchy. Depending on the underlying provider
     this will be a list of Concepts and Collections.
 
     **Example request**:
-    
+
     .. sourcecode:: http
-    
-        GET /conceptschemes/TREES/displaytop
+
+        GET /conceptschemes/TREES/displaytop HTTP/1.1
         Host: localhost:6543
         Accept: application/json
 
@@ -307,12 +307,12 @@ The following API can be used by clients:
 
         [
             {
-                "id": "1", 
+                "id": "1",
                 "uri": "urn:x-skosprovider:TREES:1",
                 "type": "concept",
                 "label": "De Lariks"
             }, {
-                "id": "2", 
+                "id": "2",
                 "uri": "urn:x-skosprovider:TREES:2",
                 "type": "concept",
                 "label": "De Paardekastanje"
@@ -326,17 +326,17 @@ The following API can be used by clients:
 
     :statuscode 200: The concepts and collections were found.
     :statuscode 404: The conceptscheme was not found.
-		
+
 .. http:get:: /conceptschemes/{scheme_id}/c
     :synopsis: Search for concepts or collections in a scheme.
 
     Search for concepts or collections in a scheme.
-    
+
     **Example request**:
-    
+
     .. sourcecode:: http
-    
-        GET /conceptschemes/TREES/c
+
+        GET /conceptschemes/TREES/c HTTP/1.1
         Host: localhost:6543
         Accept: application/json
 
@@ -357,12 +357,12 @@ The following API can be used by clients:
                 "uri": "urn:x-skosprovider:TREES:1",
                 "type": "concept",
                 "label": "De Lariks"
-            }, {   
+            }, {
                 "id": "2",
                 "uri": "urn:x-skosprovider:TREES:2",
                 "type": "concept",
                 "label": "De Paardekastanje"
-            }, {   
+            }, {
                 "id": 3,
                 "uri": "urn:x-skosprovider:TREES:3",
                 "type": "collection",
@@ -371,10 +371,10 @@ The following API can be used by clients:
         ]
 
     **Example request**:
-    
+
     .. sourcecode:: http
-    
-        GET /conceptschemes/PLANTS/c
+
+        GET /conceptschemes/PLANTS/c HTTP/1.1
         Host: localhost:6543
         Accept: application/json
 
@@ -388,13 +388,13 @@ The following API can be used by clients:
         Date:  Tue, 15 Apr 2014 20:32:52 GMT
         Server:  waitress
 
-    :query type: Define if you want to show concepts or collections. Leave 
+    :query type: Define if you want to show concepts or collections. Leave
         blank to show both.
-    :query mode: Allows for special processing mode for dijitFilteringSelect. 
+    :query mode: Allows for special processing mode for dijitFilteringSelect.
         Makes it possible to use wildcards in the label parameter.
     :query label: Shows all concepts and collections that have this search
         string in one of their labels.
-    :query collection: Get information about the content of a collection. 
+    :query collection: Get information about the content of a collection.
         Expects to be passed an id of a collection in this scheme. Will restrict
         the search to concepts or collections that are a member of this collection
         or a narrower concept of a member.
@@ -412,67 +412,66 @@ The following API can be used by clients:
         eg. ``items=0-24/306`` means the first 25 out of 306 results are being returned.
     :statuscode 200: The concepts in this conceptscheme were found.
     :statuscode 404: The conceptscheme was not found.
-		
+
 .. http:get:: /conceptschemes/{scheme_id}/c/{c_id}
     :synopsis: Get information about a concept or collection.
-    
+
     Get information about a concept or collection.
-    
+
     **Example request**:
-    
+
     .. sourcecode:: http
-    
-        GET /conceptschemes/TREES/c/1
+
+        GET /conceptschemes/TREES/c/1 HTTP/1.1
         Host: localhost:6543
         Accept: application/json
-    
+
     **Example response**:
 
     .. sourcecode:: http
 
         HTTP/1.1 200 OK
-        Content-Length:  316
-        Content-Type:  application/json; charset=UTF-8
-        Date:  Mon, 14 Apr 2014 14:49:27 GMT
-        Server:  waitress
+        Content-Type: application/json; charset=UTF-8
+        Date: Mon, 14 Apr 2014 14:49:27 GMT
+        Server: waitress
 
         {
             "broader": [],
             "narrower": [],
             "notes": [
                 {"note": "A type of tree.", "type": "definition", "language": "en"}
-            ], 
+            ],
             "labels": [
                 {"type": "prefLabel", "language": "en", "label": "The Larch"},
                 {"type": "prefLabel", "language": "nl", "label": "De Lariks"}
-            ], 
-            "type": "concept", 
-            "id": "1", 
+            ],
+            "type": "concept",
+            "id": "1",
             "uri": "urn:x-skosprovider:TREES:1",
-            "related": [], 
+            "related": [],
             "label": "The Larch",
             "matches": {
                 "close": [
-                    'http://id.python.org/different/types/of/trees/nr/1/the/larch'
+                    "http://id.python.org/different/types/of/trees/nr/1/the/larch"
                 ]
             },
-            concept_scheme: {
-                'uri': 'urn:x-foo:bar
+            "concept_scheme": {
+                "uri": "urn:x-foo:bar"
             }
         }
 
     **Example request**:
-    
+
     .. sourcecode:: http
-    
-        GET /conceptschemes/TREES/c/4
+
+        GET /conceptschemes/TREES/c/4 HTTP/1.1
         Host: localhost:6543
         Accept: application/json
 
     **Example response**:
 
     .. sourcecode:: http
-        
+
         HTTP/1.1 404 Not Found
         Content-Length:  775
         Content-Type:  text/html; charset=UTF-8
@@ -480,24 +479,24 @@ The following API can be used by clients:
         Server:  waitress
 
     :statuscode 200: The concept was found in the conceptscheme.
-    :statuscode 404: The concept was not found in the conceptscheme or the 
+    :statuscode 404: The concept was not found in the conceptscheme or the
         conceptscheme was not found.
 
 
 .. http:get:: /conceptschemes/{scheme_id}/c/{c_id}/displaychildren
     :synopsis: Get the children for display purposes.
-    
+
     Get a list of Collections and Concepts that should be displayed as
     children of this Concept or Collection.
-    
+
     **Example request**:
-    
+
     .. sourcecode:: http
-    
-        GET /conceptschemes/TREES/c/3/displaychildren
+
+        GET /conceptschemes/TREES/c/3/displaychildren HTTP/1.1
         Host: localhost:6543
         Accept: application/json
-    
+
     **Example response**:
 
     .. sourcecode:: http
@@ -513,7 +512,7 @@ The following API can be used by clients:
                 "uri": "urn:x-skosprovider:TREES:1",
                 "type": "concept",
                 "label": "De Lariks"
-            }, {   
+            }, {
                 "id": "2",
                 "uri": "urn:x-skosprovider:TREES:2",
                 "type": "concept",
@@ -527,7 +526,7 @@ The following API can be used by clients:
         Eg. ``?language=nl`` to show the dutch labels of the concepts/collections.
 
     :statuscode 200: The concept was found in the conceptscheme.
-    :statuscode 404: The concept was not found in the conceptscheme or the 
+    :statuscode 404: The concept was not found in the conceptscheme or the
         conceptscheme was not found.
 
 
@@ -556,7 +555,7 @@ The following API can be used by clients:
 
     .. sourcecode:: http
 
-        GET /conceptschemes/TREES/c/3/expand
+        GET /conceptschemes/TREES/c/3/expand HTTP/1.1
         Host: localhost:6543
         Accept: application/json
 
