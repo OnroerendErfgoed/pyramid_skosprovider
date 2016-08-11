@@ -1,4 +1,4 @@
-0.7.0 (2016-??-??)
+0.7.0 (2016-08-11)
 ------------------
 
 - Sort case insensitive when sorting by label. This is a BC break, although 
