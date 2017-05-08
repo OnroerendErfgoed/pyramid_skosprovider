@@ -25,7 +25,7 @@ from skosprovider.skos import (
 import json
 
 import unittest
-from mock import Mock
+from unittest.mock import Mock
 
 class TestQueryBuilder:
 

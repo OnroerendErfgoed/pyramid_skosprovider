@@ -426,6 +426,16 @@ class ProviderViewTests(unittest.TestCase):
         concept = pv.get_concept()
         self.assertIsInstance(concept, HTTPNotFound)
 
+    def test_get_concept_unexisting_conceptscheme(self):
+        request = self._get_dummy_request()
+        request.matchdict = {
+            'scheme_id': 'PARROTS',
+            'c_id': 1
+        }
+        pv = self._get_provider_view(request)
+        concept = pv.get_concept()
+        self.assertIsInstance(concept, HTTPNotFound)
+
     def test_get_concept_display_children(self):
         request = self._get_dummy_request()
         request.matchdict = {
@@ -473,6 +483,16 @@ class ProviderViewTests(unittest.TestCase):
         concept = pv.get_concept_display_children()
         self.assertIsInstance(concept, HTTPNotFound)
 
+    def test_get_concept_display_children_unexisting_conceptscheme(self):
+        request = self._get_dummy_request()
+        request.matchdict = {
+            'scheme_id': 'PARROTS',
+            'c_id': 1
+        }
+        pv = self._get_provider_view(request)
+        concept = pv.get_concept_display_children()
+        self.assertIsInstance(concept, HTTPNotFound)
+
     def test_get_concept_expand(self):
         request = self._get_dummy_request()
         request.matchdict = {
@@ -507,12 +527,22 @@ class ProviderViewTests(unittest.TestCase):
         expanded = pv.get_expand()
         self.assertIsInstance(expanded, HTTPNotFound)
 
-    def test_get_top_concepts_unexisting_conceptscheme(self):
+    def test_get_expand_unexisting_conceptscheme(self):
         request = self._get_dummy_request()
         request.matchdict = {'scheme_id': 'PARROTS'}
         pv = self._get_provider_view(request)
         tc = pv.get_conceptscheme_top_concepts()
         self.assertIsInstance(tc, HTTPNotFound)
+
+    def test_get_top_concepts_unexisting_conceptscheme(self):
+        request = self._get_dummy_request()
+        request.matchdict = {
+            'scheme_id': 'PARROTS',
+            'c_id': 1
+        }
+        pv = self._get_provider_view(request)
+        expanded = pv.get_expand()
+        self.assertIsInstance(expanded, HTTPNotFound)
 
     def test_get_top_concepts(self):
         request = self._get_dummy_request()
