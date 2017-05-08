@@ -2,6 +2,7 @@
 ------------------
 
 - Return an HTTP 404 response when a conceptscheme could not be found. (#24)
+- Add universal wheel distribution. (#23)
 
 
 0.7.0 (2016-08-11)
