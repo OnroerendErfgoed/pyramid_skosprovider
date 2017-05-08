@@ -1,3 +1,9 @@
+0.7.1 (2017-??-??)
+------------------
+
+- Return an HTTP 404 response when a conceptscheme could not be found. (#24)
+
+
 0.7.0 (2016-08-11)
 ------------------
 

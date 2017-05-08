@@ -220,6 +220,8 @@ class ProviderView(RestView):
         scheme_id = self.request.matchdict['scheme_id']
         concept_id = self.request.matchdict['c_id']
         provider = self.skos_registry.get_provider(scheme_id)
+        if not provider:
+            return HTTPNotFound()
         concept = provider.get_by_id(concept_id)
         if not concept:
             return HTTPNotFound()
@@ -230,6 +232,8 @@ class ProviderView(RestView):
         scheme_id = self.request.matchdict['scheme_id']
         concept_id = self.request.matchdict['c_id']
         provider = self.skos_registry.get_provider(scheme_id)
+        if not provider:
+            return HTTPNotFound()
         language = self.request.params.get('language', self.request.locale_name)
         children = provider.get_children_display(concept_id, language=language)
         if children is False:
@@ -241,6 +245,8 @@ class ProviderView(RestView):
         scheme_id = self.request.matchdict['scheme_id']
         concept_id = self.request.matchdict['c_id']
         provider = self.skos_registry.get_provider(scheme_id)
+        if not provider:
+            return HTTPNotFound()
         expanded = provider.expand(concept_id)
         if not expanded:
             return HTTPNotFound()
