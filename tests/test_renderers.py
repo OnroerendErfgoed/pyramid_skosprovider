@@ -58,7 +58,7 @@ class TestRenderers(unittest.TestCase):
         self.assertIn('uri', concept)
         self.assertIsInstance(concept['label'], text_type)
         self.assertIn(concept['type'], 'concept')
-        self.assertEqual(len(concept['labels']), 2)
+        self.assertEqual(len(concept['labels']), 3)
         self._assert_is_labels(concept['labels'])
         assert 'matches' in concept
         assert 0 == len(concept['matches']['broad'])
@@ -107,7 +107,7 @@ class TestRenderers(unittest.TestCase):
         self.assertIn('label', collection)
         self.assertIn('uri', collection)
         self.assertEqual(collection['type'], 'collection')
-        self.assertEqual(len(collection['labels']), 2)
+        self.assertEqual(len(collection['labels']), 3)
         self._assert_is_labels(collection['labels'])
         self.assertIn('notes', collection)
         assert not 'matches' in collection
@@ -149,7 +149,7 @@ class TestRenderers(unittest.TestCase):
         self.assertIsInstance(concept['label'], text_type)
         self.assertEqual(concept['type'], 'concept')
         self.assertIsInstance(concept['labels'], list)
-        self.assertEqual(len(concept['labels']), 2)
+        self.assertEqual(len(concept['labels']), 3)
         for l in concept['labels']:
             self.assertIsInstance(l, dict)
             self.assertIn('label', l)
@@ -200,7 +200,7 @@ class TestRenderers(unittest.TestCase):
         assert isinstance(coll['label'], text_type)
         assert coll['type'] == 'collection'
         assert isinstance(coll['labels'], list)
-        assert len(coll['labels']) == 2
+        assert len(coll['labels']) == 3
         for l in coll['labels']:
             assert 'label' in l
             assert 'type' in l

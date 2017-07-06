@@ -132,21 +132,19 @@ class ProviderView(RestView):
     def get_concepts(self):
         qb = QueryBuilder(self.request)
         query = qb()
+        kwargs = {"language": qb.language, "providers": self._build_providers(self.request)}
+        kwargs.update(self._get_sort_params())
         if qb.no_result:
             concepts = []
         else:
-            concepts = self.skos_registry.find(
-                query,
-                providers=self._build_providers(self.request),
-                language=qb.language
-            )
+            concepts = self.skos_registry.find(query, **kwargs)
             # Flatten it all
             concepts = list(itertools.chain.from_iterable([c['concepts'] for c in concepts]))
 
         if qb.postprocess:
             concepts = self._postprocess_wildcards(concepts, qb.label)
 
-        return self._page_results(self._sort_concepts(concepts))
+        return self._page_results(concepts)
 
     @view_config(route_name='skosprovider.conceptscheme.cs', request_method='GET')
     def get_conceptscheme_concepts(self):
@@ -156,15 +154,17 @@ class ProviderView(RestView):
             return HTTPNotFound()
         qb = QueryBuilder(self.request)
         query = qb()
+        kwargs = {"language": qb.language}
+        kwargs.update(self._get_sort_params())
         if qb.no_result:
             concepts = []
         else:
-            concepts = provider.find(query, language=qb.language)
+            concepts = provider.find(query, **kwargs)
 
         if qb.postprocess:
             concepts = self._postprocess_wildcards(concepts, qb.label)
 
-        return self._page_results(self._sort_concepts(concepts))
+        return self._page_results(concepts)
 
     def _postprocess_wildcards(self, concepts, label):
         # We need to refine results further
@@ -176,25 +176,15 @@ class ProviderView(RestView):
             concepts = [c for c in concepts if c['label'].endswith(label[1:])]
         return concepts
 
-    def _sort_concepts(self, concepts):
+    def _get_sort_params(self):
         sort = self.request.params.get('sort', None)
         # Result sorting
         if sort:
-            sort_desc = (sort[0:1] == '-')
+            sort_order = 'desc' if sort[0:1] == '-' else 'asc'
             sort = sort[1:] if sort[0:1] in ['-', '+'] else sort
-            sort = sort.strip()  # dojo store does not encode '+'
-            if (len(concepts) > 0) and (sort in concepts[0]):
-                if sort == 'label':
-                    concepts.sort(
-                        key=lambda concept: concept[sort].lower(),
-                        reverse=sort_desc
-                    )
-                else:
-                    concepts.sort(
-                        key=lambda concept: concept[sort],
-                        reverse=sort_desc
-                    )
-        return concepts
+            sort = sort.strip().lower()  # dojo store does not encode '+'
+            return {"sort": sort, "sort_order": sort_order}
+        return {}
 
     def _page_results(self, concepts):
         # Result paging
