@@ -1,9 +1,13 @@
-0.8.0 (2017-??-??)
+0.8.0 (2017-07-12)
 ------------------
 
 - Return an HTTP 404 response when a conceptscheme could not be found. (#24)
 - Add universal wheel distribution. (#23)
-- Add support for sorting on a SortLabel. (#26) [cahytinne] 
+- Add support for sorting on a SortLabel. This means a client can now ask to
+  sort the results either on `id`, `label` or `sortlabel`. See the
+  `skosprovider` docs for more on the `sortlabel`. This basically allows for
+  arbitrary sorting per language so it's possible to eg. sort Historical
+  periods chronologically. (#26) [cahytinne] 
 
 0.7.0 (2016-08-11)
 ------------------
