@@ -1,9 +1,9 @@
-0.7.1 (2017-??-??)
+0.8.0 (2017-??-??)
 ------------------
 
 - Return an HTTP 404 response when a conceptscheme could not be found. (#24)
 - Add universal wheel distribution. (#23)
-
+- Add support for sorting on a SortLabel. (#26) [cahytinne] 
 
 0.7.0 (2016-08-11)
 ------------------
