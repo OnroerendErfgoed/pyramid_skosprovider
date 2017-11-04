@@ -21,7 +21,7 @@ testing_extras = tests_requires + []
 
 setup(
     name='pyramid_skosprovider',
-    version='0.8.0',
+    version='0.9.0',
     license='MIT',
     description='Integration of skosprovider in pyramid',
     long_description=README + '\n\n' + CHANGES,
@@ -31,7 +31,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
