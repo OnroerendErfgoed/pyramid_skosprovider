@@ -20,12 +20,14 @@ from skosprovider.skos import (
     Label
 )
 
+from skosprovider.registry import Registry
+
 class ProviderViewTests(unittest.TestCase):
 
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_skosprovider')
-        self.regis = self.config.get_skos_registry()
+        self.regis = Registry()
         self.regis.register_provider(trees)
 
     def tearDown(self):
