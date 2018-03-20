@@ -7,7 +7,8 @@ from pyramid import testing
 from pyramid_skosprovider import (
     ISkosRegistry,
     _build_skos_registry,
-    get_skos_registry,
+    _register_global_skos_registry,
+    get_global_skos_registry,
     includeme
 )
 
@@ -25,7 +26,7 @@ class TestRegistry(object):
         if settings is None:
             self.settings = {}
         else: # pragma NO COVER
-            self.settings = settings 
+            self.settings = settings
 
         self.skos_registry = None
 
@@ -38,23 +39,22 @@ class TestRegistry(object):
 
 class TestGetAndBuild(unittest.TestCase):
 
-    def test_get_skos_registry(self):
+    def test_get_global_skos_registry(self):
         r = TestRegistry()
         SR = Registry()
         r.registerUtility(SR, ISkosRegistry)
-        SR2 = get_skos_registry(r)
+        SR2 = get_global_skos_registry(r)
         self.assertEqual(SR, SR2)
 
     def test_build_skos_registry_already_exists(self):
         r = TestRegistry()
         SR = Registry()
         r.registerUtility(SR, ISkosRegistry)
-        SR2 = _build_skos_registry(r)
+        SR2 = get_global_skos_registry(r)
         self.assertEqual(SR, SR2)
 
     def test_build_skos_registry_default_settings(self):
-        r = TestRegistry()
-        SR = _build_skos_registry(r)
+        SR = _build_skos_registry({})
         self.assertIsInstance(SR, Registry)
 
 
