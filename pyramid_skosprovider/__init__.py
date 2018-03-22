@@ -20,7 +20,6 @@ class ISkosRegistry(Interface):
 def _parse_settings(settings):
     defaults = {
         'skosregistry_location': 'registry',
-        'skosregistry_factory': 'pyramid_skosprovider._skosregistry_factory',
     }
     args = defaults.copy()
 
@@ -33,25 +32,16 @@ def _parse_settings(settings):
     return args
 
 
-def _skosregistry_factory():
-    return Registry()
-
-
-def _build_skos_registry(settings):
-    if 'skosregistry_factory' in settings:
-        r = DottedNameResolver()
-        skos_registry = r.resolve(settings['skosregistry_factory'])()
-    else:
-        skos_registry = Registry()
-    return skos_registry
-
-
 def _register_global_skos_registry(registry, settings):
     skos_registry = registry.queryUtility(ISkosRegistry)
     if skos_registry is not None:
         return skos_registry
 
-    skos_registry = _build_skos_registry(settings)
+    if 'skosregistry_factory' in settings:
+        r = DottedNameResolver()
+        skos_registry = r.resolve(settings['skosregistry_factory'])()
+    else:
+        skos_registry = Registry()
 
     registry.registerUtility(skos_registry, ISkosRegistry)
     return registry.queryUtility(ISkosRegistry)
@@ -78,8 +68,12 @@ def get_request_skos_registry(request):
     :rtype: :class:`skosprovider.registry.Registry`
     '''
     settings = _parse_settings(request.registry.settings)
-    skosregistry = _build_skos_registry(settings)
-    return skosregistry
+    if 'skosregistry_factory' in settings:
+        r = DottedNameResolver()
+        skos_registry = r.resolve(settings['skosregistry_factory'])(request)
+    else:
+        skos_registry = Registry()
+    return skos_registry
 
 
 def includeme(config):
