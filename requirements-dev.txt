@@ -3,7 +3,7 @@
 
 # Documentation
 Sphinx==1.7.5
-sphinxcontrib-httpdomain==1.6.1
+sphinxcontrib-httpdomain==1.7.0
 pygments==2.2.0
 
 # Linting
