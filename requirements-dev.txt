@@ -7,7 +7,7 @@ sphinxcontrib-httpdomain==1.7.0
 pygments==2.3.1
 
 # Linting
-flake8==3.5.0
+flake8==3.7.7
 
 # Unit testing
 pytest==3.8.1
