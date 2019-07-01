@@ -2,7 +2,7 @@
 --requirement requirements.txt
 
 # Documentation
-Sphinx==2.0.1
+Sphinx==2.1.2
 sphinxcontrib-httpdomain==1.7.0
 pygments==2.3.1
 
