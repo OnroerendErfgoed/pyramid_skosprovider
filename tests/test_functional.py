@@ -49,6 +49,32 @@ class FunctionalTests(unittest.TestCase):
 
 class RestFunctionalTests(FunctionalTests):
 
+    def test_get_context_json(self):
+        res = self.testapp.get(
+            '/jsonld/context/skos',
+            {},
+            {ascii_native_('Accept'): ascii_native_('application/json')}
+        )
+        assert res.status == '200 OK'
+        assert 'application/json' in res.headers['Content-Type']
+        data = json.loads(res.body.decode('utf-8'))
+        assert isinstance(data, dict)
+        assert 'skos' in data
+        assert 'dct' in data
+
+    def test_get_context_jsonld(self):
+        res = self.testapp.get(
+            '/jsonld/context/skos',
+            {},
+            {ascii_native_('Accept'): ascii_native_('application/ld+json')}
+        )
+        assert res.status == '200 OK'
+        assert 'application/ld+json' in res.headers['Content-Type']
+        data = json.loads(res.body.decode('utf-8'))
+        assert isinstance(data, dict)
+        assert 'skos' in data
+        assert 'dct' in data
+
     def test_get_uri_cs_json(self):
         res = self.testapp.get(
             '/uris?uri=http://python.com/trees',
@@ -131,6 +157,25 @@ class RestFunctionalTests(FunctionalTests):
             self.assertIsInstance(l, dict)
         self.assertIn('notes', data)
 
+    def test_get_conceptscheme_jsonld(self):
+        res = self.testapp.get(
+            '/conceptschemes/TREES',
+            {},
+            {ascii_native_('Accept'): ascii_native_('application/ld+json')})
+        assert res.status == '200 OK'
+        assert 'application/ld+json' in res.headers['Content-Type']
+        data = json.loads(res.body.decode('utf-8'))
+        assert isinstance(data, dict)
+        assert 'id' in data
+        assert 'uri'in data
+        assert 'label' in data
+        assert 'labels' in data
+        assert 'sources' in data
+        assert 'notes' in data
+        assert 'type' in data
+        assert '@context' in data
+        assert '/jsonld/context/skos' in data['@context']
+
     def test_get_conceptschemes_trees_cs_json(self):
         res = self.testapp.get(
             '/conceptschemes/TREES/c',
@@ -184,6 +229,23 @@ class RestFunctionalTests(FunctionalTests):
         self.assertNotIn('members', data)
         self.assertIn('member_of', data)
 
+    def test_get_conceptschemes_trees_larch_jsonld(self):
+        res = self.testapp.get(
+            '/conceptschemes/TREES/c/1',
+            {},
+            {ascii_native_('Accept'): ascii_native_('application/ld+json')}
+        )
+        assert res.status == '200 OK'
+        assert 'application/ld+json' in res.headers['Content-Type']
+        data = json.loads(res.body.decode('utf-8'))
+        assert isinstance(data, dict)
+        assert 'id' in data
+        assert 'label' in data
+        assert 'uri' in data
+        assert 'type' in data
+        assert '@context' in data
+        assert '/jsonld/context/skos' in data['@context']
+
     def test_get_conceptschemes_trees_species_json(self):
         res = self.testapp.get(
             '/conceptschemes/TREES/c/3',
@@ -204,6 +266,23 @@ class RestFunctionalTests(FunctionalTests):
         self.assertNotIn('related', data)
         self.assertIn('members', data)
         self.assertIn('member_of', data)
+
+    def test_get_conceptschemes_trees_species_jsonld(self):
+        res = self.testapp.get(
+            '/conceptschemes/TREES/c/3',
+            {},
+            {ascii_native_('Accept'): ascii_native_('application/ld+json')}
+        )
+        assert res.status == '200 OK'
+        assert 'application/ld+json' in res.headers['Content-Type']
+        data = json.loads(res.body.decode('utf-8'))
+        assert isinstance(data, dict)
+        assert 'id' in data
+        assert 'label' in data
+        assert 'uri' in data
+        assert 'type' in data
+        assert '@context' in data
+        assert '/jsonld/context/skos' in data['@context']
 
     def test_get_conceptscheme_concepts_search_dfs_label_star(self):
         res = self.testapp.get(
