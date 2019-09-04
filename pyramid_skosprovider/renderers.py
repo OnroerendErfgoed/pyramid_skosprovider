@@ -6,11 +6,17 @@ This module contains function for rendering SKOS objects to JSON.
 from pyramid.renderers import JSON
 
 from skosprovider.skos import (
+    ConceptScheme,
     Concept,
     Collection,
     Label,
     Note,
     Source
+)
+
+from skosprovider.jsonld import (
+    jsonld_c_dumper,
+    jsonld_conceptscheme_dumper,
 )
 
 import logging
@@ -164,3 +170,49 @@ json_renderer.add_adapter(Collection, collection_adapter)
 json_renderer.add_adapter(Label, label_adapter)
 json_renderer.add_adapter(Note, note_adapter)
 json_renderer.add_adapter(Source, source_adapter)
+
+
+jsonld_renderer = JSON()
+
+def conceptscheme_ld_adapter(obj, request):
+    '''
+    Adapter for rendering a :class:`skosprovider.skos.ConceptScheme` to jsonld.
+
+    :param skosprovider.skos.ConceptScheme obj: The conceptscheme to be rendered.
+    :rtype: :class:`dict`
+    '''
+    p = request.skos_registry.get_provider(obj.uri)
+    language = request.params.get('language', request.locale_name)
+    request.response.content_type = 'application/ld+json'
+    context = request.route_url('skosprovider.context')
+    return jsonld_conceptscheme_dumper(p, context, language = language)
+
+def concept_ld_adapter(obj, request):
+    '''
+    Adapter for rendering a :class:`skosprovider.skos.Concept` to jsonld.
+
+    :param skosprovider.skos.Concept obj: The concept to be rendered.
+    :rtype: :class:`dict`
+    '''
+    p = request.skos_registry.get_provider(obj.concept_scheme.uri)
+    language = request.params.get('language', request.locale_name)
+    request.response.content_type = 'application/ld+json'
+    context = request.route_url('skosprovider.context')
+    return jsonld_c_dumper(p, obj.id, context, language = language)
+
+def collection_ld_adapter(obj, request):
+    '''
+    Adapter for rendering a :class:`skosprovider.skos.Concept` to jsonld.
+
+    :param skosprovider.skos.Concept obj: The concept to be rendered.
+    :rtype: :class:`dict`
+    '''
+    p = request.skos_registry.get_provider(obj.concept_scheme.uri)
+    language = request.params.get('language', request.locale_name)
+    request.response.content_type = 'application/ld+json'
+    context = request.route_url('skosprovider.context')
+    return jsonld_c_dumper(p, obj.id, context, language = language)
+
+jsonld_renderer.add_adapter(ConceptScheme, conceptscheme_ld_adapter)
+jsonld_renderer.add_adapter(Concept, concept_ld_adapter)
+jsonld_renderer.add_adapter(Collection, collection_ld_adapter)
