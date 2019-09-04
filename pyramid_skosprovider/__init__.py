@@ -4,8 +4,9 @@ from zope.interface import Interface
 
 from skosprovider.registry import Registry
 
-from pyramid_skosprovider.utils import (
-    json_renderer
+from pyramid_skosprovider.renderers import (
+    json_renderer,
+    jsonld_renderer
 )
 
 from pyramid.path import (
@@ -86,9 +87,14 @@ def includeme(config):
         config.add_request_method(get_request_skos_registry, 'skos_registry', reify=True)
 
     config.add_renderer('skosjson', json_renderer)
+    config.add_renderer('skosjsonld', jsonld_renderer)
 
     config.add_directive('get_skos_registry', get_global_skos_registry)
 
+    config.add_route(
+        'skosprovider.context',
+        '/jsonld/context/skos'
+    )
     config.add_route(
         'skosprovider.uri.deprecated',
         '/uris/{uri:.*}'

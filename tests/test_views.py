@@ -22,6 +22,34 @@ from skosprovider.skos import (
 
 from skosprovider.registry import Registry
 
+class StaticViewTests(unittest.TestCase):
+
+    def setUp(self):
+        self.config = testing.setUp()
+        self.config.include('pyramid_skosprovider')
+        self.regis = Registry()
+
+    def tearDown(self):
+        testing.tearDown()
+        del self.config
+
+    def _get_dummy_request(self, *args, **kwargs):
+        request = testing.DummyRequest(*args, **kwargs)
+        request.accept = 'application/json'
+        request.skos_registry = self.regis
+        return request
+
+    def _get_static_view(self, request):
+        from pyramid_skosprovider.views import StaticView
+        return StaticView(request)
+
+    def test_get_context(self):
+        request = self._get_dummy_request()
+        sv = self._get_static_view(request)
+        ctxt = sv.get_context()
+        assert isinstance(ctxt, dict)
+        assert 'skos' in ctxt
+
 class ProviderViewTests(unittest.TestCase):
 
     def setUp(self):
@@ -37,6 +65,7 @@ class ProviderViewTests(unittest.TestCase):
 
     def _get_dummy_request(self, *args, **kwargs):
         request = testing.DummyRequest(*args, **kwargs)
+        request.accept = 'application/json'
         request.skos_registry = self.regis
         return request
 
@@ -56,50 +85,57 @@ class ProviderViewTests(unittest.TestCase):
         request.matchdict = {'uri': 'http://python.com/trees'}
         pv = self._get_provider_view(request)
         u = pv.get_uri()
-        self.assertEqual(
-            {
-                'id': 'TREES',
-                'uri': 'http://python.com/trees',
-                'type': 'concept_scheme'
-            },
-            u
-        )
+        assert '@context' in u
+        assert 'uri' in u['@context']
+        assert 'id' in u['@context']
+        assert 'type' in u['@context']
+        assert u['uri'] == 'http://python.com/trees'
+        assert u['id'] == 'TREES'
+        assert u['type'] == 'concept_scheme'
 
     def test_get_uri_concept(self):
         request = self._get_dummy_request()
         request.matchdict = {'uri': 'http://python.com/trees/larch'}
         pv = self._get_provider_view(request)
         u = pv.get_uri()
-        self.assertEqual(
-            {
-                'id': 1,
-                'uri': 'http://python.com/trees/larch',
-                'type': 'concept',
-                'concept_scheme': {
-                    'id': 'TREES',
-                    'uri': 'http://python.com/trees',
-                }
-            },
-            u
-        )
+
+        assert '@context' in u
+        assert 'uri' in u['@context']
+        assert 'id' in u['@context']
+        assert 'type' in u['@context']
+        assert 'concept_scheme' in u['@context']
+        assert 'concept' in u['@context']
+        assert 'collection' in u['@context']
+        assert u['uri'] == 'http://python.com/trees/larch'
+        assert u['id'] == 1
+        assert u['type'] == 'concept'
+        assert u['concept_scheme'] == {
+            'id': 'TREES',
+            'type': 'skos:ConceptScheme',
+            'uri': 'http://python.com/trees',
+        }
 
     def test_get_uri_collection(self):
         request = self._get_dummy_request()
         request.matchdict = {'uri': 'http://python.com/trees/species'}
         pv = self._get_provider_view(request)
         u = pv.get_uri()
-        self.assertEqual(
-            {
-                'id': 3,
-                'uri': 'http://python.com/trees/species',
-                'type': 'collection',
-                'concept_scheme': {
-                    'id': 'TREES',
-                    'uri': 'http://python.com/trees',
-                }
-            },
-            u
-        )
+
+        assert '@context' in u
+        assert 'uri' in u['@context']
+        assert 'id' in u['@context']
+        assert 'type' in u['@context']
+        assert 'concept_scheme' in u['@context']
+        assert 'concept' in u['@context']
+        assert 'collection' in u['@context']
+        assert u['uri'] == 'http://python.com/trees/species'
+        assert u['id'] == 3
+        assert u['type'] == 'collection'
+        assert u['concept_scheme'] == {
+            'id': 'TREES',
+            'type': 'skos:ConceptScheme',
+            'uri': 'http://python.com/trees',
+        }
 
     def test_get_conceptschemes(self):
         request = self._get_dummy_request()
