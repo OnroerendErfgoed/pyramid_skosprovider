@@ -11,7 +11,7 @@ flake8==3.7.8
 
 # Unit testing
 pytest==5.2.0
-mock==2.0.0
+mock==3.0.5
 webtest==2.0.33
 pytest-cov==2.6.1
 coveralls==1.7.0
