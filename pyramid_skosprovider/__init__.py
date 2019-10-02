@@ -42,16 +42,30 @@ def _register_global_skos_registry(registry, settings):
         r = DottedNameResolver()
         skos_registry = r.resolve(settings['skosregistry_factory'])()
     else:
-        skos_registry = Registry()
+        skos_registry = Registry(instance_scope='threaded_global')
 
     registry.registerUtility(skos_registry, ISkosRegistry)
     return registry.queryUtility(ISkosRegistry)
+
+def get_skos_registry(r):
+    # Argument might be a config or request
+    regis = getattr(r, 'registry', None)
+    if regis is None:
+        regis = r
+    settings = _parse_settings(r.regis.settings)
+
+    if settings['skosregistry_location'] == 'registry':
+        get_global_skos_registry(regis)
+    else:
+        get_request_skos_registry(r)
 
 
 def get_global_skos_registry(registry):
     '''
     Get the :class:`skosprovider.registry.Registry` attached to this pyramid
     application.
+
+    :param registry: A Pyramid registry or request.
 
     :rtype: :class:`skosprovider.registry.Registry`
     '''
@@ -73,7 +87,7 @@ def get_request_skos_registry(request):
         r = DottedNameResolver()
         skos_registry = r.resolve(settings['skosregistry_factory'])(request)
     else:
-        skos_registry = Registry()
+        skos_registry = Registry(instance_scope='threaded_thread')
     return skos_registry
 
 

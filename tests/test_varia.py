@@ -38,18 +38,24 @@ class TestRegistry(object):
 
 
 def _skosregis_factory_global():
-    return Registry()
+    return Registry(
+        instance_scope='threaded_global'
+    )
 
 
 def _skosregis_factory_request(request):
-    return Registry()
+    return Registry(
+        instance_scope='threaded_thread'
+    )
 
 
 class TestGetAndBuild(unittest.TestCase):
 
     def test_get_global_skos_registry(self):
         r = TestRegistry()
-        SR = Registry()
+        SR = Registry(
+            instance_scope='threaded_global'
+        )
         r.registerUtility(SR, ISkosRegistry)
         SR2 = get_global_skos_registry(r)
         self.assertEqual(SR, SR2)
@@ -65,7 +71,9 @@ class TestGetAndBuild(unittest.TestCase):
 
     def test_register_global_skos_registry_already_exists(self):
         r = TestRegistry()
-        SR = Registry()
+        SR = Registry(
+            instance_scope='threaded_global'
+        )
         r.registerUtility(SR, ISkosRegistry)
         SR2 = _register_global_skos_registry(r, {})
         self.assertEqual(SR, SR2)
