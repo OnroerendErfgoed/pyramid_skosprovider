@@ -39,7 +39,9 @@ def skosmain(global_config, **settings):
 class FunctionalTests(unittest.TestCase):
 
     def setUp(self):
-        settings = {}
+        settings = {
+            'skosprovider.skosregistry_location': 'registry'
+        }
         app = skosmain({}, **settings)
         self.testapp = TestApp(app)
 
