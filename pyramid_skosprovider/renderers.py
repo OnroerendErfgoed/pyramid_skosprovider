@@ -174,6 +174,7 @@ json_renderer.add_adapter(Source, source_adapter)
 
 jsonld_renderer = JSON()
 
+
 def conceptscheme_ld_adapter(obj, request):
     '''
     Adapter for rendering a :class:`skosprovider.skos.ConceptScheme` to jsonld.
@@ -185,7 +186,8 @@ def conceptscheme_ld_adapter(obj, request):
     language = request.params.get('language', request.locale_name)
     request.response.content_type = 'application/ld+json'
     context = request.route_url('skosprovider.context')
-    return jsonld_conceptscheme_dumper(p, context, language = language)
+    return jsonld_conceptscheme_dumper(p, context, language=language)
+
 
 def concept_ld_adapter(obj, request):
     '''
@@ -198,7 +200,8 @@ def concept_ld_adapter(obj, request):
     language = request.params.get('language', request.locale_name)
     request.response.content_type = 'application/ld+json'
     context = request.route_url('skosprovider.context')
-    return jsonld_c_dumper(p, obj.id, context, language = language)
+    return jsonld_c_dumper(p, obj.id, context, language=language)
+
 
 def collection_ld_adapter(obj, request):
     '''
@@ -211,7 +214,8 @@ def collection_ld_adapter(obj, request):
     language = request.params.get('language', request.locale_name)
     request.response.content_type = 'application/ld+json'
     context = request.route_url('skosprovider.context')
-    return jsonld_c_dumper(p, obj.id, context, language = language)
+    return jsonld_c_dumper(p, obj.id, context, language=language)
+
 
 jsonld_renderer.add_adapter(ConceptScheme, conceptscheme_ld_adapter)
 jsonld_renderer.add_adapter(Concept, concept_ld_adapter)

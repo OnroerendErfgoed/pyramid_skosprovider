@@ -5,15 +5,6 @@ This module contains a few utility functions.
 
 import re
 
-from pyramid_skosprovider.renderers import (
-    json_renderer,
-    concept_adapter,
-    collection_adapter,
-    label_adapter,
-    note_adapter,
-    source_adapter
-)
-
 import logging
 log = logging.getLogger(__name__)
 

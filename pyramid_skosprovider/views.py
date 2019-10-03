@@ -36,18 +36,21 @@ class RestView(object):
         self.request = request
         self.skos_registry = self.request.skos_registry
 
+
 @view_defaults(renderer='json')
 class StaticView(RestView):
 
-    @view_config(route_name='skosprovider.context',
-            request_method='GET',
-            accept='application/json',
-            http_cache=(3600,{'public': True})
+    @view_config(
+        route_name='skosprovider.context',
+        request_method='GET',
+        accept='application/json',
+        http_cache=(3600, {'public': True})
     )
-    @view_config(route_name='skosprovider.context',
-            request_method='GET',
-            accept='application/ld+json',
-            http_cache=(3600,{'public': True})
+    @view_config(
+        route_name='skosprovider.context',
+        request_method='GET',
+        accept='application/ld+json',
+        http_cache=(3600, {'public': True})
     )
     def get_context(self):
         if 'application/ld+json' in self.request.accept:
@@ -104,7 +107,9 @@ class ProviderView(RestView):
         }
 
     @view_config(route_name='skosprovider.conceptschemes', request_method='GET')
-    @view_config(route_name='skosprovider.conceptschemes', request_method='GET',
+    @view_config(
+        route_name='skosprovider.conceptschemes',
+        request_method='GET',
         accept='application/ld+json'
     )
     def get_conceptschemes(self):
@@ -145,8 +150,12 @@ class ProviderView(RestView):
             'languages': provider.concept_scheme.languages
         }
 
-    @view_config(route_name='skosprovider.conceptscheme', request_method='GET',
-            renderer='skosjsonld', accept='application/ld+json')
+    @view_config(
+        route_name='skosprovider.conceptscheme',
+        request_method='GET',
+        renderer='skosjsonld',
+        accept='application/ld+json'
+    )
     def get_conceptscheme_jsonld(self):
         scheme_id = self.request.matchdict['scheme_id']
         provider = self.skos_registry.get_provider(scheme_id)
@@ -268,8 +277,12 @@ class ProviderView(RestView):
         return cslice
 
     @view_config(route_name='skosprovider.c', request_method='GET')
-    @view_config(route_name='skosprovider.c', request_method='GET',
-        renderer='skosjsonld', accept='application/ld+json')
+    @view_config(
+        route_name='skosprovider.c',
+        request_method='GET',
+        renderer='skosjsonld',
+        accept='application/ld+json'
+    )
     def get_concept(self):
         scheme_id = self.request.matchdict['scheme_id']
         concept_id = self.request.matchdict['c_id']

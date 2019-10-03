@@ -1,9 +1,12 @@
 0.9.0 (2019-??-??)
 ------------------
 
+- Support running a registry per request, as oppesed to per application as
+  before. (#44)
 - Add JSON-LD output to the REST service. (#63)
 - Drop support for Python 3.4, add support for 3.7. This is the last version
   that will support Python 2. (#66)
+- Remove the JSON renderers from the utils module.
 
 0.8.0 (2017-07-12)
 ------------------
