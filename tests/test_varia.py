@@ -6,9 +6,10 @@ from pyramid import testing
 
 from pyramid_skosprovider import (
     ISkosRegistry,
-    get_global_skos_registry,
-    get_request_skos_registry,
+    get_skos_registry,
+    #get_request_skos_registry,
     _register_global_skos_registry,
+    _register_request_skos_registry,
     includeme
 )
 
@@ -17,6 +18,7 @@ from skosprovider.registry import (
 )
 
 import unittest
+import pytest
 
 
 class TestRegistry(object):
@@ -51,23 +53,34 @@ def _skosregis_factory_request(request):
 
 class TestGetAndBuild(unittest.TestCase):
 
-    def test_get_global_skos_registry(self):
-        r = TestRegistry()
+    def test_get_skos_registry(self):
+        settings={
+            'skosprovider.skosregistry_location': 'registry',
+        }
+        r = TestRegistry(settings=settings)
         SR = Registry(
             instance_scope='threaded_global'
         )
         r.registerUtility(SR, ISkosRegistry)
-        SR2 = get_global_skos_registry(r)
-        self.assertEqual(SR, SR2)
+        SR2 = get_skos_registry(r)
+        assert SR == SR2
+
+    def test_get_skos_registry_not_working_for_requests(self):
+        settings={
+            'skosprovider.skosregistry_location': 'request',
+        }
+        r = TestRegistry(settings=settings)
+        with pytest.raises(RuntimeError):
+            assert isinstance(get_skos_registry(r), Registry)
 
     def test_register_global_skos_registry_custom_factory(self):
-        r = TestRegistry()
         settings={
-            'skosregistry_location': 'registry',
-            'skosregistry_factory': 'tests.test_varia._skosregis_factory_global'
-        };
-        SR = _register_global_skos_registry(r, settings)
-        self.assertIsInstance(SR, Registry)
+            'skosprovider.skosregistry_location': 'registry',
+            'skosprovider.skosregistry_factory': 'tests.test_varia._skosregis_factory_global'
+        }
+        r = TestRegistry(settings=settings)
+        SR = _register_global_skos_registry(r)
+        assert isinstance(SR, Registry)
 
     def test_register_global_skos_registry_already_exists(self):
         r = TestRegistry()
@@ -75,19 +88,19 @@ class TestGetAndBuild(unittest.TestCase):
             instance_scope='threaded_global'
         )
         r.registerUtility(SR, ISkosRegistry)
-        SR2 = _register_global_skos_registry(r, {})
-        self.assertEqual(SR, SR2)
+        SR2 = _register_global_skos_registry(r)
+        assert isinstance(SR, Registry)
 
     def test_register_global_skos_registry_default_settings(self):
         r = TestRegistry()
-        SR = _register_global_skos_registry(r, {})
-        self.assertIsInstance(SR, Registry)
+        SR = _register_global_skos_registry(r)
+        assert isinstance(SR, Registry)
 
     def test_get_request_skos_registry(self):
         request = testing.DummyRequest()
         request.registry.settings = {'skosprovider.skosregistry_location': 'request'}
-        SR = get_request_skos_registry(request)
-        self.assertIsInstance(SR, Registry)
+        SR = _register_request_skos_registry(request)
+        assert isinstance(SR, Registry)
 
     def test_get_request_skos_registry_custom_factory(self):
         request = testing.DummyRequest()
@@ -95,8 +108,8 @@ class TestGetAndBuild(unittest.TestCase):
             'skosprovider.skosregistry_location': 'request',
             'skosprovider.skosregistry_factory': 'tests.test_varia._skosregis_factory_request'
         }
-        SR = get_request_skos_registry(request)
-        self.assertIsInstance(SR, Registry)
+        SR = _register_request_skos_registry(request)
+        assert isinstance(SR, Registry)
 
 
 class TestIncludeMe(unittest.TestCase):
