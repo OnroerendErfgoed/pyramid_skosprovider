@@ -103,9 +103,17 @@ def includeme(config):
 
     if settings['skosregistry_location'] == 'registry':
         _register_global_skos_registry(config.registry)
-        config.add_request_method(get_skos_registry, 'skos_registry', reify=True)
+        config.add_request_method(
+            get_skos_registry,
+            'skos_registry',
+            reify=True
+        )
     else:
-        config.add_request_method(_register_request_skos_registry, 'skos_registry', reify=True)
+        config.add_request_method(
+            _register_request_skos_registry,
+            'skos_registry',
+            reify=True
+        )
 
     config.add_renderer('skosjson', json_renderer)
     config.add_renderer('skosjsonld', jsonld_renderer)
