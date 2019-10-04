@@ -134,6 +134,10 @@ The following API can be used by clients:
     :query sort: Define if you want to sort the results by a given field. Otherwise items are returned
         in an indeterminate order. Prefix with '+' to sort ascending, '-' to sort descending.
         eg. ``?sort=-label`` to sort all results descending by label.
+    :query match: A URI for an external concept. Searches if any of the
+        providers have a matching concept.
+    :query match_type: A type of match: exact, close, related, broader,
+        narrower. Only used if a match URI is present as well.
     :query providers.ids: A comma separated list of concept scheme id's. The query
         will only be passed to the providers with these id's. eg.
         ``?providers.ids=TREES, PARROTS`` will only list concepts from these two providers.
@@ -398,6 +402,10 @@ The following API can be used by clients:
         Expects to be passed an id of a collection in this scheme. Will restrict
         the search to concepts or collections that are a member of this collection
         or a narrower concept of a member.
+    :query match: A URI for an external concept. Searches if any of the
+        providers have a matching concept.
+    :query match_type: A type of match: exact, close, related, broader,
+        narrower. Only used if a match URI is present as well.
     :query language: Returns the label with the corresponding language-tag if present.
         If the language is not present for this concept/collection, it falls back to
         1) the default language of the provider. 2) 'en' 3) any label.

@@ -86,6 +86,30 @@ class TestQueryBuilder:
         assert 'collection' in q
         assert q['collection'] == {'id': 3, 'depth': 'all'}
 
+    def test_build_matches(self):
+        request = self._get_dummy_request({
+            'match': 'https://thingy.org/thing'
+        })
+        qb = self._get_fut(request)
+        q = qb()
+        assert isinstance(q, dict)
+        assert 'matches' in q
+        assert q['matches'] == {'uri': 'https://thingy.org/thing'}
+
+    def test_build_matches_broader(self):
+        request = self._get_dummy_request({
+            'match': 'https://thingy.org/thing',
+            'match_type': 'exact'
+        })
+        qb = self._get_fut(request)
+        q = qb()
+        assert isinstance(q, dict)
+        assert 'matches' in q
+        assert q['matches'] == {
+            'uri': 'https://thingy.org/thing',
+            'type': 'exact'
+        }
+
 class TestRangeHeaders(unittest.TestCase):
 
     def test_parse_range_header(self):
