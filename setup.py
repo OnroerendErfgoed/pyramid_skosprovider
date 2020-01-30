@@ -8,7 +8,7 @@ CHANGES = open(os.path.join(here, 'HISTORY.rst')).read()
 
 requires = [
     'pyramid',
-    'skosprovider>=0.6.0'
+    'skosprovider>=0.7.0'
 ]
 
 tests_requires = [
@@ -31,9 +31,9 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Framework :: Pyramid',
     ],
     author='Koen Van Daele',
