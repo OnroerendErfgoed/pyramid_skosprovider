@@ -17,6 +17,7 @@ from .fixtures.data import (
 
 from skosprovider.skos import (
     Concept,
+    ConceptScheme,
     Label
 )
 
@@ -79,6 +80,14 @@ class ProviderViewTests(unittest.TestCase):
         pv = self._get_provider_view(request)
         u = pv.get_uri()
         self.assertIsInstance(u, HTTPNotFound)
+
+    def test_get_uri_sets_jsonld(self):
+        request = self._get_dummy_request()
+        request.accept = 'application/ld+json'
+        request.matchdict = {'uri': 'http://python.com/trees'}
+        pv = self._get_provider_view(request)
+        u = pv.get_uri()
+        assert request.response.content_type == 'application/ld+json'
 
     def test_get_uri_conceptscheme(self):
         request = self._get_dummy_request()
@@ -148,6 +157,20 @@ class ProviderViewTests(unittest.TestCase):
             assert 'uri' in cs
             assert 'label' in cs
 
+    def test_get_conceptschemes_jsonld(self):
+        request = self._get_dummy_request()
+        request.accept = 'application/ld+json'
+        pv = self._get_provider_view(request)
+        conceptschemes = pv.get_conceptschemes()
+        self.assertIsInstance(conceptschemes, list)
+        for cs in conceptschemes:
+            assert isinstance(cs, dict)
+            assert 'id' in cs
+            assert 'uri' in cs
+            assert 'label' in cs
+            assert '@context' in cs
+
+
     def test_get_conceptscheme(self):
         request = self._get_dummy_request()
         request.matchdict = {'scheme_id': 'TREES'}
@@ -170,11 +193,27 @@ class ProviderViewTests(unittest.TestCase):
             cs
         )
 
+    def test_get_conceptscheme_jsonld(self):
+        request = self._get_dummy_request()
+        request.accept = 'application/ld+json'
+        request.matchdict = {'scheme_id': 'TREES'}
+        pv = self._get_provider_view(request)
+        cs = pv.get_conceptscheme_jsonld()
+        assert isinstance(cs, ConceptScheme)
+
     def test_get_unexisting_conceptscheme(self):
         request = self._get_dummy_request()
         request.matchdict = {'scheme_id': 'PARROTS'}
         pv = self._get_provider_view(request)
         cs = pv.get_conceptscheme()
+        self.assertIsInstance(cs, HTTPNotFound)
+
+    def test_get_unexisting_conceptscheme_jsonld(self):
+        request = self._get_dummy_request()
+        request.accept = 'application/ld+json'
+        request.matchdict = {'scheme_id': 'PARROTS'}
+        pv = self._get_provider_view(request)
+        cs = pv.get_conceptscheme_jsonld()
         self.assertIsInstance(cs, HTTPNotFound)
 
     def test_get_concepts(self):
