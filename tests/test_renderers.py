@@ -110,7 +110,8 @@ class TestRenderers(unittest.TestCase):
         self.assertEqual(len(collection['labels']), 3)
         self._assert_is_labels(collection['labels'])
         self.assertIn('notes', collection)
-        assert not 'matches' in collection
+        assert collection['infer_concept_relations'] is True
+        assert 'matches' not in collection
         assert 'superordinates' in collection
         assert 0 == len(collection['superordinates'])
         assert 0 == len(collection['sources'])
