@@ -1,8 +1,9 @@
-0.9.0 (2019-??-??)
+0.9.0 (2020-??-??)
 ------------------
 
-- Support running a registry per request, as oppesed to per application as
+- Support running a registry per request, as opposed to per application as
   before. (#44)
+- Add the `infer_concept_relations` attribute to the collection renderer. (#73)
 - Add JSON-LD output to the REST service. (#63)
 - Add support for match and match_type search parameters to search for concepts
   that match a certain URI and optionally have a certain type. (#68)

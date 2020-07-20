@@ -80,7 +80,8 @@ def collection_adapter(obj, request):
         'sources': obj.sources,
         'members': _map_relations(obj.members, p, language),
         'member_of': _map_relations(obj.member_of, p, language),
-        'superordinates':  _map_relations(obj.superordinates, p, language)
+        'superordinates':  _map_relations(obj.superordinates, p, language),
+        'infer_concept_relations': obj.infer_concept_relations
     }
 
 
