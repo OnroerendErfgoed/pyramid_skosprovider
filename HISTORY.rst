@@ -1,4 +1,4 @@
-0.9.0 (2020-??-??)
+0.9.0 (2020-08-06)
 ------------------
 
 - Support running a registry per request, as opposed to per application as
@@ -7,7 +7,7 @@
 - Add JSON-LD output to the REST service. (#63)
 - Add support for match and match_type search parameters to search for concepts
   that match a certain URI and optionally have a certain type. (#68)
-- Drop support for Python 3.4, add support for 3.7. This is the last version
+- Drop support for Python 3.4, add support for 3.7 and 3.8. This is the last version
   that will support Python 2. (#66)
 - Remove the JSON renderers from the utils module.
 
