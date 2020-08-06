@@ -3,7 +3,7 @@
 
 # Documentation
 Sphinx==1.8.5 ; python_version < '3.5'
-Sphinx==2.2.0 ; python_version >= '3.5'
+Sphinx==3.0.4 ; python_version >= '3.5'
 sphinxcontrib-httpdomain==1.7.0
 pygments==2.4.2
 
@@ -11,8 +11,8 @@ pygments==2.4.2
 flake8==3.7.8
 
 # Unit testing
-pytest==4.6.5 ; python_version < '3.0'
-pytest==5.2.0 ; python_version >= '3.0'
+pytest==4.6.9 ; python_version < '3.0'
+pytest==5.3.5 ; python_version >= '3.0'
 mock==3.0.5
 webtest==2.0.33
 pytest-cov==2.7.1
