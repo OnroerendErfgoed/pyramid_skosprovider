@@ -86,6 +86,30 @@ class TestQueryBuilder:
         assert 'collection' in q
         assert q['collection'] == {'id': 3, 'depth': 'all'}
 
+    def test_build_matches(self):
+        request = self._get_dummy_request({
+            'match': 'https://thingy.org/thing'
+        })
+        qb = self._get_fut(request)
+        q = qb()
+        assert isinstance(q, dict)
+        assert 'matches' in q
+        assert q['matches'] == {'uri': 'https://thingy.org/thing'}
+
+    def test_build_matches_broader(self):
+        request = self._get_dummy_request({
+            'match': 'https://thingy.org/thing',
+            'match_type': 'exact'
+        })
+        qb = self._get_fut(request)
+        q = qb()
+        assert isinstance(q, dict)
+        assert 'matches' in q
+        assert q['matches'] == {
+            'uri': 'https://thingy.org/thing',
+            'type': 'exact'
+        }
+
 class TestRangeHeaders(unittest.TestCase):
 
     def test_parse_range_header(self):
@@ -118,30 +142,3 @@ class TestRangeHeaders(unittest.TestCase):
         for header in headers:
             res = parse_range_header(header['header'])
             self.assertEqual(res, header['result'])
-
-
-class TestRenderers(unittest.TestCase):
-    '''
-    Renderers have been moved from pyramid_skosprovider.utils to pyramid_skosprovider.renderers.
-    Maintain tests until 0.8.0 when they will be removed.
-    '''
-
-    def test_import_concept_adapter(self):
-        from pyramid_skosprovider.utils import concept_adapter as cau
-        from pyramid_skosprovider.renderers import concept_adapter as car
-        assert cau == car
-
-    def test_import_collection_adapter(self):
-        from pyramid_skosprovider.utils import collection_adapter as cau
-        from pyramid_skosprovider.renderers import collection_adapter as car
-        assert cau == car
-
-    def test_import_source_adapter(self):
-        from pyramid_skosprovider.utils import source_adapter as sau
-        from pyramid_skosprovider.renderers import source_adapter as sar
-        assert sau == sar
-
-    def test_import_json_renderer(self):
-        from pyramid_skosprovider.utils import json_renderer as jru
-        from pyramid_skosprovider.renderers import json_renderer as jrr
-        assert jru == jrr

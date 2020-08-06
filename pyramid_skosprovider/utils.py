@@ -5,15 +5,6 @@ This module contains a few utility functions.
 
 import re
 
-from pyramid_skosprovider.renderers import (
-    json_renderer,
-    concept_adapter,
-    collection_adapter,
-    label_adapter,
-    note_adapter,
-    source_adapter
-)
-
 import logging
 log = logging.getLogger(__name__)
 
@@ -52,6 +43,15 @@ class QueryBuilder:
             query['collection'] = {'id': coll, 'depth': 'all'}
         return query
 
+    def _build_matches(self, query):
+        match_uri = self.request.params.get('match', None)
+        if match_uri is not None:
+            query['matches'] = {'uri': match_uri}
+            match_type = self.request.params.get('match_type', None)
+            if match_type is not None:
+                query['matches']['type'] = match_type
+        return query
+
     def __call__(self):
         if self.mode == 'dijitFilteringSelect' and self.label == '':
             self.no_result = True
@@ -59,6 +59,7 @@ class QueryBuilder:
         q = self._build_type(q)
         q = self._build_label(q)
         q = self._build_collection(q)
+        q = self._build_matches(q)
         return q
 
 
