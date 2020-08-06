@@ -25,6 +25,7 @@ setup(
     license='MIT',
     description='Integration of skosprovider in pyramid',
     long_description=README + '\n\n' + CHANGES,
+    long_description_content_type='text/x-rst',
     classifiers=[
         'Intended Audience :: Developers',
         'Development Status :: 4 - Beta',
