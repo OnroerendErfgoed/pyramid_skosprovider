@@ -178,6 +178,20 @@ class RestFunctionalTests(FunctionalTests):
         assert '@context' in data
         assert '/jsonld/context/skos' in data['@context']
 
+    def test_get_conceptscheme_jsonld_url(self):
+        res = self.testapp.get(
+            '/conceptschemes/TREES.jsonld'
+        )
+        assert res.status == '200 OK'
+        assert 'application/ld+json' in res.headers['Content-Type']
+        data = json.loads(res.body.decode('utf-8'))
+        res2 = self.testapp.get(
+            '/conceptschemes/TREES',
+            {},
+            {ascii_native_('Accept'): ascii_native_('application/ld+json')})
+        data2 = json.loads(res2.body.decode('utf-8'))
+        assert data == data2
+
     def test_get_conceptschemes_trees_cs_json(self):
         res = self.testapp.get(
             '/conceptschemes/TREES/c',
@@ -285,6 +299,21 @@ class RestFunctionalTests(FunctionalTests):
         assert 'type' in data
         assert '@context' in data
         assert '/jsonld/context/skos' in data['@context']
+
+    def test_get_conceptschemes_trees_species_jsonld_url(self):
+        res = self.testapp.get(
+            '/conceptschemes/TREES/c/3.jsonld'
+        )
+        assert res.status == '200 OK'
+        assert 'application/ld+json' in res.headers['Content-Type']
+        data = json.loads(res.body.decode('utf-8'))
+        res2 = self.testapp.get(
+            '/conceptschemes/TREES/c/3',
+            {},
+            {ascii_native_('Accept'): ascii_native_('application/ld+json')}
+        )
+        data2 = json.loads(res2.body.decode('utf-8'))
+        assert data == data2
 
     def test_get_conceptscheme_concepts_search_dfs_label_star(self):
         res = self.testapp.get(

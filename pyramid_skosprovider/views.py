@@ -58,19 +58,29 @@ class StaticView(RestView):
         return CONTEXT
 
 
-@view_defaults(renderer='skosjson', accept='application/json')
 class ProviderView(RestView):
     '''
     A set of views that expose information from a certain provider.
     '''
 
     @view_config(
-            route_name='skosprovider.uri',
-            request_method='GET',
-            accept='application/json+ld'
+        route_name='skosprovider.uri',
+        request_method='GET',
+        accept='application/json+ld',
+        renderer='skosjson'
     )
-    @view_config(route_name='skosprovider.uri', request_method='GET')
-    @view_config(route_name='skosprovider.uri.deprecated', request_method='GET')
+    @view_config(
+        route_name='skosprovider.uri',
+        request_method='GET',
+        accept='application/json',
+        renderer='skosjson'
+    )
+    @view_config(
+        route_name='skosprovider.uri.deprecated',
+        request_method='GET',
+        accept='application/json',
+        renderer='skosjson'
+    )
     def get_uri(self):
         uri = self.request.params.get('uri', self.request.matchdict.get('uri', None))
         if not uri:
@@ -106,7 +116,12 @@ class ProviderView(RestView):
             }
         }
 
-    @view_config(route_name='skosprovider.conceptschemes', request_method='GET')
+    @view_config(
+        route_name='skosprovider.conceptschemes',
+        request_method='GET',
+        accept='application/json',
+        renderer='skosjson'
+    )
     @view_config(
         route_name='skosprovider.conceptschemes',
         request_method='GET',
@@ -132,7 +147,12 @@ class ProviderView(RestView):
             } for p in self.skos_registry.get_providers()
         ]
 
-    @view_config(route_name='skosprovider.conceptscheme', request_method='GET')
+    @view_config(
+        route_name='skosprovider.conceptscheme',
+        request_method='GET',
+        accept='application/json',
+        renderer='skosjson'
+    )
     def get_conceptscheme(self):
         scheme_id = self.request.matchdict['scheme_id']
         provider = self.skos_registry.get_provider(scheme_id)
@@ -156,14 +176,28 @@ class ProviderView(RestView):
         renderer='skosjsonld',
         accept='application/ld+json'
     )
+    @view_config(
+        route_name='skosprovider.conceptscheme.jsonld',
+        request_method='GET',
+        renderer='skosjsonld'
+    )
     def get_conceptscheme_jsonld(self):
         scheme_id = self.request.matchdict['scheme_id']
+        log.debug(scheme_id)
         provider = self.skos_registry.get_provider(scheme_id)
+        log.debug(provider)
         if not provider:
+            log.warning('no provider')
+            log.debug(provider)
             return HTTPNotFound()
         return provider.concept_scheme
 
-    @view_config(route_name='skosprovider.conceptscheme.tc', request_method='GET')
+    @view_config(
+        route_name='skosprovider.conceptscheme.tc',
+        request_method='GET',
+        accept='application/json',
+        renderer='skosjson'
+    )
     def get_conceptscheme_top_concepts(self):
         scheme_id = self.request.matchdict['scheme_id']
         provider = self.skos_registry.get_provider(scheme_id)
@@ -172,7 +206,12 @@ class ProviderView(RestView):
         language = self.request.params.get('language', self.request.locale_name)
         return provider.get_top_concepts(language=language)
 
-    @view_config(route_name='skosprovider.conceptscheme.display_top', request_method='GET')
+    @view_config(
+        route_name='skosprovider.conceptscheme.display_top',
+        request_method='GET',
+        accept='application/json',
+        renderer='skosjson'
+    )
     def get_conceptscheme_display_top(self):
         scheme_id = self.request.matchdict['scheme_id']
         provider = self.skos_registry.get_provider(scheme_id)
@@ -197,7 +236,12 @@ class ProviderView(RestView):
             providers['subject'] = subject
         return providers
 
-    @view_config(route_name='skosprovider.cs', request_method='GET')
+    @view_config(
+        route_name='skosprovider.cs',
+        request_method='GET',
+        accept='application/json',
+        renderer='skosjson'
+    )
     def get_concepts(self):
         qb = QueryBuilder(self.request)
         query = qb()
@@ -215,7 +259,12 @@ class ProviderView(RestView):
 
         return self._page_results(concepts)
 
-    @view_config(route_name='skosprovider.conceptscheme.cs', request_method='GET')
+    @view_config(
+        route_name='skosprovider.conceptscheme.cs',
+        request_method='GET',
+        accept='application/json',
+        renderer='skosjson'
+    )
     def get_conceptscheme_concepts(self):
         scheme_id = self.request.matchdict['scheme_id']
         provider = self.skos_registry.get_provider(scheme_id)
@@ -276,12 +325,22 @@ class ProviderView(RestView):
             ))
         return cslice
 
-    @view_config(route_name='skosprovider.c', request_method='GET')
+    @view_config(
+        route_name='skosprovider.c',
+        request_method='GET',
+        accept='application/json',
+        renderer='skosjson'
+    )
     @view_config(
         route_name='skosprovider.c',
         request_method='GET',
         renderer='skosjsonld',
         accept='application/ld+json'
+    )
+    @view_config(
+        route_name='skosprovider.c.jsonld',
+        request_method='GET',
+        renderer='skosjsonld'
     )
     def get_concept(self):
         scheme_id = self.request.matchdict['scheme_id']
@@ -294,7 +353,12 @@ class ProviderView(RestView):
             return HTTPNotFound()
         return concept
 
-    @view_config(route_name='skosprovider.c.display_children', request_method='GET')
+    @view_config(
+        route_name='skosprovider.c.display_children',
+        request_method='GET',
+        accept='application/json',
+        renderer='skosjson'
+    )
     def get_concept_display_children(self):
         scheme_id = self.request.matchdict['scheme_id']
         concept_id = self.request.matchdict['c_id']
@@ -307,7 +371,12 @@ class ProviderView(RestView):
             return HTTPNotFound()
         return children
 
-    @view_config(route_name='skosprovider.c.expand', request_method='GET')
+    @view_config(
+        route_name='skosprovider.c.expand',
+        request_method='GET',
+        accept='application/json',
+        renderer='skosjson'
+    )
     def get_expand(self):
         scheme_id = self.request.matchdict['scheme_id']
         concept_id = self.request.matchdict['c_id']
