@@ -1,3 +1,11 @@
+0.9.1 (2020-10-??)
+------------------
+
+- Add download links to JSON-LD version of concept and conceptscheme to improve
+  user experience. (#78)
+- Remove pyup. (#79)
+- Update soms development dependencies.
+
 0.9.0 (2020-08-06)
 ------------------
 
