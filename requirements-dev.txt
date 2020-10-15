@@ -3,17 +3,18 @@
 
 # Documentation
 Sphinx==1.8.5 ; python_version < '3.5'
-Sphinx==3.0.4 ; python_version >= '3.5'
+Sphinx==3.2.1 ; python_version >= '3.5'
 sphinxcontrib-httpdomain==1.7.0
-pygments==2.4.2
+pygments==2.5.2
 
 # Linting
 flake8==3.7.8
 
 # Unit testing
-pytest==4.6.9 ; python_version < '3.0'
-pytest==5.3.5 ; python_version >= '3.0'
+pytest==6.1.1 ; python_version < '3.0'
+pytest==5.3.5 ; python_version >= '3.5'
 mock==3.0.5
-webtest==2.0.33
-pytest-cov==2.7.1
-coveralls==1.8.2
+webtest==2.0.35
+pytest-cov==2.10.1
+coveralls==1.11.1 ; python_version < '3.0'
+coveralls==2.1.2 ; python_version >= '3.5'
