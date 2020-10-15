@@ -141,6 +141,10 @@ def includeme(config):
         '/conceptschemes'
     )
     config.add_route(
+        'skosprovider.conceptscheme.jsonld',
+        '/conceptschemes/{scheme_id}.jsonld'
+    )
+    config.add_route(
         'skosprovider.conceptscheme',
         '/conceptschemes/{scheme_id}'
     )
@@ -155,6 +159,10 @@ def includeme(config):
     config.add_route(
         'skosprovider.conceptscheme.display_top',
         '/conceptschemes/{scheme_id}/displaytop'
+    )
+    config.add_route(
+        'skosprovider.c.jsonld',
+        '/conceptschemes/{scheme_id}/c/{c_id}.jsonld'
     )
     config.add_route(
         'skosprovider.c',
