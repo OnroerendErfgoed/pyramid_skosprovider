@@ -1,4 +1,4 @@
-0.9.1 (2020-10-??)
+0.9.1 (2020-10-19)
 ------------------
 
 - Add download links to JSON-LD version of concept and conceptscheme to improve
