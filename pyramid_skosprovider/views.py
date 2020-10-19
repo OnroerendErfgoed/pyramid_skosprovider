@@ -183,12 +183,8 @@ class ProviderView(RestView):
     )
     def get_conceptscheme_jsonld(self):
         scheme_id = self.request.matchdict['scheme_id']
-        log.debug(scheme_id)
         provider = self.skos_registry.get_provider(scheme_id)
-        log.debug(provider)
         if not provider:
-            log.warning('no provider')
-            log.debug(provider)
             return HTTPNotFound()
         return provider.concept_scheme
 
