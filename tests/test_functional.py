@@ -321,7 +321,7 @@ class RestFunctionalTests(FunctionalTests):
             {
                 'type': 'concept',
                 'mode': 'dijitFilteringSelect',
-                'label': 'De *'
+                'label': 'de *'
             },
             {ascii_native_('Accept'): ascii_native_('application/json')}
         )

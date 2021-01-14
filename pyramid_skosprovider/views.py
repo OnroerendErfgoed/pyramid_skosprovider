@@ -280,14 +280,13 @@ class ProviderView(RestView):
 
         return self._page_results(concepts)
 
-    def _postprocess_wildcards(self, concepts, label):
+    @staticmethod
+    def _postprocess_wildcards(concepts, label):
         # We need to refine results further
-        if label.startswith('*') and label.endswith('*'):
-            concepts = [c for c in concepts if label[1:-1] in c['label']]
-        elif label.endswith('*'):
-            concepts = [c for c in concepts if c['label'].startswith(label[0:-1])]
-        elif label.startswith('*'):
-            concepts = [c for c in concepts if c['label'].endswith(label[1:])]
+        if label.startswith('*') and not label.endswith('*'):
+            concepts = [
+                c for c in concepts if c['label'].lower().endswith(label[1:].lower())
+            ]
         return concepts
 
     def _get_sort_params(self):
