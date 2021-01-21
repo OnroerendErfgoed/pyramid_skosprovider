@@ -9,8 +9,8 @@ This library integrates skosprovider_ in a pyramid application.
         :target: https://readthedocs.org/projects/pyramid-skosprovider/?badge=latest
         :alt: Documentation Status
 
-.. image:: https://travis-ci.org/koenedaele/pyramid_skosprovider.png
-        :target: https://travis-ci.org/koenedaele/pyramid_skosprovider
+.. image:: https://travis-ci.com/koenedaele/pyramid_skosprovider.png
+        :target: https://travis-ci.com/koenedaele/pyramid_skosprovider
 .. image:: https://img.shields.io/coveralls/koenedaele/pyramid_skosprovider.svg
         :target: https://coveralls.io/r/koenedaele/pyramid_skosprovider
 .. image:: https://scrutinizer-ci.com/g/koenedaele/pyramid_skosprovider/badges/quality-score.png?b=master
