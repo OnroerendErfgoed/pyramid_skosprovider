@@ -306,12 +306,33 @@ class ProviderViewTests(unittest.TestCase):
         self.assertIsInstance(concepts, list)
         self.assertEqual(2, len(concepts))
 
-    def test_get_concepts_search_dfs_label_star(self):
+    def test_get_concepts_search_dfs_label_star_postfix(self):
         request = self._get_dummy_request({
-            'type': 'concept',
             'mode': 'dijitFilteringSelect',
-            'label': 'De *',
+            'label': 'soo*',
             'language': 'nl-BE'
+        })
+        pv = self._get_provider_view(request)
+        concepts = pv.get_concepts()
+        self.assertIsInstance(concepts, list)
+        self.assertEqual(0, len(concepts))
+
+    def test_get_concepts_search_dfs_label_star_prefix(self):
+        request = self._get_dummy_request({
+            'mode': 'dijitFilteringSelect',
+            'label': '*kastanje',
+            'language': 'nl-BE'
+        })
+        pv = self._get_provider_view(request)
+        concepts = pv.get_concepts()
+        self.assertIsInstance(concepts, list)
+        self.assertEqual(1, len(concepts))
+
+    def test_get_concepts_search_dfs_label_star_allfix(self):
+        request = self._get_dummy_request({
+            'mode': 'dijitFilteringSelect',
+            'label': '*ch*',
+            'language': 'en'
         })
         pv = self._get_provider_view(request)
         concepts = pv.get_concepts()

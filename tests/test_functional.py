@@ -315,11 +315,10 @@ class RestFunctionalTests(FunctionalTests):
         data2 = json.loads(res2.body.decode('utf-8'))
         assert data == data2
 
-    def test_get_conceptscheme_concepts_search_dfs_label_star(self):
+    def test_get_conceptscheme_concepts_search_dfs_label_star_postfix(self):
         res = self.testapp.get(
             '/conceptschemes/TREES/c?language=nl-BE',
             {
-                'type': 'concept',
                 'mode': 'dijitFilteringSelect',
                 'label': 'de *'
             },
@@ -330,6 +329,36 @@ class RestFunctionalTests(FunctionalTests):
         data = json.loads(res.body.decode('utf-8'))
         self.assertIsInstance(data, list)
         self.assertEqual(2, len(data))
+
+    def test_get_conceptscheme_concepts_search_dfs_label_star_prefix(self):
+        res = self.testapp.get(
+            '/conceptschemes/TREES/c?language=en',
+            {
+                'mode': 'dijitFilteringSelect',
+                'label': '*nut'
+            },
+            {ascii_native_('Accept'): ascii_native_('application/json')}
+        )
+        self.assertEqual('200 OK', res.status)
+        self.assertIn('application/json', res.headers['Content-Type'])
+        data = json.loads(res.body.decode('utf-8'))
+        self.assertIsInstance(data, list)
+        self.assertEqual(1, len(data))
+
+    def test_get_conceptscheme_concepts_search_dfs_label_star_prepostfix(self):
+        res = self.testapp.get(
+            '/conceptschemes/TREES/c?language=nl-BE',
+            {
+                'mode': 'dijitFilteringSelect',
+                'label': '*Lariks*'
+            },
+            {ascii_native_('Accept'): ascii_native_('application/json')}
+        )
+        self.assertEqual('200 OK', res.status)
+        self.assertIn('application/json', res.headers['Content-Type'])
+        data = json.loads(res.body.decode('utf-8'))
+        self.assertIsInstance(data, list)
+        self.assertEqual(1, len(data))
 
     def test_get_conceptscheme_concepts_search_dfs_all(self):
         res = self.testapp.get(

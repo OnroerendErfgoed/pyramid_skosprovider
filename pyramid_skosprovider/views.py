@@ -287,6 +287,10 @@ class ProviderView(RestView):
             concepts = [
                 c for c in concepts if c['label'].lower().endswith(label[1:].lower())
             ]
+        elif label.endswith('*') and not label.startswith('*'):
+            concepts = [
+                c for c in concepts if c['label'].lower().startswith(label[:1].lower())
+            ]
         return concepts
 
     def _get_sort_params(self):
