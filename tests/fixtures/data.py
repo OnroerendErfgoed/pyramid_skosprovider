@@ -54,6 +54,7 @@ species = {
     'uri': 'http://python.com/trees/species',
     'labels': [
         {'type': 'prefLabel', 'language': 'en', 'label': 'Trees by species'},
+        {'type': 'altLabel', 'language': 'en', 'label': 'Trees by their species'},
         {'type': 'prefLabel', 'language': 'nl', 'label': 'Bomen per soort'},
         {'type': 'prefLabel', 'language': 'nl', 'label': 'b'}
     ],

@@ -107,7 +107,7 @@ class TestRenderers(unittest.TestCase):
         self.assertIn('label', collection)
         self.assertIn('uri', collection)
         self.assertEqual(collection['type'], 'collection')
-        self.assertEqual(len(collection['labels']), 3)
+        assert 4 == len(collection['labels'])
         self._assert_is_labels(collection['labels'])
         self.assertIn('notes', collection)
         assert collection['infer_concept_relations'] is True
@@ -201,7 +201,7 @@ class TestRenderers(unittest.TestCase):
         assert isinstance(coll['label'], text_type)
         assert coll['type'] == 'collection'
         assert isinstance(coll['labels'], list)
-        assert len(coll['labels']) == 3
+        assert 4 == len(coll['labels'])
         for l in coll['labels']:
             assert 'label' in l
             assert 'type' in l
