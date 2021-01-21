@@ -289,7 +289,7 @@ class ProviderView(RestView):
             ]
         elif label.endswith('*') and not label.startswith('*'):
             concepts = [
-                c for c in concepts if c['label'].lower().startswith(label[:1].lower())
+                c for c in concepts if c['label'].lower().startswith(label[:-1].lower())
             ]
         return concepts
 

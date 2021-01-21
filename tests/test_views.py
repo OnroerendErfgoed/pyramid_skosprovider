@@ -317,6 +317,17 @@ class ProviderViewTests(unittest.TestCase):
         self.assertIsInstance(concepts, list)
         self.assertEqual(0, len(concepts))
 
+    def test_get_concepts_search_dfs_label_star_postfix_en(self):
+        request = self._get_dummy_request({
+            'mode': 'dijitFilteringSelect',
+            'label': 'The*',
+            'language': 'en'
+        })
+        pv = self._get_provider_view(request)
+        concepts = pv.get_concepts()
+        self.assertIsInstance(concepts, list)
+        self.assertEqual(2, len(concepts))
+
     def test_get_concepts_search_dfs_label_star_prefix(self):
         request = self._get_dummy_request({
             'mode': 'dijitFilteringSelect',
