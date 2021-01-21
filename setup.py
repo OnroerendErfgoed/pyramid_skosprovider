@@ -21,7 +21,7 @@ testing_extras = tests_requires + []
 
 setup(
     name='pyramid_skosprovider',
-    version='0.9.1',
+    version='0.9.2',
     license='MIT',
     description='Integration of skosprovider in pyramid',
     long_description=README + '\n\n' + CHANGES,

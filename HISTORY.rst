@@ -1,3 +1,8 @@
+0.9.2 (2021-01-21)
+------------------
+
+- Fix an issue with case insensitive search containing a wildcard. (#82)
+
 0.9.1 (2020-10-19)
 ------------------
 
