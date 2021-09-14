@@ -1,13 +1,6 @@
 # -*- coding: utf8 -*-
 
-from __future__ import unicode_literals
-
 from pyramid.config import Configurator
-
-from pyramid.compat import (
-    ascii_native_,
-    string_types
-)
 
 import json
 
@@ -55,7 +48,7 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/jsonld/context/skos',
             {},
-            {ascii_native_('Accept'): ascii_native_('application/json')}
+            {'Accept': 'application/json'}
         )
         assert res.status == '200 OK'
         assert 'application/json' in res.headers['Content-Type']
@@ -68,7 +61,7 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/jsonld/context/skos',
             {},
-            {ascii_native_('Accept'): ascii_native_('application/ld+json')}
+            {'Accept': 'application/ld+json'}
         )
         assert res.status == '200 OK'
         assert 'application/ld+json' in res.headers['Content-Type']
@@ -81,7 +74,7 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/uris?uri=http://python.com/trees',
             {},
-            {ascii_native_('Accept'): ascii_native_('application/json')}
+            {'Accept': 'application/json'}
         )
         self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
@@ -95,7 +88,7 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/uris?uri=http%3A%2F%2Fpython.com%2Ftrees%2Flarch',
             {},
-            {ascii_native_('Accept'): ascii_native_('application/json')}
+            {'Accept': 'application/json'}
         )
         self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
@@ -110,12 +103,12 @@ class RestFunctionalTests(FunctionalTests):
         res1 = self.testapp.get(
             '/uris?uri=http://python.com/trees',
             {},
-            {ascii_native_('Accept'): ascii_native_('application/json')}
+            {'Accept': 'application/json'}
         )
         res2 = self.testapp.get(
             '/uris/http://python.com/trees',
             {},
-            {ascii_native_('Accept'): ascii_native_('application/json')}
+            {'Accept': 'application/json'}
         )
         self.assertEqual(res1.body, res2.body)
 
@@ -123,7 +116,7 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/uris',
             {},
-            {ascii_native_('Accept'): ascii_native_('application/json')},
+            {'Accept': 'application/json'},
             status=400
         )
         self.assertEqual('400 Bad Request', res.status)
@@ -132,7 +125,8 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/conceptschemes',
             {},
-            {ascii_native_('Accept'): ascii_native_('application/json')})
+            {'Accept': 'application/json'}
+        )
         self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
         data = json.loads(res.body.decode('utf-8'))
@@ -143,7 +137,8 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/conceptschemes/TREES',
             {},
-            {ascii_native_('Accept'): ascii_native_('application/json')})
+            {'Accept': 'application/json'}
+        )
         self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
         data = json.loads(res.body.decode('utf-8'))
@@ -163,7 +158,8 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/conceptschemes/TREES',
             {},
-            {ascii_native_('Accept'): ascii_native_('application/ld+json')})
+            {'Accept': 'application/ld+json'}
+        )
         assert res.status == '200 OK'
         assert 'application/ld+json' in res.headers['Content-Type']
         data = json.loads(res.body.decode('utf-8'))
@@ -188,7 +184,8 @@ class RestFunctionalTests(FunctionalTests):
         res2 = self.testapp.get(
             '/conceptschemes/TREES',
             {},
-            {ascii_native_('Accept'): ascii_native_('application/ld+json')})
+            {'Accept': 'application/ld+json'}
+        )
         data2 = json.loads(res2.body.decode('utf-8'))
         assert data == data2
 
@@ -196,11 +193,11 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/conceptschemes/TREES/c',
             {},
-            {ascii_native_('Accept'): ascii_native_('application/json')}
+            {'Accept': 'application/json'}
         )
         self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
-        self.assertIsInstance(res.headers['Content-Range'], string_types)
+        self.assertIsInstance(res.headers['Content-Range'], str)
         self.assertEqual('items 0-2/3', res.headers['Content-Range'])
         data = json.loads(res.body.decode('utf-8'))
         self.assertIsInstance(data, list)
@@ -211,13 +208,13 @@ class RestFunctionalTests(FunctionalTests):
             '/conceptschemes/TREES/c',
             {},
             {
-                ascii_native_('Accept'): ascii_native_('application/json'),
-                ascii_native_('Range'): ascii_native_('items=2-2')
+                'Accept': 'application/json',
+                'Range': 'items=2-2'
             }
         )
         self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
-        self.assertIsInstance(res.headers['Content-Range'], string_types)
+        self.assertIsInstance(res.headers['Content-Range'], str)
         self.assertEqual('items 2-2/3', res.headers['Content-Range'])
         data = json.loads(res.body.decode('utf-8'))
         self.assertIsInstance(data, list)
@@ -227,7 +224,7 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/conceptschemes/TREES/c/1',
             {},
-            {ascii_native_('Accept'): ascii_native_('application/json')}
+            {'Accept': 'application/json'}
         )
         self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
@@ -249,7 +246,7 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/conceptschemes/TREES/c/1',
             {},
-            {ascii_native_('Accept'): ascii_native_('application/ld+json')}
+            {'Accept': 'application/ld+json'}
         )
         assert res.status == '200 OK'
         assert 'application/ld+json' in res.headers['Content-Type']
@@ -266,7 +263,7 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/conceptschemes/TREES/c/3',
             {},
-            {ascii_native_('Accept'): ascii_native_('application/json')}
+            {'Accept': 'application/json'}
         )
         self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
@@ -287,7 +284,7 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/conceptschemes/TREES/c/3',
             {},
-            {ascii_native_('Accept'): ascii_native_('application/ld+json')}
+            {'Accept': 'application/ld+json'}
         )
         assert res.status == '200 OK'
         assert 'application/ld+json' in res.headers['Content-Type']
@@ -310,7 +307,7 @@ class RestFunctionalTests(FunctionalTests):
         res2 = self.testapp.get(
             '/conceptschemes/TREES/c/3',
             {},
-            {ascii_native_('Accept'): ascii_native_('application/ld+json')}
+            {'Accept': 'application/ld+json'}
         )
         data2 = json.loads(res2.body.decode('utf-8'))
         assert data == data2
@@ -322,7 +319,7 @@ class RestFunctionalTests(FunctionalTests):
                 'mode': 'dijitFilteringSelect',
                 'label': 'de *'
             },
-            {ascii_native_('Accept'): ascii_native_('application/json')}
+            {'Accept': 'application/json'}
         )
         self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
@@ -337,7 +334,7 @@ class RestFunctionalTests(FunctionalTests):
                 'mode': 'dijitFilteringSelect',
                 'label': '*nut'
             },
-            {ascii_native_('Accept'): ascii_native_('application/json')}
+            {'Accept': 'application/json'}
         )
         self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
@@ -352,7 +349,7 @@ class RestFunctionalTests(FunctionalTests):
                 'mode': 'dijitFilteringSelect',
                 'label': '*Lariks*'
             },
-            {ascii_native_('Accept'): ascii_native_('application/json')}
+            {'Accept': 'application/json'}
         )
         self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
@@ -364,7 +361,7 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/conceptschemes/TREES/c',
             {'mode': 'dijitFilteringSelect', 'label': '*'},
-            {ascii_native_('Accept'): ascii_native_('application/json')}
+            {'Accept': 'application/json'}
         )
         self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
@@ -375,7 +372,7 @@ class RestFunctionalTests(FunctionalTests):
     def test_get_top_concepts(self):
         res = self.testapp.get(
             '/conceptschemes/TREES/topconcepts',
-            {ascii_native_('Accept'): ascii_native_('application/json')}
+            {'Accept': 'application/json'}
         )
         self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])

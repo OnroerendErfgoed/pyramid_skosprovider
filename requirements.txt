@@ -1,3 +1,3 @@
-pyramid==1.10.5
-skosprovider==0.7.1
+pyramid==2.0
+skosprovider==1.0.0
 # -e git+https://github.com/koenedaele/skosprovider.git@develop#egg=skosprovider

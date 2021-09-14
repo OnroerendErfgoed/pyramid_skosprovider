@@ -3,13 +3,9 @@
 This module contains the pyramid views that expose services.
 '''
 
-from __future__ import unicode_literals
-
 import itertools
 
 from pyramid.view import view_config, view_defaults
-
-from pyramid.compat import ascii_native_
 
 from pyramid.httpexceptions import (
     HTTPNotFound,
@@ -318,10 +314,10 @@ class ProviderView(RestView):
         cslice = concepts[paging_data['start']:paging_data['finish']+1]
         if len(cslice):
             cslice[0]['@context'] = self.request.route_url('skosprovider.context')
-        self.request.response.headers[ascii_native_('Content-Range')] = \
-            ascii_native_('items %d-%d/%d' % (
+        self.request.response.headers['Content-Range'] = \
+            'items %d-%d/%d' % (
                 paging_data['start'], paging_data['finish'], count
-            ))
+            )
         return cslice
 
     @view_config(

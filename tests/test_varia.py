@@ -1,13 +1,10 @@
 # -*- coding: utf8 -*-
 
-from __future__ import unicode_literals
-
 from pyramid import testing
 
 from pyramid_skosprovider import (
     ISkosRegistry,
     get_skos_registry,
-    #get_request_skos_registry,
     _register_global_skos_registry,
     _register_request_skos_registry,
     includeme

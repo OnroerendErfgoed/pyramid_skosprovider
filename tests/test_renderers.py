@@ -1,12 +1,6 @@
 # -*- coding: utf8 -*-
 
-from __future__ import unicode_literals
-
 from pyramid import testing
-
-from pyramid.compat import (
-    text_type
-)
 
 from .fixtures.data import (
     larch,
@@ -25,10 +19,7 @@ from skosprovider.skos import (
 import json
 
 import unittest
-try:
-    from unittest.mock import Mock
-except ImportError:
-    from mock import Mock
+from unittest.mock import Mock
 
 
 class TestRenderers(unittest.TestCase):
@@ -56,7 +47,7 @@ class TestRenderers(unittest.TestCase):
         self.assertIsInstance(concept, dict)
         self.assertEqual(concept['id'], 1)
         self.assertIn('uri', concept)
-        self.assertIsInstance(concept['label'], text_type)
+        self.assertIsInstance(concept['label'], str)
         self.assertIn(concept['type'], 'concept')
         self.assertEqual(len(concept['labels']), 3)
         self._assert_is_labels(concept['labels'])
@@ -103,7 +94,7 @@ class TestRenderers(unittest.TestCase):
         collection = collection_adapter(c, request)
         self.assertIsInstance(collection, dict)
         self.assertEqual(collection['id'], 3)
-        self.assertIsInstance(collection['label'], text_type)
+        self.assertIsInstance(collection['label'], str)
         self.assertIn('label', collection)
         self.assertIn('uri', collection)
         self.assertEqual(collection['type'], 'collection')
@@ -147,7 +138,7 @@ class TestRenderers(unittest.TestCase):
         self.assertIsInstance(concept, dict)
         self.assertEqual(concept['id'], 1)
         self.assertEqual(concept['uri'], 'http://python.com/trees/larch')
-        self.assertIsInstance(concept['label'], text_type)
+        self.assertIsInstance(concept['label'], str)
         self.assertEqual(concept['type'], 'concept')
         self.assertIsInstance(concept['labels'], list)
         self.assertEqual(len(concept['labels']), 3)
@@ -198,7 +189,7 @@ class TestRenderers(unittest.TestCase):
         assert isinstance(coll, dict)
         assert coll['id'] == 3
         assert coll['uri'] == 'http://python.com/trees/species'
-        assert isinstance(coll['label'], text_type)
+        assert isinstance(coll['label'], str)
         assert coll['type'] == 'collection'
         assert isinstance(coll['labels'], list)
         assert 4 == len(coll['labels'])

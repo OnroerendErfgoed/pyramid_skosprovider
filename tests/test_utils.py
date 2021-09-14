@@ -1,12 +1,6 @@
 # -*- coding: utf8 -*-
 
-from __future__ import unicode_literals
-
 from pyramid import testing
-
-from pyramid.compat import (
-    text_type
-)
 
 from .fixtures.data import (
     larch,
@@ -25,10 +19,7 @@ from skosprovider.skos import (
 import json
 
 import unittest
-try:
-    from unittest.mock import Mock
-except ImportError:
-    from mock import Mock
+from unittest.mock import Mock
 
 
 class TestQueryBuilder:

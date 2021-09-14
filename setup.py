@@ -7,8 +7,8 @@ README = open(os.path.join(here, 'README.rst')).read()
 CHANGES = open(os.path.join(here, 'HISTORY.rst')).read()
 
 requires = [
-    'pyramid',
-    'skosprovider>=0.7.0'
+    'pyramid>=2.0',
+    'skosprovider>=1.0.0'
 ]
 
 tests_requires = [
@@ -21,20 +21,20 @@ testing_extras = tests_requires + []
 
 setup(
     name='pyramid_skosprovider',
-    version='0.9.2',
+    version='1.0.0',
     license='MIT',
     description='Integration of skosprovider in pyramid',
     long_description=README + '\n\n' + CHANGES,
     long_description_content_type='text/x-rst',
     classifiers=[
         'Intended Audience :: Developers',
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Framework :: Pyramid',
     ],
     author='Koen Van Daele',

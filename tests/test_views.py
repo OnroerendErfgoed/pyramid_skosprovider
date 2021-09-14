@@ -1,7 +1,5 @@
 # -*- coding: utf8 -*-
 
-from __future__ import unicode_literals
-
 import logging
 from pyramid import testing
 
