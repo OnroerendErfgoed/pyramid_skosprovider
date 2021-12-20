@@ -1,0 +1,27 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: pyramid_skosprovider
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Koen
+    family-names: Van Daele
+    email: koen.vandaele@vlaanderen.be
+    orcid: 'https://orcid.org/0000-0002-8153-2978'
+repository-code: 'https://github.com/koenedaele/pyramid_skosprovider'
+abstract: >-
+  This library integrates Skosprovider in an
+  application powered by the Pyramid framework.
+keywords:
+  - Python
+  - Pyramid
+  - SKOS
+  - Skosprovider
+  - Vocabulary
+license: MIT
+version: 1.0.0
+date-released: '2021-09-14'
