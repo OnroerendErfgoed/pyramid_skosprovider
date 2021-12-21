@@ -39,7 +39,7 @@ setup(
     ],
     author='Koen Van Daele',
     author_email='koen_van_daele@telenet.be',
-    url='https://github.com/koenedaele/pyramid_skosprovider',
+    url='https://github.com/OnroerendErfgoed/pyramid_skosprovider',
     keywords='pyramid skos skosprovider thesauri vocabularies',
     packages=find_packages(),
     include_package_data=True,
