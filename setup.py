@@ -8,7 +8,7 @@ CHANGES = open(os.path.join(here, 'HISTORY.rst')).read()
 
 requires = [
     'pyramid>=2.0',
-    'skosprovider>=1.0.0'
+    'skosprovider>=1.1.0'
 ]
 
 tests_requires = [
@@ -21,7 +21,7 @@ testing_extras = tests_requires + []
 
 setup(
     name='pyramid_skosprovider',
-    version='1.0.0',
+    version='1.1.0',
     license='MIT',
     description='Integration of skosprovider in pyramid',
     long_description=README + '\n\n' + CHANGES,
@@ -39,7 +39,7 @@ setup(
     ],
     author='Koen Van Daele',
     author_email='koen_van_daele@telenet.be',
-    url='https://github.com/koenedaele/pyramid_skosprovider',
+    url='https://github.com/OnroerendErfgoed/pyramid_skosprovider',
     keywords='pyramid skos skosprovider thesauri vocabularies',
     packages=find_packages(),
     include_package_data=True,
