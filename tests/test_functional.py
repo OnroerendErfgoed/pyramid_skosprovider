@@ -7,6 +7,7 @@ import json
 from webtest import TestApp
 
 import unittest
+import responses
 
 from .fixtures.data import (
     trees
@@ -30,6 +31,18 @@ def skosmain(global_config, **settings):
 
     return config.make_wsgi_app()
 
+def register_ctxt_callback(responses, testapp):
+
+    def callback(request):
+        response = testapp.get(request.path_url, headers=request.headers)
+        return 200, response.headers, response.text
+
+    responses.add_callback(
+        method = responses.GET,
+        url = "http://localhost/jsonld/context/skos",
+        callback = callback
+    )
+    return responses
 
 class FunctionalTests(unittest.TestCase):
 
@@ -176,8 +189,8 @@ class RestFunctionalTests(FunctionalTests):
         assert '@context' in data
         assert '/jsonld/context/skos' in data['@context']
 
-
     def test_get_conceptscheme_jsonld_expand(self):
+        
         res = self.testapp.get(
             '/conceptschemes/TREES',
             {},
@@ -186,9 +199,17 @@ class RestFunctionalTests(FunctionalTests):
         assert res.status == '200 OK'
         assert 'application/ld+json' in res.headers['Content-Type']
         data = json.loads(res.body.decode('utf-8'))
-        expanded = jsonld.expand(data)
-        assert 'http://purl.org/dc/terms/identifier' in expanded
-        assert 'http://www.w3.org/2004/02/skos/core#prefLabel' in expanded
+
+        with responses.RequestsMock() as rsps:
+
+            rsps = register_ctxt_callback(rsps, self.testapp)
+
+            expanded = jsonld.expand(data)
+            assert 'http://purl.org/dc/terms/identifier' in expanded[0]
+            assert 'http://python.com/trees' == expanded[0]['@id']
+            assert 'http://www.w3.org/2004/02/skos/core#ConceptScheme' in expanded[0]['@type']
+            assert {'@value': 'TREES'} in expanded[0]['http://purl.org/dc/terms/identifier']
+            assert 'http://www.w3.org/2004/02/skos/core#prefLabel' in expanded[0]
 
     def test_get_conceptscheme_jsonld_url(self):
         res = self.testapp.get(
@@ -275,6 +296,29 @@ class RestFunctionalTests(FunctionalTests):
         assert '@context' in data
         assert '/jsonld/context/skos' in data['@context']
 
+
+    def test_get_conceptscheme_trees_larch_jsonld_expand(self):
+        
+        res = self.testapp.get(
+            '/conceptschemes/TREES/c/1',
+            {},
+            {'Accept': 'application/ld+json'}
+        )
+        assert res.status == '200 OK'
+        assert 'application/ld+json' in res.headers['Content-Type']
+        data = json.loads(res.body.decode('utf-8'))
+
+        with responses.RequestsMock() as rsps:
+
+            rsps = register_ctxt_callback(rsps, self.testapp)
+
+            expanded = jsonld.expand(data)
+            assert 'http://purl.org/dc/terms/identifier' in expanded[0]
+            assert 'http://python.com/trees/larch' == expanded[0]['@id']
+            assert 'http://www.w3.org/2004/02/skos/core#Concept' in expanded[0]['@type']
+            assert {'@value': 1} in expanded[0]['http://purl.org/dc/terms/identifier']
+            assert 'http://www.w3.org/2004/02/skos/core#prefLabel' in expanded[0]
+
     def test_get_conceptschemes_trees_species_json(self):
         res = self.testapp.get(
             '/conceptschemes/TREES/c/3',
@@ -312,6 +356,28 @@ class RestFunctionalTests(FunctionalTests):
         assert 'type' in data
         assert '@context' in data
         assert '/jsonld/context/skos' in data['@context']
+
+    def test_get_conceptscheme_trees_species_jsonld_expand(self):
+        
+        res = self.testapp.get(
+            '/conceptschemes/TREES/c/3',
+            {},
+            {'Accept': 'application/ld+json'}
+        )
+        assert res.status == '200 OK'
+        assert 'application/ld+json' in res.headers['Content-Type']
+        data = json.loads(res.body.decode('utf-8'))
+
+        with responses.RequestsMock() as rsps:
+
+            rsps = register_ctxt_callback(rsps, self.testapp)
+
+            expanded = jsonld.expand(data)
+            assert 'http://purl.org/dc/terms/identifier' in expanded[0]
+            assert 'http://python.com/trees/species' == expanded[0]['@id']
+            assert 'http://www.w3.org/2004/02/skos/core#Collection' in expanded[0]['@type']
+            assert {'@value': 3} in expanded[0]['http://purl.org/dc/terms/identifier']
+            assert 'http://www.w3.org/2004/02/skos/core#prefLabel' in expanded[0]
 
     def test_get_conceptschemes_trees_species_jsonld_url(self):
         res = self.testapp.get(
