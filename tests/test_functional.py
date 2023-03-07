@@ -12,6 +12,8 @@ from .fixtures.data import (
     trees
 )
 
+from pyld import jsonld
+
 
 def skosmain(global_config, **settings):
     """
@@ -173,6 +175,20 @@ class RestFunctionalTests(FunctionalTests):
         assert 'sources' in data
         assert '@context' in data
         assert '/jsonld/context/skos' in data['@context']
+
+
+    def test_get_conceptscheme_jsonld_expand(self):
+        res = self.testapp.get(
+            '/conceptschemes/TREES',
+            {},
+            {'Accept': 'application/ld+json'}
+        )
+        assert res.status == '200 OK'
+        assert 'application/ld+json' in res.headers['Content-Type']
+        data = json.loads(res.body.decode('utf-8'))
+        expanded = jsonld.expand(data)
+        assert 'http://purl.org/dc/terms/identifier' in expanded
+        assert 'http://www.w3.org/2004/02/skos/core#prefLabel' in expanded
 
     def test_get_conceptscheme_jsonld_url(self):
         res = self.testapp.get(
