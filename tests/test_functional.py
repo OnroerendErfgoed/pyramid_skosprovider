@@ -63,9 +63,9 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/jsonld/context/skos',
             {},
-            {'Accept': 'application/json'}
+            {'Accept': 'application/json'},
+            status=200
         )
-        assert res.status == '200 OK'
         assert 'application/json' in res.headers['Content-Type']
         data = json.loads(res.body.decode('utf-8'))
         assert isinstance(data, dict)
@@ -77,9 +77,9 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/jsonld/context/skos',
             {},
-            {'Accept': 'application/ld+json'}
+            {'Accept': 'application/ld+json'},
+            status=200
         )
-        assert res.status == '200 OK'
         assert 'application/ld+json' in res.headers['Content-Type']
         data = json.loads(res.body.decode('utf-8'))
         assert isinstance(data, dict)
@@ -91,9 +91,9 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/uris?uri=http://python.com/trees',
             {},
-            {'Accept': 'application/json'}
+            {'Accept': 'application/json'},
+            status=200
         )
-        self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
         data = json.loads(res.body.decode('utf-8'))
         self.assertIsInstance(data, dict)
@@ -105,11 +105,11 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/uris?uri=http%3A%2F%2Fpython.com%2Ftrees%2Flarch',
             {},
-            {'Accept': 'application/json'}
+            {'Accept': 'application/json'},
+            status=200
         )
-        self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
-        data = json.loads(res.body.decode('utf-8'))
+        data = res.json
         self.assertIsInstance(data, dict)
         self.assertIn('uri', data)
         self.assertIn('id', data)
@@ -120,12 +120,14 @@ class RestFunctionalTests(FunctionalTests):
         res1 = self.testapp.get(
             '/uris?uri=http://python.com/trees',
             {},
-            {'Accept': 'application/json'}
+            {'Accept': 'application/json'},
+            status=200
         )
         res2 = self.testapp.get(
             '/uris/http://python.com/trees',
             {},
-            {'Accept': 'application/json'}
+            {'Accept': 'application/json'},
+            status=200
         )
         self.assertEqual(res1.body, res2.body)
 
@@ -136,17 +138,16 @@ class RestFunctionalTests(FunctionalTests):
             {'Accept': 'application/json'},
             status=400
         )
-        self.assertEqual('400 Bad Request', res.status)
 
     def test_get_conceptschemes_json(self):
         res = self.testapp.get(
             '/conceptschemes',
             {},
-            {'Accept': 'application/json'}
+            {'Accept': 'application/json'},
+            status=200
         )
-        self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
-        data = json.loads(res.body.decode('utf-8'))
+        data = res.json
         self.assertIsInstance(data, list)
         self.assertEqual(len(data), 1)
 
@@ -154,11 +155,11 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/conceptschemes/TREES',
             {},
-            {'Accept': 'application/json'}
+            {'Accept': 'application/json'},
+            status=200
         )
-        self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
-        data = json.loads(res.body.decode('utf-8'))
+        data = res.json
         self.assertIsInstance(data, dict)
         self.assertIn('id', data)
         self.assertIn('uri', data)
@@ -175,11 +176,11 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/conceptschemes/TREES',
             {},
-            {'Accept': 'application/ld+json'}
+            {'Accept': 'application/ld+json'},
+            status=200
         )
-        assert res.status == '200 OK'
         assert 'application/ld+json' in res.headers['Content-Type']
-        data = json.loads(res.body.decode('utf-8'))
+        data = res.json
         assert isinstance(data, dict)
         assert 'id' in data
         assert 'uri' in data
@@ -194,15 +195,15 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/conceptschemes/TREES',
             {},
-            {'Accept': 'application/ld+json'}
+            {'Accept': 'application/ld+json'},
+            status=200
         )
-        assert res.status == '200 OK'
         assert 'application/ld+json' in res.headers['Content-Type']
-        data = json.loads(res.body.decode('utf-8'))
+        data = res.json
 
         with responses.RequestsMock() as rsps:
 
-            rsps = register_ctxt_callback(rsps, self.testapp)
+            register_ctxt_callback(rsps, self.testapp)
 
             expanded = jsonld.expand(data)
             assert 'http://purl.org/dc/terms/identifier' in expanded[0]
@@ -213,11 +214,11 @@ class RestFunctionalTests(FunctionalTests):
 
     def test_get_conceptscheme_jsonld_url(self):
         res = self.testapp.get(
-            '/conceptschemes/TREES.jsonld'
+            '/conceptschemes/TREES.jsonld',
+            status=200
         )
-        assert res.status == '200 OK'
         assert 'application/ld+json' in res.headers['Content-Type']
-        data = json.loads(res.body.decode('utf-8'))
+        data = res.json
         res2 = self.testapp.get(
             '/conceptschemes/TREES',
             {},
@@ -230,9 +231,9 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/conceptschemes/TREES/c',
             {},
-            {'Accept': 'application/json'}
+            {'Accept': 'application/json'},
+            status=200
         )
-        self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
         self.assertIsInstance(res.headers['Content-Range'], str)
         self.assertEqual('items 0-2/3', res.headers['Content-Range'])
@@ -247,13 +248,13 @@ class RestFunctionalTests(FunctionalTests):
             {
                 'Accept': 'application/json',
                 'Range': 'items=2-2'
-            }
+            },
+            status=200
         )
-        self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
         self.assertIsInstance(res.headers['Content-Range'], str)
         self.assertEqual('items 2-2/3', res.headers['Content-Range'])
-        data = json.loads(res.body.decode('utf-8'))
+        data = res.json
         self.assertIsInstance(data, list)
         self.assertEqual(len(data), 1)
 
@@ -261,11 +262,11 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/conceptschemes/TREES/c/1',
             {},
-            {'Accept': 'application/json'}
+            {'Accept': 'application/json'},
+            status=200
         )
-        self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
-        data = json.loads(res.body.decode('utf-8'))
+        data = res.json
         self.assertIsInstance(data, dict)
         self.assertIn('id', data)
         self.assertIn('label', data)
@@ -283,11 +284,11 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/conceptschemes/TREES/c/1',
             {},
-            {'Accept': 'application/ld+json'}
+            {'Accept': 'application/ld+json'},
+            status=200
         )
-        assert res.status == '200 OK'
         assert 'application/ld+json' in res.headers['Content-Type']
-        data = json.loads(res.body.decode('utf-8'))
+        data = res.json
         assert isinstance(data, dict)
         assert 'id' in data
         assert 'label' in data
@@ -302,15 +303,15 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/conceptschemes/TREES/c/1',
             {},
-            {'Accept': 'application/ld+json'}
+            {'Accept': 'application/ld+json'},
+            status=200
         )
-        assert res.status == '200 OK'
         assert 'application/ld+json' in res.headers['Content-Type']
         data = json.loads(res.body.decode('utf-8'))
 
         with responses.RequestsMock() as rsps:
 
-            rsps = register_ctxt_callback(rsps, self.testapp)
+            register_ctxt_callback(rsps, self.testapp)
 
             expanded = jsonld.expand(data)
             assert 'http://purl.org/dc/terms/identifier' in expanded[0]
@@ -323,9 +324,9 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/conceptschemes/TREES/c/3',
             {},
-            {'Accept': 'application/json'}
+            {'Accept': 'application/json'},
+            status=200
         )
-        self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
         data = json.loads(res.body.decode('utf-8'))
         self.assertIsInstance(data, dict)
@@ -344,9 +345,9 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/conceptschemes/TREES/c/3',
             {},
-            {'Accept': 'application/ld+json'}
+            {'Accept': 'application/ld+json'},
+            status=200
         )
-        assert res.status == '200 OK'
         assert 'application/ld+json' in res.headers['Content-Type']
         data = json.loads(res.body.decode('utf-8'))
         assert isinstance(data, dict)
@@ -362,15 +363,15 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/conceptschemes/TREES/c/3',
             {},
-            {'Accept': 'application/ld+json'}
+            {'Accept': 'application/ld+json'},
+            status=200
         )
-        assert res.status == '200 OK'
         assert 'application/ld+json' in res.headers['Content-Type']
         data = json.loads(res.body.decode('utf-8'))
 
         with responses.RequestsMock() as rsps:
 
-            rsps = register_ctxt_callback(rsps, self.testapp)
+            register_ctxt_callback(rsps, self.testapp)
 
             expanded = jsonld.expand(data)
             assert 'http://purl.org/dc/terms/identifier' in expanded[0]
@@ -381,9 +382,9 @@ class RestFunctionalTests(FunctionalTests):
 
     def test_get_conceptschemes_trees_species_jsonld_url(self):
         res = self.testapp.get(
-            '/conceptschemes/TREES/c/3.jsonld'
+            '/conceptschemes/TREES/c/3.jsonld',
+            status=200
         )
-        assert res.status == '200 OK'
         assert 'application/ld+json' in res.headers['Content-Type']
         data = json.loads(res.body.decode('utf-8'))
         res2 = self.testapp.get(
@@ -401,9 +402,9 @@ class RestFunctionalTests(FunctionalTests):
                 'mode': 'dijitFilteringSelect',
                 'label': 'de *'
             },
-            {'Accept': 'application/json'}
+            {'Accept': 'application/json'},
+            status=200
         )
-        self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
         data = json.loads(res.body.decode('utf-8'))
         self.assertIsInstance(data, list)
@@ -416,9 +417,9 @@ class RestFunctionalTests(FunctionalTests):
                 'mode': 'dijitFilteringSelect',
                 'label': '*nut'
             },
-            {'Accept': 'application/json'}
+            {'Accept': 'application/json'},
+            status=200
         )
-        self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
         data = json.loads(res.body.decode('utf-8'))
         self.assertIsInstance(data, list)
@@ -431,9 +432,9 @@ class RestFunctionalTests(FunctionalTests):
                 'mode': 'dijitFilteringSelect',
                 'label': '*Lariks*'
             },
-            {'Accept': 'application/json'}
+            {'Accept': 'application/json'},
+            status=200
         )
-        self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
         data = json.loads(res.body.decode('utf-8'))
         self.assertIsInstance(data, list)
@@ -443,9 +444,9 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/conceptschemes/TREES/c',
             {'mode': 'dijitFilteringSelect', 'label': '*'},
-            {'Accept': 'application/json'}
+            {'Accept': 'application/json'},
+            status=200
         )
-        self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
         data = json.loads(res.body.decode('utf-8'))
         self.assertIsInstance(data, list)
@@ -454,9 +455,9 @@ class RestFunctionalTests(FunctionalTests):
     def test_get_top_concepts(self):
         res = self.testapp.get(
             '/conceptschemes/TREES/topconcepts',
-            {'Accept': 'application/json'}
+            {'Accept': 'application/json'},
+            status=200
         )
-        self.assertEqual('200 OK', res.status)
         self.assertIn('application/json', res.headers['Content-Type'])
         data = json.loads(res.body.decode('utf-8'))
         self.assertIsInstance(data, list)
