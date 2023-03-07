@@ -220,7 +220,7 @@ class RestFunctionalTests(FunctionalTests):
         res2 = self.testapp.get(
             '/conceptschemes/TREES',
             {},
-            {'Accept': 'application/ld+json'}
+            {'Accept': 'application/ld+json'},
             status=200
         )
         data2 = res2.json
@@ -370,7 +370,9 @@ class RestFunctionalTests(FunctionalTests):
 
         with responses.RequestsMock() as rsps:
 
-            register_ctxt_callback(res.jsonsonld.expand(data)
+            register_ctxt_callback(rsps, self.testapp)
+
+            expanded = jsonld.expand(data)
             assert 'http://purl.org/dc/terms/identifier' in expanded[0]
             assert 'http://python.com/trees/species' == expanded[0]['@id']
             assert 'http://www.w3.org/2004/02/skos/core#Collection' in expanded[0]['@type']
