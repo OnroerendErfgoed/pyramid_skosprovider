@@ -1,3 +1,19 @@
+1.2.0 (2023-03-08)
+------------------
+
+- Add missing @context in JSON-lD context (#95)
+- Drop support for Python 3.6 and 3.7, add support for 3.10 and 3.11
+
+**Attention!** Querying for a uri with a path in the URL as opposed to a query
+parameter has been deprecated since version 0.7.0 and will be removed in
+the upcoming 2.0 release. Please make sure to update your code.
+
+1.1.0 (2021-12-21)
+------------------
+
+- upgrade requirements (#88)
+- add CITATION.cff (#91)
+
 1.0.0 (2021-09-14)
 ------------------
 
