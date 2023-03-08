@@ -4,7 +4,7 @@
 - Add missing @context in JSON-lD context (#95)
 - Drop support for Python 3.6 and 3.7, add support for 3.10 and 3.11
 
-Attention! Querying for a uri with a path in the URL as opposed to a query
+**Attention!** Querying for a uri with a path in the URL as opposed to a query
 parameter has been deprecated since version 0.7.0 and will be removed in
 the upcoming 2.0 release. Please make sure to update your code.
 
