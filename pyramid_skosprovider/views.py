@@ -51,7 +51,9 @@ class StaticView(RestView):
     def get_context(self):
         if 'application/ld+json' in self.request.accept:
             self.request.response.content_type = 'application/ld+json'
-        return CONTEXT
+        return {
+            '@context': CONTEXT
+        }
 
 
 class ProviderView(RestView):

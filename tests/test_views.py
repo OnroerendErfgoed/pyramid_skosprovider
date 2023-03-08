@@ -47,7 +47,8 @@ class StaticViewTests(unittest.TestCase):
         sv = self._get_static_view(request)
         ctxt = sv.get_context()
         assert isinstance(ctxt, dict)
-        assert 'skos' in ctxt
+        assert '@context' in ctxt
+        assert 'skos' in ctxt['@context']
 
 class ProviderViewTests(unittest.TestCase):
 

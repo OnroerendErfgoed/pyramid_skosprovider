@@ -1,3 +1,15 @@
+1.2.0 (2023-03-07)
+------------------
+
+- Add missing @context in JSON-lD context (#95)
+- Drop support for Python 3.6 and 3.7, add support for 3.10 and 3.11
+
+1.1.0 (2021-12-21)
+------------------
+
+- upgrade requirements (#88)
+- add CITATION.cff (#91)
+
 1.0.0 (2021-09-14)
 ------------------
 
