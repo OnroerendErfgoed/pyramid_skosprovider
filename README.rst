@@ -13,8 +13,8 @@ This library integrates skosprovider_ in a pyramid application.
         :target: https://app.travis-ci.com/OnroerendErfgoed/pyramid_skosprovider
 .. image:: https://coveralls.io/repos/github/OnroerendErfgoed/pyramid_skosprovider/badge.svg?branch=develop
         :target: https://coveralls.io/github/OnroerendErfgoed/pyramid_skosprovider?branch=develop
-.. image:: https://scrutinizer-ci.com/g/OnroerendErfgoed/pyramid_skosprovider/badges/quality-score.png?b=master
-        :target: https://scrutinizer-ci.com/g/OnroerendErfgoed/pyramid_skosprovider/?branch=master
+.. image:: https://scrutinizer-ci.com/g/OnroerendErfgoed/pyramid_skosprovider/badges/quality-score.png?b=develop
+        :target: https://scrutinizer-ci.com/g/OnroerendErfgoed/pyramid_skosprovider/?branch=develop
 
 
 Building the docs
