@@ -1,7 +1,8 @@
-1.2.1 (2023-10-19)
+1.2.1 (2023-10-??)
 ------------------
 
 - Update Pyramid dependency to 2.0.2
+- Better handling of rendering a list of conceptschemes when one is unreachable. (#101)
 
 1.2.0 (2023-03-08)
 ------------------
