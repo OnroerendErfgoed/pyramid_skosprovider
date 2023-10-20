@@ -139,9 +139,12 @@ class ProviderView(RestView):
         conceptschemes = []
         for p in self.skos_registry.get_providers():
             try:
-                cslabel = p.concept_scheme.label(language).label if p.concept_scheme.label(language) else None,
+                if label := p.concept_scheme.label(language):
+                    cslabel = label.label
+                else:
+                    cslabel = None
             except ProviderUnavailableException as e:
-                log.error('Could not fetch label for {p.get_vocabulary_uri()}', e) 
+                log.error(f'Could not fetch label for {p.get_vocabulary_uri()}: %s', e)
                 cslabel = p.get_vocabulary_uri()
             cs = {
                 '@context': context,
