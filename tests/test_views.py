@@ -178,6 +178,21 @@ class ProviderViewTests(unittest.TestCase):
             for cs in conceptschemes:
                 assert cs["label"] == "https://vocabulary-uri"
 
+    def test_get_conceptschemes_provider_no_label(self):
+        request = self._get_dummy_request()
+        pv = self._get_provider_view(request)
+
+        with mock.patch(
+            "skosprovider.skos.ConceptScheme.label",
+            new=Mock(return_value=None),
+        ), mock.patch(
+            "skosprovider.providers.VocabularyProvider.get_vocabulary_uri",
+            new=Mock(return_value="https://vocabulary-uri"),
+        ):
+            conceptschemes = pv.get_conceptschemes()
+            for cs in conceptschemes:
+                assert cs["label"] == "https://vocabulary-uri"
+
     def test_get_conceptschemes_jsonld(self):
         request = self._get_dummy_request()
         request.accept = 'application/ld+json'

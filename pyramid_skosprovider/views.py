@@ -142,7 +142,7 @@ class ProviderView(RestView):
                 if label := p.concept_scheme.label(language):
                     cslabel = label.label
                 else:
-                    cslabel = None
+                    cslabel = p.get_vocabulary_uri()
             except ProviderUnavailableException as e:
                 log.error(f'Could not fetch label for {p.get_vocabulary_uri()}: %s', e)
                 cslabel = p.get_vocabulary_uri()
