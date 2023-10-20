@@ -12,6 +12,8 @@ from pyramid.httpexceptions import (
     HTTPBadRequest
 )
 
+from skosprovider.exceptions import ProviderUnavailableException
+
 from pyramid_skosprovider.utils import (
     parse_range_header,
     QueryBuilder
@@ -134,16 +136,26 @@ class ProviderView(RestView):
             '@id': 'dct:subject',
             '@type': '@id'
         }
-        return [
-            {
+        conceptschemes = []
+        for p in self.skos_registry.get_providers():
+            try:
+                if label := p.concept_scheme.label(language):
+                    cslabel = label.label
+                else:
+                    cslabel = p.get_vocabulary_uri()
+            except ProviderUnavailableException as e:
+                log.error(f'Could not fetch label for {p.get_vocabulary_uri()}: %s', e)
+                cslabel = p.get_vocabulary_uri()
+            cs = {
                 '@context': context,
                 'type': 'skos:ConceptScheme',
                 'id': p.get_vocabulary_id(),
-                'uri': p.concept_scheme.uri,
-                'label': p.concept_scheme.label(language).label if p.concept_scheme.label(language) else None,
+                'uri': p.get_vocabulary_uri(),
+                'label': cslabel,
                 'subject': p.metadata['subject'] if p.metadata['subject'] else []
-            } for p in self.skos_registry.get_providers()
-        ]
+            }
+            conceptschemes.append(cs)
+        return conceptschemes
 
     @view_config(
         route_name='skosprovider.conceptscheme',

@@ -1,6 +1,10 @@
 # -*- coding: utf8 -*-
 
 import logging
+from unittest import mock
+from unittest.mock import Mock
+from unittest.mock import PropertyMock
+
 from pyramid import testing
 
 from pyramid.httpexceptions import (
@@ -9,6 +13,8 @@ from pyramid.httpexceptions import (
 
 import unittest
 import pytest
+from skosprovider.exceptions import ProviderUnavailableException
+
 from .fixtures.data import (
     trees
 )
@@ -49,6 +55,7 @@ class StaticViewTests(unittest.TestCase):
         assert isinstance(ctxt, dict)
         assert '@context' in ctxt
         assert 'skos' in ctxt['@context']
+
 
 class ProviderViewTests(unittest.TestCase):
 
@@ -156,6 +163,36 @@ class ProviderViewTests(unittest.TestCase):
             assert 'uri' in cs
             assert 'label' in cs
 
+    def test_get_conceptschemes_provider_unavailable(self):
+        request = self._get_dummy_request()
+        pv = self._get_provider_view(request)
+
+        with mock.patch(
+            "skosprovider.providers.VocabularyProvider.concept_scheme",
+            new=PropertyMock(side_effect=ProviderUnavailableException("test")),
+        ), mock.patch(
+            "skosprovider.providers.VocabularyProvider.get_vocabulary_uri",
+            new=Mock(return_value="https://vocabulary-uri"),
+        ):
+            conceptschemes = pv.get_conceptschemes()
+            for cs in conceptschemes:
+                assert cs["label"] == "https://vocabulary-uri"
+
+    def test_get_conceptschemes_provider_no_label(self):
+        request = self._get_dummy_request()
+        pv = self._get_provider_view(request)
+
+        with mock.patch(
+            "skosprovider.skos.ConceptScheme.label",
+            new=Mock(return_value=None),
+        ), mock.patch(
+            "skosprovider.providers.VocabularyProvider.get_vocabulary_uri",
+            new=Mock(return_value="https://vocabulary-uri"),
+        ):
+            conceptschemes = pv.get_conceptschemes()
+            for cs in conceptschemes:
+                assert cs["label"] == "https://vocabulary-uri"
+
     def test_get_conceptschemes_jsonld(self):
         request = self._get_dummy_request()
         request.accept = 'application/ld+json'
@@ -168,7 +205,6 @@ class ProviderViewTests(unittest.TestCase):
             assert 'uri' in cs
             assert 'label' in cs
             assert '@context' in cs
-
 
     def test_get_conceptscheme(self):
         request = self._get_dummy_request()
