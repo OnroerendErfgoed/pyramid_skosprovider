@@ -1,9 +1,11 @@
-1.2.1 (2023-10-??)
+1.2.1 (2023-10-21)
 ------------------
 
 - Update Pyramid dependency to 2.0.2
 - Add a ReadTheDocs config file (#104)
-- Better handling of rendering a list of conceptschemes when one is unreachable. (#101)
+- Better handling of rendering a list of conceptschemes when one is unreachable. 
+  This ensures that most providers can be listed, but possibly with the
+  URI as the label if the provider is unresponsive. (#101)
 
 1.2.0 (2023-03-08)
 ------------------
