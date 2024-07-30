@@ -162,19 +162,20 @@ def includeme(config):
     )
     config.add_route(
         'skosprovider.c.jsonld',
-        '/conceptschemes/{scheme_id}/c/{c_id}.jsonld'
-    )
-    config.add_route(
-        'skosprovider.c',
-        '/conceptschemes/{scheme_id}/c/{c_id}'
+        '/conceptschemes/{scheme_id}/c/{c_id:.*}.jsonld'
     )
     config.add_route(
         'skosprovider.c.display_children',
-        '/conceptschemes/{scheme_id}/c/{c_id}/displaychildren'
+        '/conceptschemes/{scheme_id}/c/{c_id:.*}/displaychildren'
     )
     config.add_route(
         'skosprovider.c.expand',
-        '/conceptschemes/{scheme_id}/c/{c_id}/expand'
+        '/conceptschemes/{scheme_id}/c/{c_id:.*}/expand'
+    )
+    # the below route consumes a lot with its regex, it must come last.
+    config.add_route(
+        'skosprovider.c',
+        '/conceptschemes/{scheme_id}/c/{c_id:.*}'
     )
 
     config.scan()
