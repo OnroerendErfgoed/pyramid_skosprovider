@@ -1,3 +1,9 @@
+1.2.2 (2024-07-30)
+------------------
+
+- To support the non-integer concept IDs, the concept_id path parameter should allow slashes. (#108)
+- Update Readme badges
+
 1.2.1 (2023-10-21)
 ------------------
 
