@@ -32,7 +32,7 @@ dependencies = [
 History = "https://github.com/OnroerendErfgoed/pyramid_skosprovider/blob/master/HISTORY.rst"
 Tracker = "https://github.com/OnroerendErfgoed/pyramid_skosprovider/issues"
 Source = "https://github.com/OnroerendErfgoed/pyramid_skosprovider"
-Documentation = "https://pyramid_skosprovider.readthedocs.io/en/latest/"
+Documentation = "https://pyramid-skosprovider.readthedocs.io/en/latest/"
 
 [project.optional-dependencies]
 dev = [
