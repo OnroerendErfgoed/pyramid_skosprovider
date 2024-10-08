@@ -1,3 +1,47 @@
+cachetools==5.5.0
+    # via pyld
+frozendict==2.4.4
+    # via pyld
+html5lib==1.1
+    # via skosprovider
+hupper==1.12.1
+    # via pyramid
+language-tags==1.2.0
+    # via skosprovider
+lxml==5.3.0
+    # via pyld
+pastedeploy==3.1.0
+    # via plaster-pastedeploy
+plaster==1.1.2
+    # via
+    #   plaster-pastedeploy
+    #   pyramid
+plaster-pastedeploy==1.0.1
+    # via pyramid
+pyld==2.0.4
+    # via skosprovider
 pyramid==2.0.2
+    # via pyramid-skosprovider (pyproject.toml)
+rfc3987==1.3.8
+    # via skosprovider
+setuptools==75.1.0
+    # via
+    #   pyramid
+    #   zope-deprecation
+    #   zope-interface
+six==1.16.0
+    # via html5lib
 skosprovider==1.2.0
-# -e git+https://github.com/koenedaele/skosprovider.git@develop#egg=skosprovider
+    # via pyramid-skosprovider (pyproject.toml)
+translationstring==1.4
+    # via pyramid
+venusian==3.1.0
+    # via pyramid
+webencodings==0.5.1
+    # via html5lib
+webob==1.8.8
+    # via pyramid
+zope-deprecation==5.0
+    # via pyramid
+zope-interface==7.0.3
+    # via pyramid
