@@ -101,7 +101,12 @@ class ProviderView(RestView):
                 'uri': provider.concept_scheme.uri,
                 'id': provider.get_vocabulary_id()
             }
-        c = self.skos_registry.get_by_uri(uri)
+
+        try:
+            c = self.skos_registry.get_by_uri(uri)
+        except ValueError as e:
+            return HTTPBadRequest(detail=str(e))
+
         if not c:
             return HTTPNotFound()
         return {
