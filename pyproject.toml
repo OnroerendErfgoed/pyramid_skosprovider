@@ -71,3 +71,6 @@ fragments = [
   { path = "README.rst" },
   { path = "HISTORY.rst" },
 ]
+
+[tool.ruff.format]
+quote-style = "single"
