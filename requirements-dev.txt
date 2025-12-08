@@ -134,7 +134,7 @@ urllib3==2.2.3
     # via
     #   requests
     #   responses
-uv==0.4.11
+uv==0.9.6
     # via pyramid-skosprovider (pyproject.toml)
 venusian==3.1.0
     # via pyramid
