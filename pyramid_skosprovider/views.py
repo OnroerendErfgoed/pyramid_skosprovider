@@ -4,18 +4,20 @@ This module contains the pyramid views that expose services.
 """
 
 import itertools
-
-from pyramid.view import view_config, view_defaults
-
-from pyramid.httpexceptions import HTTPNotFound, HTTPBadRequest
-
-from skosprovider.exceptions import ProviderUnavailableException
-
-from pyramid_skosprovider.utils import parse_range_header, QueryBuilder
-
-from skosprovider.jsonld import MINI_CONTEXT, CONTEXT
-
 import logging
+
+from pyramid.httpexceptions import HTTPBadGateway
+from pyramid.httpexceptions import HTTPBadRequest
+from pyramid.httpexceptions import HTTPNotFound
+from pyramid.view import view_config
+from pyramid.view import view_defaults
+from skosprovider.exceptions import ProviderUnavailableException
+from skosprovider.jsonld import CONTEXT
+from skosprovider.jsonld import MINI_CONTEXT
+
+from pyramid_skosprovider.utils import QueryBuilder
+from pyramid_skosprovider.utils import parse_range_header
+
 
 log = logging.getLogger(__name__)
 
@@ -204,7 +206,10 @@ class ProviderView(RestView):
         if not provider:
             return HTTPNotFound()
         language = self.request.params.get('language', self.request.locale_name)
-        return provider.get_top_concepts(language=language)
+        try:
+            return provider.get_top_concepts(language=language)
+        except Exception:
+            raise HTTPBadGateway()
 
     @view_config(
         route_name='skosprovider.conceptscheme.display_top',
@@ -218,7 +223,10 @@ class ProviderView(RestView):
         if not provider:
             return HTTPNotFound()
         language = self.request.params.get('language', self.request.locale_name)
-        return provider.get_top_display(language=language)
+        try:
+            return provider.get_top_display(language=language)
+        except Exception:
+            raise HTTPBadGateway()
 
     def _build_providers(self, request):
         """
@@ -355,7 +363,10 @@ class ProviderView(RestView):
         provider = self.skos_registry.get_provider(scheme_id)
         if not provider:
             return HTTPNotFound()
-        concept = provider.get_by_id(concept_id)
+        try:
+            concept = provider.get_by_id(concept_id)
+        except Exception:
+            raise HTTPBadGateway()
         if not concept:
             return HTTPNotFound()
         return concept
@@ -373,7 +384,10 @@ class ProviderView(RestView):
         if not provider:
             return HTTPNotFound()
         language = self.request.params.get('language', self.request.locale_name)
-        children = provider.get_children_display(concept_id, language=language)
+        try:
+            children = provider.get_children_display(concept_id, language=language)
+        except Exception:
+            raise HTTPBadGateway()
         if children is False:
             return HTTPNotFound()
         return children
@@ -390,7 +404,10 @@ class ProviderView(RestView):
         provider = self.skos_registry.get_provider(scheme_id)
         if not provider:
             return HTTPNotFound()
-        expanded = provider.expand(concept_id)
+        try:
+            expanded = provider.expand(concept_id)
+        except Exception:
+            raise HTTPBadGateway()
         if not expanded:
             return HTTPNotFound()
         return expanded
