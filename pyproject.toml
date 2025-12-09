@@ -10,7 +10,7 @@ authors = [
     { name = "Flanders Heritage Agency", email = "ict@onroerenderfgoed.be" },
 ]
 license = "MIT"
-description = "ntegration of skosprovider in pyramid"
+description = "integration of skosprovider in pyramid"
 requires-python = ">=3.10,<3.13"
 keywords = ["pyramid", "skos", "skosprovider", "vocabularies", "thesauri"]
 classifiers = [

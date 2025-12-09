@@ -126,16 +126,22 @@ class RestFunctionalTests(FunctionalTests):
         self.assertEqual(res1.body, res2.body)
 
     def test_get_uri_no_uri(self):
-        res = self.testapp.get('/uris', {}, {'Accept': 'application/json'}, status=400)
+        self.testapp.get('/uris', {}, {'Accept': 'application/json'}, status=400)
 
-    def test_get_conceptschemes_json(self):
-        res = self.testapp.get(
-            '/conceptschemes', {}, {'Accept': 'application/json'}, status=200
-        )
-        self.assertIn('application/json', res.headers['Content-Type'])
-        data = res.json
-        self.assertIsInstance(data, list)
-        self.assertEqual(len(data), 1)
+    def test_get_conceptschemes(self):
+        accept_headers = ('*/*', 'application/json', 'application/ld+json')
+        for accept in accept_headers:
+            res = self.testapp.get(
+                '/conceptschemes', {}, {'Accept': accept}, status=200
+            )
+            if accept != '*/*':
+                self.assertIn(accept, res.headers['Content-Type'])
+            data = res.json
+            self.assertIsInstance(data, list)
+            self.assertEqual(len(data), 1)
+
+    def test_get_conceptschemes_unknown_accept(self):
+        self.testapp.get('/conceptschemes', {}, {'Accept': 'text/html'}, status=404)
 
     def test_get_conceptscheme_json(self):
         res = self.testapp.get(

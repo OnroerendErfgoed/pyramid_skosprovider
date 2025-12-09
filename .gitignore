@@ -32,5 +32,8 @@ nosetests.xml
 #intellij
 .idea
 
+#vscode
+.vscode
+
 #rope
 .ropeproject
