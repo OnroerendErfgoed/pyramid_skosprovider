@@ -40,4 +40,5 @@ pyramid_skosprovider is present.
     $ cd docs
     $ make html
 
-.. _skosprovider: https://github.com/OnroerendErfgoed/skosprovider
+.. [#skosprovider] https://github.com/OnroerendErfgoed/skosprovider
+
