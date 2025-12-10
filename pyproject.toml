@@ -36,7 +36,7 @@ Documentation = "https://pyramid-skosprovider.readthedocs.io/en/latest/"
 
 [project.optional-dependencies]
 dev = [
-    "uv==0.4.11",
+    "uv==0.9.6",
     # Documentation
     "sphinx==7.4.7",
     "sphinxcontrib-httpdomain==1.8.1",
