@@ -42,7 +42,6 @@ jobs:
         with:
           coverageFile: ${{ runner.temp }}/coverage.xml
           token: ${{ secrets.GITHUB_TOKEN }}
-          sourceDir: pyramid_skosprovider
           thresholdAll: 0.9
           thresholdNew: 0.9
           thresholdModified: 0.9
