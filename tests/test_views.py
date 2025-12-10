@@ -2,17 +2,13 @@
 
 import unittest
 from unittest import mock
-from unittest.mock import Mock
-from unittest.mock import PropertyMock
+from unittest.mock import Mock, PropertyMock
 
 from pyramid import testing
-from pyramid.httpexceptions import HTTPBadGateway
-from pyramid.httpexceptions import HTTPNotFound
+from pyramid.httpexceptions import HTTPBadGateway, HTTPBadRequest, HTTPNotFound
 from skosprovider.exceptions import ProviderUnavailableException
 from skosprovider.registry import Registry
-from skosprovider.skos import Concept
-from skosprovider.skos import ConceptScheme
-from skosprovider.skos import Label
+from skosprovider.skos import Concept, ConceptScheme, Label
 
 from .fixtures.data import trees
 
@@ -249,6 +245,7 @@ class ProviderViewTests(unittest.TestCase):
 
     def test_get_concepts(self):
         request = self._get_dummy_request()
+        request.params = {'label': 'e'}
         pv = self._get_provider_view(request)
         concepts = pv.get_concepts()
         self.assertIsInstance(concepts, list)
@@ -258,53 +255,56 @@ class ProviderViewTests(unittest.TestCase):
             self.assertIn('id', c)
 
     def test_get_concepts_language(self):
-        request = self._get_dummy_request({'language': 'en'}, locale_name='nl')
+        request = self._get_dummy_request(locale_name='nl')
         request.matchdict = {'scheme_id': 'TREES'}
+        request.params = {'language': 'en', 'label': 'e'}
         pv = self._get_provider_view(request)
         children = pv.get_concepts()
         request_locale = self._get_dummy_request(locale_name='nl')
         request_locale.matchdict = {'scheme_id': 'TREES'}
+        request_locale.params = {'label': 'e'}
         pv_locale = self._get_provider_view(request_locale)
         children_locale = pv_locale.get_concepts()
         self.assertEqual(children[0]['id'], children_locale[0]['id'])
         self.assertNotEqual(children[0]['label'], children_locale[0]['label'])
 
     def test_get_concepts_provider_subjects(self):
-        request = self._get_dummy_request({'providers.subject': 'doesnt exist'})
+        request = self._get_dummy_request()
+        request.params = {'providers.subject': 'doesnt exist', 'label': 'e'}
         pv = self._get_provider_view(request)
         concepts = pv.get_concepts()
         self.assertIsInstance(concepts, list)
         self.assertEqual(0, len(concepts))
 
     def test_get_concepts_provider_ids(self):
-        request = self._get_dummy_request({'providers.ids': 'PARROTS'})
+        request = self._get_dummy_request({'providers.ids': 'PARROTS', 'label': 'e'})
         pv = self._get_provider_view(request)
         concepts = pv.get_concepts()
         self.assertIsInstance(concepts, list)
         self.assertEqual(0, len(concepts))
 
-    def test_get_concepts_search_type_concept(self):
-        request = self._get_dummy_request({'type': 'concept'})
+    def test_get_concepts_search_type_concept1(self):
+        request = self._get_dummy_request({'type': 'concept', 'label': 'e'})
         pv = self._get_provider_view(request)
         concepts = pv.get_concepts()
         self.assertIsInstance(concepts, list)
         self.assertEqual(2, len(concepts))
 
-    def test_get_concepts_search_type_concept(self):
+    def test_get_concepts_search_type_concept2(self):
         request = self._get_dummy_request({'label': 'De lariks'})
         pv = self._get_provider_view(request)
         concepts = pv.get_concepts()
         self.assertIsInstance(concepts, list)
         self.assertEqual(1, len(concepts))
 
-    def test_get_concepts_search_dfs_empty_label(self):
-        request = self._get_dummy_request(
-            {'type': 'concept', 'mode': 'dijitFilteringSelect', 'label': ''}
-        )
+    def test_get_concepts_search_badrequests(self):
+        request = self._get_dummy_request()
         pv = self._get_provider_view(request)
-        concepts = pv.get_concepts()
-        self.assertIsInstance(concepts, list)
-        self.assertEqual(0, len(concepts))
+        with self.assertRaises(HTTPBadRequest):
+            pv.get_concepts()
+        request.params = {'label': 'e', 'match': 'http://python.com/trees/larch'}
+        with self.assertRaises(HTTPBadRequest):
+            pv.get_concepts()
 
     def test_get_concepts_search_dfs_all(self):
         request = self._get_dummy_request(

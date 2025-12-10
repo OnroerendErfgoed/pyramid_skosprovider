@@ -251,6 +251,7 @@ class ProviderView(RestView):
         renderer='skosjson',
     )
     def get_concepts(self):
+        self.validate_get_concepts_request()
         qb = QueryBuilder(self.request)
         query = qb()
         kwargs = {
@@ -271,6 +272,15 @@ class ProviderView(RestView):
             concepts = self._postprocess_wildcards(concepts, qb.label)
 
         return self._page_results(concepts)
+
+    def validate_get_concepts_request(self):
+        query_params = self.request.params
+        label = query_params.get('label')
+        match = query_params.get('match')
+        if (not label and not match) or (label and match):
+            raise HTTPBadRequest(
+                detail="Exactly one of 'label' or 'match' parameters must be set."
+            )
 
     @view_config(
         route_name='skosprovider.conceptscheme.cs',
