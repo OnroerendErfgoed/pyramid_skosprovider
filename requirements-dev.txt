@@ -130,7 +130,7 @@ sphinxcontrib-serializinghtml==2.0.0
     # via sphinx
 translationstring==1.4
     # via pyramid
-urllib3==2.2.3
+urllib3==2.6.0
     # via
     #   requests
     #   responses
