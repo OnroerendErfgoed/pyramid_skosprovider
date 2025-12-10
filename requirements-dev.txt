@@ -14,7 +14,7 @@ coverage==7.6.1
     # via
     #   coveralls
     #   pytest-cov
-coveralls==4.0.1
+coveralls==4.0.2
     # via pyramid-skosprovider (pyproject.toml)
 docopt==0.6.2
     # via coveralls
