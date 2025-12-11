@@ -11,7 +11,7 @@ authors = [
 ]
 license = "MIT"
 description = "integration of skosprovider in pyramid"
-requires-python = ">=3.10,<=3.14"
+requires-python = ">=3.10,<3.15"
 keywords = ["pyramid", "skos", "skosprovider", "vocabularies", "thesauri"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
