@@ -1,0 +1,76 @@
+[build-system]
+requires = ["hatchling", "hatch-fancy-pypi-readme"]
+build-backend = "hatchling.build"
+
+[project]
+version = "1.3.0"
+name = "pyramid_skosprovider"
+dynamic = ["readme"]
+authors = [
+    { name = "Flanders Heritage Agency", email = "ict@onroerenderfgoed.be" },
+]
+license = "MIT"
+description = "integration of skosprovider in pyramid"
+requires-python = ">=3.10,<3.13.11"
+keywords = ["pyramid", "skos", "skosprovider", "vocabularies", "thesauri"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python",
+    "Framework :: Pyramid",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "pyramid>=2.0.2",
+    "skosprovider>=1.2.0",
+]
+
+[project.urls]
+History = "https://github.com/OnroerendErfgoed/pyramid_skosprovider/blob/master/HISTORY.rst"
+Tracker = "https://github.com/OnroerendErfgoed/pyramid_skosprovider/issues"
+Source = "https://github.com/OnroerendErfgoed/pyramid_skosprovider"
+Documentation = "https://pyramid-skosprovider.readthedocs.io/en/latest/"
+
+[project.optional-dependencies]
+dev = [
+    "uv==0.9.6",
+    # Documentation
+    "sphinx==7.4.7",
+    "sphinxcontrib-httpdomain==1.8.1",
+    "pygments==2.18.0",
+    "sphinx_rtd_theme==2.0.0",
+    # Linting
+    "flake8==7.1.1",
+    # Unit testing
+    "pytest==8.3.3",
+    "webtest==3.0.1",
+    "pytest-cov==5.0.0",
+    "coveralls==4.0.2",
+    "responses==0.25.3",
+]
+
+##
+# Build tool specific
+##
+[tool.hatch.build.targets.wheel]
+# In the wheel we want to have pyramid_skosprovider in the root as python module.
+only-include = [
+    "/pyramid_skosprovider",
+]
+
+[tool.hatch.metadata]
+# This allows us to use github links as dependencies
+allow-direct-references = true
+
+[tool.hatch.metadata.hooks.fancy-pypi-readme]
+content-type = "text/x-rst"
+fragments = [
+  { path = "README.rst" },
+  { path = "HISTORY.rst" },
+]
+
+[tool.ruff.format]
+quote-style = "single"

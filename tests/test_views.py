@@ -1,34 +1,19 @@
 # -*- coding: utf8 -*-
 
-import logging
+import unittest
 from unittest import mock
-from unittest.mock import Mock
-from unittest.mock import PropertyMock
+from unittest.mock import Mock, PropertyMock
 
 from pyramid import testing
-
-from pyramid.httpexceptions import (
-    HTTPNotFound
-)
-
-import unittest
-import pytest
+from pyramid.httpexceptions import HTTPBadGateway, HTTPBadRequest, HTTPNotFound
 from skosprovider.exceptions import ProviderUnavailableException
-
-from .fixtures.data import (
-    trees
-)
-
-from skosprovider.skos import (
-    Concept,
-    ConceptScheme,
-    Label
-)
-
 from skosprovider.registry import Registry
+from skosprovider.skos import Concept, ConceptScheme, Label
+
+from .fixtures.data import trees
+
 
 class StaticViewTests(unittest.TestCase):
-
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_skosprovider')
@@ -46,6 +31,7 @@ class StaticViewTests(unittest.TestCase):
 
     def _get_static_view(self, request):
         from pyramid_skosprovider.views import StaticView
+
         return StaticView(request)
 
     def test_get_context(self):
@@ -58,7 +44,6 @@ class StaticViewTests(unittest.TestCase):
 
 
 class ProviderViewTests(unittest.TestCase):
-
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_skosprovider')
@@ -78,6 +63,7 @@ class ProviderViewTests(unittest.TestCase):
 
     def _get_provider_view(self, request):
         from pyramid_skosprovider.views import ProviderView
+
         return ProviderView(request)
 
     def test_get_unexisting_uri(self):
@@ -167,31 +153,37 @@ class ProviderViewTests(unittest.TestCase):
         request = self._get_dummy_request()
         pv = self._get_provider_view(request)
 
-        with mock.patch(
-            "skosprovider.providers.VocabularyProvider.concept_scheme",
-            new=PropertyMock(side_effect=ProviderUnavailableException("test")),
-        ), mock.patch(
-            "skosprovider.providers.VocabularyProvider.get_vocabulary_uri",
-            new=Mock(return_value="https://vocabulary-uri"),
+        with (
+            mock.patch(
+                'skosprovider.providers.VocabularyProvider.concept_scheme',
+                new=PropertyMock(side_effect=ProviderUnavailableException('test')),
+            ),
+            mock.patch(
+                'skosprovider.providers.VocabularyProvider.get_vocabulary_uri',
+                new=Mock(return_value='https://vocabulary-uri'),
+            ),
         ):
             conceptschemes = pv.get_conceptschemes()
             for cs in conceptschemes:
-                assert cs["label"] == "https://vocabulary-uri"
+                assert cs['label'] == 'https://vocabulary-uri'
 
     def test_get_conceptschemes_provider_no_label(self):
         request = self._get_dummy_request()
         pv = self._get_provider_view(request)
 
-        with mock.patch(
-            "skosprovider.skos.ConceptScheme.label",
-            new=Mock(return_value=None),
-        ), mock.patch(
-            "skosprovider.providers.VocabularyProvider.get_vocabulary_uri",
-            new=Mock(return_value="https://vocabulary-uri"),
+        with (
+            mock.patch(
+                'skosprovider.skos.ConceptScheme.label',
+                new=Mock(return_value=None),
+            ),
+            mock.patch(
+                'skosprovider.providers.VocabularyProvider.get_vocabulary_uri',
+                new=Mock(return_value='https://vocabulary-uri'),
+            ),
         ):
             conceptschemes = pv.get_conceptschemes()
             for cs in conceptschemes:
-                assert cs["label"] == "https://vocabulary-uri"
+                assert cs['label'] == 'https://vocabulary-uri'
 
     def test_get_conceptschemes_jsonld(self):
         request = self._get_dummy_request()
@@ -219,13 +211,13 @@ class ProviderViewTests(unittest.TestCase):
                 'subject': [],
                 'labels': [
                     Label('Different types of trees', 'prefLabel', 'en'),
-                    Label('Verschillende soorten bomen', 'prefLabel', 'nl')
+                    Label('Verschillende soorten bomen', 'prefLabel', 'nl'),
                 ],
                 'notes': [],
                 'sources': [],
-                'languages': []
+                'languages': [],
             },
-            cs
+            cs,
         )
 
     def test_get_conceptscheme_jsonld(self):
@@ -253,6 +245,7 @@ class ProviderViewTests(unittest.TestCase):
 
     def test_get_concepts(self):
         request = self._get_dummy_request()
+        request.params = {'label': 'e'}
         pv = self._get_provider_view(request)
         concepts = pv.get_concepts()
         self.assertIsInstance(concepts, list)
@@ -262,124 +255,97 @@ class ProviderViewTests(unittest.TestCase):
             self.assertIn('id', c)
 
     def test_get_concepts_language(self):
-        request = self._get_dummy_request({
-            'language': 'en'
-        },
-            locale_name='nl'
-        )
-        request.matchdict = {
-            'scheme_id': 'TREES'
-        }
+        request = self._get_dummy_request(locale_name='nl')
+        request.matchdict = {'scheme_id': 'TREES'}
+        request.params = {'language': 'en', 'label': 'e'}
         pv = self._get_provider_view(request)
         children = pv.get_concepts()
-        request_locale = self._get_dummy_request(
-            locale_name='nl'
-        )
-        request_locale.matchdict = {
-            'scheme_id': 'TREES'
-        }
+        request_locale = self._get_dummy_request(locale_name='nl')
+        request_locale.matchdict = {'scheme_id': 'TREES'}
+        request_locale.params = {'label': 'e'}
         pv_locale = self._get_provider_view(request_locale)
         children_locale = pv_locale.get_concepts()
         self.assertEqual(children[0]['id'], children_locale[0]['id'])
         self.assertNotEqual(children[0]['label'], children_locale[0]['label'])
 
     def test_get_concepts_provider_subjects(self):
-        request = self._get_dummy_request({
-            'providers.subject': 'doesnt exist'
-        })
+        request = self._get_dummy_request()
+        request.params = {'providers.subject': 'doesnt exist', 'label': 'e'}
         pv = self._get_provider_view(request)
         concepts = pv.get_concepts()
         self.assertIsInstance(concepts, list)
         self.assertEqual(0, len(concepts))
 
     def test_get_concepts_provider_ids(self):
-        request = self._get_dummy_request({
-            'providers.ids': 'PARROTS'
-        })
+        request = self._get_dummy_request({'providers.ids': 'PARROTS', 'label': 'e'})
         pv = self._get_provider_view(request)
         concepts = pv.get_concepts()
         self.assertIsInstance(concepts, list)
         self.assertEqual(0, len(concepts))
 
-    def test_get_concepts_search_type_concept(self):
-        request = self._get_dummy_request({
-            'type': 'concept'
-        })
+    def test_get_concepts_search_type_concept1(self):
+        request = self._get_dummy_request({'type': 'concept', 'label': 'e'})
         pv = self._get_provider_view(request)
         concepts = pv.get_concepts()
         self.assertIsInstance(concepts, list)
         self.assertEqual(2, len(concepts))
 
-    def test_get_concepts_search_type_concept(self):
-        request = self._get_dummy_request({
-            'label': 'De lariks'
-        })
+    def test_get_concepts_search_type_concept2(self):
+        request = self._get_dummy_request({'label': 'De lariks'})
         pv = self._get_provider_view(request)
         concepts = pv.get_concepts()
         self.assertIsInstance(concepts, list)
         self.assertEqual(1, len(concepts))
 
-    def test_get_concepts_search_dfs_empty_label(self):
-        request = self._get_dummy_request({
-            'type': 'concept',
-            'mode': 'dijitFilteringSelect',
-            'label': ''
-        })
+    def test_get_concepts_search_badrequests(self):
+        request = self._get_dummy_request()
         pv = self._get_provider_view(request)
-        concepts = pv.get_concepts()
-        self.assertIsInstance(concepts, list)
-        self.assertEqual(0, len(concepts))
+        with self.assertRaises(HTTPBadRequest):
+            pv.get_concepts()
+        request.params = {'label': 'e', 'match': 'http://python.com/trees/larch'}
+        with self.assertRaises(HTTPBadRequest):
+            pv.get_concepts()
 
     def test_get_concepts_search_dfs_all(self):
-        request = self._get_dummy_request({
-            'type': 'concept',
-            'mode': 'dijitFilteringSelect',
-            'label': '*'
-        })
+        request = self._get_dummy_request(
+            {'type': 'concept', 'mode': 'dijitFilteringSelect', 'label': '*'}
+        )
         pv = self._get_provider_view(request)
         concepts = pv.get_concepts()
         self.assertIsInstance(concepts, list)
         self.assertEqual(2, len(concepts))
 
     def test_get_concepts_search_dfs_label_star_postfix(self):
-        request = self._get_dummy_request({
-            'mode': 'dijitFilteringSelect',
-            'label': 'soo*',
-            'language': 'nl-BE'
-        })
+        request = self._get_dummy_request(
+            {'mode': 'dijitFilteringSelect', 'label': 'soo*', 'language': 'nl-BE'}
+        )
         pv = self._get_provider_view(request)
         concepts = pv.get_concepts()
         self.assertIsInstance(concepts, list)
         self.assertEqual(0, len(concepts))
 
     def test_get_concepts_search_dfs_label_star_postfix_en(self):
-        request = self._get_dummy_request({
-            'mode': 'dijitFilteringSelect',
-            'label': 'The*',
-            'language': 'en'
-        })
+        request = self._get_dummy_request(
+            {'mode': 'dijitFilteringSelect', 'label': 'The*', 'language': 'en'}
+        )
         pv = self._get_provider_view(request)
         concepts = pv.get_concepts()
         self.assertIsInstance(concepts, list)
         self.assertEqual(2, len(concepts))
 
     def test_get_concepts_search_dfs_label_star_prefix(self):
-        request = self._get_dummy_request({
-            'mode': 'dijitFilteringSelect',
-            'label': '*kastanje',
-            'language': 'nl-BE'
-        })
+        request = self._get_dummy_request(
+            {'mode': 'dijitFilteringSelect', 'label': '*kastanje', 'language': 'nl-BE'}
+        )
         pv = self._get_provider_view(request)
         concepts = pv.get_concepts()
         self.assertIsInstance(concepts, list)
         self.assertEqual(1, len(concepts))
 
     def test_get_concepts_search_dfs_label_star_allfix(self):
-        request = self._get_dummy_request({
-            'mode': 'dijitFilteringSelect',
-            'label': '*ch*',
-            'language': 'en'
-        })
+        request = self._get_dummy_request(
+            {'mode': 'dijitFilteringSelect', 'label': '*ch*', 'language': 'en'}
+        )
         pv = self._get_provider_view(request)
         concepts = pv.get_concepts()
         self.assertIsInstance(concepts, list)
@@ -436,9 +402,7 @@ class ProviderViewTests(unittest.TestCase):
         self.assertIsInstance(concepts, HTTPNotFound)
 
     def test_get_conceptscheme_concepts_search_label(self):
-        request = self._get_dummy_request({
-            'label': 'Larc'
-        })
+        request = self._get_dummy_request({'label': 'Larc'})
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
@@ -447,9 +411,7 @@ class ProviderViewTests(unittest.TestCase):
         self.assertEqual(1, concepts[0]['id'])
 
     def test_get_conceptscheme_concepts_search_type_concept(self):
-        request = self._get_dummy_request({
-            'type': 'concept'
-        })
+        request = self._get_dummy_request({'type': 'concept'})
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
@@ -457,9 +419,7 @@ class ProviderViewTests(unittest.TestCase):
         self.assertEqual(2, len(concepts))
 
     def test_get_conceptscheme_concepts_search_type_collection(self):
-        request = self._get_dummy_request({
-            'type': 'collection'
-        })
+        request = self._get_dummy_request({'type': 'collection'})
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
@@ -467,9 +427,7 @@ class ProviderViewTests(unittest.TestCase):
         self.assertEqual(1, len(concepts))
 
     def test_get_conceptscheme_concepts_search_in_collection(self):
-        request = self._get_dummy_request({
-            'collection': 3
-        })
+        request = self._get_dummy_request({'collection': 3})
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
@@ -477,73 +435,65 @@ class ProviderViewTests(unittest.TestCase):
         self.assertEqual(2, len(concepts))
 
     def test_get_conceptscheme_concepts_search_dfs_all(self):
-        request = self._get_dummy_request({
-            'type': 'concept',
-            'mode': 'dijitFilteringSelect',
-            'label': '*'
-        })
-        request.matchdict = {
-            'scheme_id': 'TREES'
-        }
+        request = self._get_dummy_request(
+            {'type': 'concept', 'mode': 'dijitFilteringSelect', 'label': '*'}
+        )
+        request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
         self.assertIsInstance(concepts, list)
         self.assertEqual(2, len(concepts))
 
     def test_get_conceptscheme_concepts_search_dfs_empty_label(self):
-        request = self._get_dummy_request({
-            'type': 'concept',
-            'mode': 'dijitFilteringSelect',
-            'label': ''
-        })
-        request.matchdict = {
-            'scheme_id': 'TREES'
-        }
+        request = self._get_dummy_request(
+            {'type': 'concept', 'mode': 'dijitFilteringSelect', 'label': ''}
+        )
+        request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
         self.assertIsInstance(concepts, list)
         self.assertEqual(0, len(concepts))
 
     def test_get_conceptscheme_concepts_search_dfs_label_star(self):
-        request = self._get_dummy_request({
-            'type': 'concept',
-            'mode': 'dijitFilteringSelect',
-            'label': 'De *',
-            'language': 'nl-BE'
-        })
-        request.matchdict = {
-            'scheme_id': 'TREES'
-        }
+        request = self._get_dummy_request(
+            {
+                'type': 'concept',
+                'mode': 'dijitFilteringSelect',
+                'label': 'De *',
+                'language': 'nl-BE',
+            }
+        )
+        request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
         self.assertIsInstance(concepts, list)
         self.assertEqual(2, len(concepts))
 
     def test_get_conceptscheme_concepts_search_dfs_star_label(self):
-        request = self._get_dummy_request({
-            'type': 'concept',
-            'mode': 'dijitFilteringSelect',
-            'label': '*iks',
-            'language': 'nl-BE'
-        })
-        request.matchdict = {
-            'scheme_id': 'TREES'
-        }
+        request = self._get_dummy_request(
+            {
+                'type': 'concept',
+                'mode': 'dijitFilteringSelect',
+                'label': '*iks',
+                'language': 'nl-BE',
+            }
+        )
+        request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
         self.assertIsInstance(concepts, list)
         self.assertEqual(1, len(concepts))
 
     def test_get_conceptscheme_concepts_search_dfs_star_label_star(self):
-        request = self._get_dummy_request({
-            'type': 'concept',
-            'mode': 'dijitFilteringSelect',
-            'label': '*Larik*',
-            'language': 'nl-BE'
-        })
-        request.matchdict = {
-            'scheme_id': 'TREES'
-        }
+        request = self._get_dummy_request(
+            {
+                'type': 'concept',
+                'mode': 'dijitFilteringSelect',
+                'label': '*Larik*',
+                'language': 'nl-BE',
+            }
+        )
+        request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
         self.assertIsInstance(concepts, list)
@@ -551,10 +501,7 @@ class ProviderViewTests(unittest.TestCase):
 
     def test_get_concept(self):
         request = self._get_dummy_request()
-        request.matchdict = {
-            'scheme_id': 'TREES',
-            'c_id': 1
-        }
+        request.matchdict = {'scheme_id': 'TREES', 'c_id': 1}
         pv = self._get_provider_view(request)
         concept = pv.get_concept()
         self.assertIsInstance(concept, Concept)
@@ -562,33 +509,22 @@ class ProviderViewTests(unittest.TestCase):
 
     def test_get_unexsisting_concept(self):
         request = self._get_dummy_request()
-        request.matchdict = {
-            'scheme_id': 'TREES',
-            'c_id': 123456789
-        }
+        request.matchdict = {'scheme_id': 'TREES', 'c_id': 123456789}
         pv = self._get_provider_view(request)
         concept = pv.get_concept()
         self.assertIsInstance(concept, HTTPNotFound)
 
     def test_get_concept_unexisting_conceptscheme(self):
         request = self._get_dummy_request()
-        request.matchdict = {
-            'scheme_id': 'PARROTS',
-            'c_id': 1
-        }
+        request.matchdict = {'scheme_id': 'PARROTS', 'c_id': 1}
         pv = self._get_provider_view(request)
         concept = pv.get_concept()
         self.assertIsInstance(concept, HTTPNotFound)
 
     def test_get_concept_display_children(self):
         request = self._get_dummy_request()
-        request.matchdict = {
-            'scheme_id': 'TREES',
-            'c_id': 1
-        }
-        request.params = {
-            'language': 'nl-BE'
-        }
+        request.matchdict = {'scheme_id': 'TREES', 'c_id': 1}
+        request.params = {'language': 'nl-BE'}
         pv = self._get_provider_view(request)
         children = pv.get_concept_display_children()
         self.assertIsInstance(children, list)
@@ -600,18 +536,12 @@ class ProviderViewTests(unittest.TestCase):
 
     def test_get_concept_display_children_language(self):
         request = self._get_dummy_request({'language': 'nl-BE'})
-        request.matchdict = {
-            'scheme_id': 'TREES',
-            'c_id': 3
-        }
+        request.matchdict = {'scheme_id': 'TREES', 'c_id': 3}
         pv = self._get_provider_view(request)
         children = pv.get_concept_display_children()
-        request_locale= self._get_dummy_request()
+        request_locale = self._get_dummy_request()
         request_locale.locale_name = 'en'
-        request_locale.matchdict = {
-            'scheme_id': 'TREES',
-            'c_id': 3
-        }
+        request_locale.matchdict = {'scheme_id': 'TREES', 'c_id': 3}
         pv_locale = self._get_provider_view(request_locale)
         children_locale = pv_locale.get_concept_display_children()
         self.assertEqual(children[0]['id'], children_locale[0]['id'])
@@ -619,30 +549,21 @@ class ProviderViewTests(unittest.TestCase):
 
     def test_get_unexsisting_concept_display_children(self):
         request = self._get_dummy_request()
-        request.matchdict = {
-            'scheme_id': 'TREES',
-            'c_id': 123456789
-        }
+        request.matchdict = {'scheme_id': 'TREES', 'c_id': 123456789}
         pv = self._get_provider_view(request)
         concept = pv.get_concept_display_children()
         self.assertIsInstance(concept, HTTPNotFound)
 
     def test_get_concept_display_children_unexisting_conceptscheme(self):
         request = self._get_dummy_request()
-        request.matchdict = {
-            'scheme_id': 'PARROTS',
-            'c_id': 1
-        }
+        request.matchdict = {'scheme_id': 'PARROTS', 'c_id': 1}
         pv = self._get_provider_view(request)
         concept = pv.get_concept_display_children()
         self.assertIsInstance(concept, HTTPNotFound)
 
     def test_get_concept_expand(self):
         request = self._get_dummy_request()
-        request.matchdict = {
-            'scheme_id': 'TREES',
-            'c_id': 1
-        }
+        request.matchdict = {'scheme_id': 'TREES', 'c_id': 1}
         pv = self._get_provider_view(request)
         expanded = pv.get_expand()
         self.assertIsInstance(expanded, list)
@@ -650,10 +571,7 @@ class ProviderViewTests(unittest.TestCase):
 
     def test_get_collection_expand(self):
         request = self._get_dummy_request()
-        request.matchdict = {
-            'scheme_id': 'TREES',
-            'c_id': 3
-        }
+        request.matchdict = {'scheme_id': 'TREES', 'c_id': 3}
         pv = self._get_provider_view(request)
         expanded = pv.get_expand()
         self.assertIsInstance(expanded, list)
@@ -663,10 +581,7 @@ class ProviderViewTests(unittest.TestCase):
 
     def test_get_expand_no_resource(self):
         request = self._get_dummy_request()
-        request.matchdict = {
-            'scheme_id': 'TREES',
-            'c_id': 'no_resource'
-        }
+        request.matchdict = {'scheme_id': 'TREES', 'c_id': 'no_resource'}
         pv = self._get_provider_view(request)
         expanded = pv.get_expand()
         self.assertIsInstance(expanded, HTTPNotFound)
@@ -680,10 +595,7 @@ class ProviderViewTests(unittest.TestCase):
 
     def test_get_top_concepts_unexisting_conceptscheme(self):
         request = self._get_dummy_request()
-        request.matchdict = {
-            'scheme_id': 'PARROTS',
-            'c_id': 1
-        }
+        request.matchdict = {'scheme_id': 'PARROTS', 'c_id': 1}
         pv = self._get_provider_view(request)
         expanded = pv.get_expand()
         self.assertIsInstance(expanded, HTTPNotFound)
@@ -704,18 +616,12 @@ class ProviderViewTests(unittest.TestCase):
 
     def test_get_top_concepts_language(self):
         request = self._get_dummy_request({'language': 'nl-BE'})
-        request.matchdict = {
-            'scheme_id': 'TREES',
-            'c_id': 1
-        }
+        request.matchdict = {'scheme_id': 'TREES', 'c_id': 1}
         pv = self._get_provider_view(request)
         children = pv.get_conceptscheme_top_concepts()
-        request_locale= self._get_dummy_request()
+        request_locale = self._get_dummy_request()
         request_locale.locale_name = 'en'
-        request_locale.matchdict = {
-            'scheme_id': 'TREES',
-            'c_id': 1
-        }
+        request_locale.matchdict = {'scheme_id': 'TREES', 'c_id': 1}
         pv_locale = self._get_provider_view(request_locale)
         children_locale = pv_locale.get_conceptscheme_top_concepts()
         self.assertEqual(children[0]['id'], children_locale[0]['id'])
@@ -731,9 +637,7 @@ class ProviderViewTests(unittest.TestCase):
     def test_get_display_top(self):
         request = self._get_dummy_request()
         request.matchdict = {'scheme_id': 'TREES'}
-        request.params = {
-            'language': 'nl-BE'
-        }
+        request.params = {'language': 'nl-BE'}
         pv = self._get_provider_view(request)
         tc = pv.get_conceptscheme_display_top()
         self.assertIsInstance(tc, list)
@@ -745,28 +649,19 @@ class ProviderViewTests(unittest.TestCase):
 
     def test_get_display_top_language(self):
         request = self._get_dummy_request({'language': 'nl-BE'})
-        request.matchdict = {
-            'scheme_id': 'TREES',
-            'c_id': 1
-        }
+        request.matchdict = {'scheme_id': 'TREES', 'c_id': 1}
         pv = self._get_provider_view(request)
         children = pv.get_conceptscheme_display_top()
-        request_locale= self._get_dummy_request()
+        request_locale = self._get_dummy_request()
         request_locale.locale_name = 'en'
-        request_locale.matchdict = {
-            'scheme_id': 'TREES',
-            'c_id': 1
-        }
+        request_locale.matchdict = {'scheme_id': 'TREES', 'c_id': 1}
         pv_locale = self._get_provider_view(request_locale)
         children_locale = pv_locale.get_conceptscheme_display_top()
         self.assertEqual(children[0]['id'], children_locale[0]['id'])
         self.assertNotEqual(children[0]['label'], children_locale[0]['label'])
 
     def test_get_conceptscheme_concepts_search_sort_id_asc(self):
-        request = self._get_dummy_request({
-            'sort': '+id',
-            'language': 'nl-BE'
-        })
+        request = self._get_dummy_request({'sort': '+id', 'language': 'nl-BE'})
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
@@ -774,10 +669,7 @@ class ProviderViewTests(unittest.TestCase):
         self.assertEqual(1, concepts[0]['id'])
 
     def test_get_conceptscheme_concepts_search_sort_id_space_is_asc(self):
-        request = self._get_dummy_request({
-            'sort': ' id',
-            'language': 'nl-BE'
-        })
+        request = self._get_dummy_request({'sort': ' id', 'language': 'nl-BE'})
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
@@ -785,10 +677,7 @@ class ProviderViewTests(unittest.TestCase):
         self.assertEqual(1, concepts[0]['id'])
 
     def test_get_conceptscheme_concepts_search_sort_id_undefined_is_asc(self):
-        request = self._get_dummy_request({
-            'sort': 'id',
-            'language': 'nl-BE'
-        })
+        request = self._get_dummy_request({'sort': 'id', 'language': 'nl-BE'})
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
@@ -796,10 +685,7 @@ class ProviderViewTests(unittest.TestCase):
         self.assertEqual(1, concepts[0]['id'])
 
     def test_get_conceptscheme_concepts_search_sort_id_desc(self):
-        request = self._get_dummy_request({
-            'sort': '-id',
-            'language': 'nl-BE'
-        })
+        request = self._get_dummy_request({'sort': '-id', 'language': 'nl-BE'})
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
@@ -807,64 +693,47 @@ class ProviderViewTests(unittest.TestCase):
         self.assertEqual(3, concepts[0]['id'])
 
     def test_get_conceptscheme_concepts_search_sort_label_default(self):
-        request = self._get_dummy_request({
-            'sort': 'label',
-            'language': 'nl-BE'
-        })
+        request = self._get_dummy_request({'sort': 'label', 'language': 'nl-BE'})
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
         self.assertIsInstance(concepts, list)
-        self.assertEqual("Bomen per soort", concepts[0]['label'])
+        self.assertEqual('Bomen per soort', concepts[0]['label'])
 
     def test_get_conceptscheme_concepts_search_sort_label_asc(self):
-        request = self._get_dummy_request({
-            'sort': '+label',
-            'language': 'nl-BE'
-        })
+        request = self._get_dummy_request({'sort': '+label', 'language': 'nl-BE'})
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
         self.assertIsInstance(concepts, list)
-        self.assertEqual("Bomen per soort", concepts[0]['label'])
+        self.assertEqual('Bomen per soort', concepts[0]['label'])
 
     def test_get_conceptscheme_concepts_search_sort_label_desc(self):
-        request = self._get_dummy_request({
-            'sort': '-label',
-            'language': 'nl-BE'
-        })
+        request = self._get_dummy_request({'sort': '-label', 'language': 'nl-BE'})
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
         self.assertIsInstance(concepts, list)
-        self.assertEqual("De Paardekastanje", concepts[0]['label'])
+        self.assertEqual('De Paardekastanje', concepts[0]['label'])
 
     def test_get_conceptscheme_concepts_search_sort_sortlabel_asc(self):
-        request = self._get_dummy_request({
-            'sort': '+sortlabel',
-            'language': 'nl-BE'
-        })
+        request = self._get_dummy_request({'sort': '+sortlabel', 'language': 'nl-BE'})
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
         self.assertIsInstance(concepts, list)
-        self.assertEqual("De Paardekastanje", concepts[0]['label'])
+        self.assertEqual('De Paardekastanje', concepts[0]['label'])
 
     def test_get_conceptscheme_concepts_search_sort_sortlabel_desc(self):
-        request = self._get_dummy_request({
-            'sort': '-sortlabel',
-            'language': 'nl-BE'
-        })
+        request = self._get_dummy_request({'sort': '-sortlabel', 'language': 'nl-BE'})
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
         self.assertIsInstance(concepts, list)
-        self.assertEqual("De Lariks", concepts[0]['label'])
+        self.assertEqual('De Lariks', concepts[0]['label'])
 
     def test_get_conceptscheme_concepts_search_sort_unexisting_field(self):
-        request = self._get_dummy_request({
-            'sort': '-foo'
-        })
+        request = self._get_dummy_request({'sort': '-foo'})
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
@@ -872,28 +741,61 @@ class ProviderViewTests(unittest.TestCase):
 
     def test_get_concept_scheme_concepts_language(self):
         request = self._get_dummy_request({'language': 'nl-BE'})
-        request.matchdict = {
-            'scheme_id': 'TREES'
-        }
+        request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         children = pv.get_conceptscheme_concepts()
-        request_locale= self._get_dummy_request()
+        request_locale = self._get_dummy_request()
         request_locale.locale_name = 'en'
-        request_locale.matchdict = {
-            'scheme_id': 'TREES'
-        }
+        request_locale.matchdict = {'scheme_id': 'TREES'}
         pv_locale = self._get_provider_view(request_locale)
         children_locale = pv_locale.get_conceptscheme_concepts()
         self.assertEqual(children[0]['id'], children_locale[0]['id'])
         self.assertNotEqual(children[0]['label'], children_locale[0]['label'])
 
     def test_get_conceptscheme_concepts_search_sort_empty_result(self):
-        request = self._get_dummy_request({
-            'sort': '-foo',
-            'label': 'bar'
-        })
+        request = self._get_dummy_request({'sort': '-foo', 'label': 'bar'})
         request.matchdict = {'scheme_id': 'TREES'}
         pv = self._get_provider_view(request)
         concepts = pv.get_conceptscheme_concepts()
         self.assertIsInstance(concepts, list)
         self.assertEqual(0, len(concepts))
+
+    def test_provider_error_is_service_unavailable(self):
+        request = self._get_dummy_request()
+        request.matchdict = {'scheme_id': 'TREES', 'c_id': 1}
+        pv = self._get_provider_view(request)
+
+        with mock.patch(
+            'skosprovider.providers.DictionaryProvider.get_top_concepts',
+            new=PropertyMock(side_effect=ProviderUnavailableException('test')),
+        ):
+            with self.assertRaises(HTTPBadGateway):
+                pv.get_conceptscheme_top_concepts()
+
+        with mock.patch(
+            'skosprovider.providers.DictionaryProvider.get_top_display',
+            new=PropertyMock(side_effect=ProviderUnavailableException('test')),
+        ):
+            with self.assertRaises(HTTPBadGateway):
+                pv.get_conceptscheme_display_top()
+
+        with mock.patch(
+            'skosprovider.providers.DictionaryProvider.get_by_id',
+            new=PropertyMock(side_effect=ProviderUnavailableException('test')),
+        ):
+            with self.assertRaises(HTTPBadGateway):
+                pv.get_concept()
+
+        with mock.patch(
+            'skosprovider.providers.DictionaryProvider.get_children_display',
+            new=PropertyMock(side_effect=ProviderUnavailableException('test')),
+        ):
+            with self.assertRaises(HTTPBadGateway):
+                pv.get_concept_display_children()
+
+        with mock.patch(
+            'skosprovider.providers.DictionaryProvider.expand',
+            new=PropertyMock(side_effect=ProviderUnavailableException('test')),
+        ):
+            with self.assertRaises(HTTPBadGateway):
+                pv.get_expand()

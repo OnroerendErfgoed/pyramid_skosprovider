@@ -1,17 +1,13 @@
 # -*- coding: utf8 -*-
 
-from pyramid.config import Configurator
+import unittest
 
+import responses
+from pyld import jsonld
+from pyramid.config import Configurator
 from webtest import TestApp
 
-import unittest
-import responses
-
-from .fixtures.data import (
-    trees
-)
-
-from pyld import jsonld
+from .fixtures.data import trees
 
 
 def skosmain(global_config, **settings):
@@ -29,25 +25,23 @@ def skosmain(global_config, **settings):
 
     return config.make_wsgi_app()
 
-def register_ctxt_callback(responses, testapp):
 
+def register_ctxt_callback(responses, testapp):
     def callback(request):
         response = testapp.get(request.path_url, headers=request.headers)
         return 200, response.headers, response.text
 
     responses.add_callback(
-        method = responses.GET,
-        url = "http://localhost/jsonld/context/skos",
-        callback = callback
+        method=responses.GET,
+        url='http://localhost/jsonld/context/skos',
+        callback=callback,
     )
     return responses
 
-class FunctionalTests(unittest.TestCase):
 
+class FunctionalTests(unittest.TestCase):
     def setUp(self):
-        settings = {
-            'skosprovider.skosregistry_location': 'registry'
-        }
+        settings = {'skosprovider.skosregistry_location': 'registry'}
         app = skosmain({}, **settings)
         self.testapp = TestApp(app)
 
@@ -56,13 +50,9 @@ class FunctionalTests(unittest.TestCase):
 
 
 class RestFunctionalTests(FunctionalTests):
-
     def test_get_context_json(self):
         res = self.testapp.get(
-            '/jsonld/context/skos',
-            {},
-            {'Accept': 'application/json'},
-            status=200
+            '/jsonld/context/skos', {}, {'Accept': 'application/json'}, status=200
         )
         assert 'application/json' in res.headers['Content-Type']
         data = res.json
@@ -73,10 +63,7 @@ class RestFunctionalTests(FunctionalTests):
 
     def test_get_context_jsonld(self):
         res = self.testapp.get(
-            '/jsonld/context/skos',
-            {},
-            {'Accept': 'application/ld+json'},
-            status=200
+            '/jsonld/context/skos', {}, {'Accept': 'application/ld+json'}, status=200
         )
         assert 'application/ld+json' in res.headers['Content-Type']
         data = res.json
@@ -90,7 +77,7 @@ class RestFunctionalTests(FunctionalTests):
             '/uris?uri=http://python.com/trees',
             {},
             {'Accept': 'application/json'},
-            status=200
+            status=200,
         )
         self.assertIn('application/json', res.headers['Content-Type'])
         data = res.json
@@ -99,12 +86,21 @@ class RestFunctionalTests(FunctionalTests):
         self.assertIn('id', data)
         self.assertIn('type', data)
 
+    def test_get_uri_bad_format(self):
+        res = self.testapp.get(
+            '/uris?uri=http://python.com/trees\\',  # backslash not valid
+            {'Accept': 'application/json'},
+            status=400,
+        )
+        assert 'Bad Request' in res.text
+        assert 'is not a valid URI' in res.text
+
     def test_get_uri_c_json(self):
         res = self.testapp.get(
             '/uris?uri=http%3A%2F%2Fpython.com%2Ftrees%2Flarch',
             {},
             {'Accept': 'application/json'},
-            status=200
+            status=200,
         )
         self.assertIn('application/json', res.headers['Content-Type'])
         data = res.json
@@ -119,42 +115,37 @@ class RestFunctionalTests(FunctionalTests):
             '/uris?uri=http://python.com/trees',
             {},
             {'Accept': 'application/json'},
-            status=200
+            status=200,
         )
         res2 = self.testapp.get(
             '/uris/http://python.com/trees',
             {},
             {'Accept': 'application/json'},
-            status=200
+            status=200,
         )
         self.assertEqual(res1.body, res2.body)
 
     def test_get_uri_no_uri(self):
-        res = self.testapp.get(
-            '/uris',
-            {},
-            {'Accept': 'application/json'},
-            status=400
-        )
+        self.testapp.get('/uris', {}, {'Accept': 'application/json'}, status=400)
 
-    def test_get_conceptschemes_json(self):
-        res = self.testapp.get(
-            '/conceptschemes',
-            {},
-            {'Accept': 'application/json'},
-            status=200
-        )
-        self.assertIn('application/json', res.headers['Content-Type'])
-        data = res.json
-        self.assertIsInstance(data, list)
-        self.assertEqual(len(data), 1)
+    def test_get_conceptschemes(self):
+        accept_headers = ('*/*', 'application/json', 'application/ld+json')
+        for accept in accept_headers:
+            res = self.testapp.get(
+                '/conceptschemes', {}, {'Accept': accept}, status=200
+            )
+            if accept != '*/*':
+                self.assertIn(accept, res.headers['Content-Type'])
+            data = res.json
+            self.assertIsInstance(data, list)
+            self.assertEqual(len(data), 1)
+
+    def test_get_conceptschemes_unknown_accept(self):
+        self.testapp.get('/conceptschemes', {}, {'Accept': 'text/html'}, status=404)
 
     def test_get_conceptscheme_json(self):
         res = self.testapp.get(
-            '/conceptschemes/TREES',
-            {},
-            {'Accept': 'application/json'},
-            status=200
+            '/conceptschemes/TREES', {}, {'Accept': 'application/json'}, status=200
         )
         self.assertIn('application/json', res.headers['Content-Type'])
         data = res.json
@@ -172,10 +163,7 @@ class RestFunctionalTests(FunctionalTests):
 
     def test_get_conceptscheme_jsonld(self):
         res = self.testapp.get(
-            '/conceptschemes/TREES',
-            {},
-            {'Accept': 'application/ld+json'},
-            status=200
+            '/conceptschemes/TREES', {}, {'Accept': 'application/ld+json'}, status=200
         )
         assert 'application/ld+json' in res.headers['Content-Type']
         data = res.json
@@ -184,54 +172,45 @@ class RestFunctionalTests(FunctionalTests):
         assert 'uri' in data
         assert 'label' in data
         assert 'labels' in data
-        assert 'sources' in data
+        assert 'sources' not in data
         assert '@context' in data
         assert '/jsonld/context/skos' in data['@context']
 
     def test_get_conceptscheme_jsonld_expand(self):
-        
         res = self.testapp.get(
-            '/conceptschemes/TREES',
-            {},
-            {'Accept': 'application/ld+json'},
-            status=200
+            '/conceptschemes/TREES', {}, {'Accept': 'application/ld+json'}, status=200
         )
         assert 'application/ld+json' in res.headers['Content-Type']
         data = res.json
 
         with responses.RequestsMock() as rsps:
-
             register_ctxt_callback(rsps, self.testapp)
 
             expanded = jsonld.expand(data)
             assert 'http://purl.org/dc/terms/identifier' in expanded[0]
             assert 'http://python.com/trees' == expanded[0]['@id']
-            assert 'http://www.w3.org/2004/02/skos/core#ConceptScheme' in expanded[0]['@type']
-            assert {'@value': 'TREES'} in expanded[0]['http://purl.org/dc/terms/identifier']
+            assert (
+                'http://www.w3.org/2004/02/skos/core#ConceptScheme'
+                in expanded[0]['@type']
+            )
+            assert {'@value': 'TREES'} in expanded[0][
+                'http://purl.org/dc/terms/identifier'
+            ]
             assert 'http://www.w3.org/2004/02/skos/core#prefLabel' in expanded[0]
 
     def test_get_conceptscheme_jsonld_url(self):
-        res = self.testapp.get(
-            '/conceptschemes/TREES.jsonld',
-            status=200
-        )
+        res = self.testapp.get('/conceptschemes/TREES.jsonld', status=200)
         assert 'application/ld+json' in res.headers['Content-Type']
         data = res.json
         res2 = self.testapp.get(
-            '/conceptschemes/TREES',
-            {},
-            {'Accept': 'application/ld+json'},
-            status=200
+            '/conceptschemes/TREES', {}, {'Accept': 'application/ld+json'}, status=200
         )
         data2 = res2.json
         assert data == data2
 
     def test_get_conceptschemes_trees_cs_json(self):
         res = self.testapp.get(
-            '/conceptschemes/TREES/c',
-            {},
-            {'Accept': 'application/json'},
-            status=200
+            '/conceptschemes/TREES/c', {}, {'Accept': 'application/json'}, status=200
         )
         self.assertIn('application/json', res.headers['Content-Type'])
         self.assertIsInstance(res.headers['Content-Range'], str)
@@ -244,11 +223,8 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/conceptschemes/TREES/c',
             {},
-            {
-                'Accept': 'application/json',
-                'Range': 'items=2-2'
-            },
-            status=200
+            {'Accept': 'application/json', 'Range': 'items=2-2'},
+            status=200,
         )
         self.assertIn('application/json', res.headers['Content-Type'])
         self.assertIsInstance(res.headers['Content-Range'], str)
@@ -259,10 +235,7 @@ class RestFunctionalTests(FunctionalTests):
 
     def test_get_conceptschemes_trees_larch_json(self):
         res = self.testapp.get(
-            '/conceptschemes/TREES/c/1',
-            {},
-            {'Accept': 'application/json'},
-            status=200
+            '/conceptschemes/TREES/c/1', {}, {'Accept': 'application/json'}, status=200
         )
         self.assertIn('application/json', res.headers['Content-Type'])
         data = res.json
@@ -284,7 +257,7 @@ class RestFunctionalTests(FunctionalTests):
             '/conceptschemes/TREES/c/1',
             {},
             {'Accept': 'application/ld+json'},
-            status=200
+            status=200,
         )
         assert 'application/ld+json' in res.headers['Content-Type']
         data = res.json
@@ -296,20 +269,17 @@ class RestFunctionalTests(FunctionalTests):
         assert '@context' in data
         assert '/jsonld/context/skos' in data['@context']
 
-
     def test_get_conceptscheme_trees_larch_jsonld_expand(self):
-        
         res = self.testapp.get(
             '/conceptschemes/TREES/c/1',
             {},
             {'Accept': 'application/ld+json'},
-            status=200
+            status=200,
         )
         assert 'application/ld+json' in res.headers['Content-Type']
         data = res.json
 
         with responses.RequestsMock() as rsps:
-
             register_ctxt_callback(rsps, self.testapp)
 
             expanded = jsonld.expand(data)
@@ -321,10 +291,7 @@ class RestFunctionalTests(FunctionalTests):
 
     def test_get_conceptschemes_trees_species_json(self):
         res = self.testapp.get(
-            '/conceptschemes/TREES/c/3',
-            {},
-            {'Accept': 'application/json'},
-            status=200
+            '/conceptschemes/TREES/c/3', {}, {'Accept': 'application/json'}, status=200
         )
         self.assertIn('application/json', res.headers['Content-Type'])
         data = res.json
@@ -345,7 +312,7 @@ class RestFunctionalTests(FunctionalTests):
             '/conceptschemes/TREES/c/3',
             {},
             {'Accept': 'application/ld+json'},
-            status=200
+            status=200,
         )
         assert 'application/ld+json' in res.headers['Content-Type']
         data = res.json
@@ -358,39 +325,36 @@ class RestFunctionalTests(FunctionalTests):
         assert '/jsonld/context/skos' in data['@context']
 
     def test_get_conceptscheme_trees_species_jsonld_expand(self):
-        
         res = self.testapp.get(
             '/conceptschemes/TREES/c/3',
             {},
             {'Accept': 'application/ld+json'},
-            status=200
+            status=200,
         )
         assert 'application/ld+json' in res.headers['Content-Type']
         data = res.json
 
         with responses.RequestsMock() as rsps:
-
             register_ctxt_callback(rsps, self.testapp)
 
             expanded = jsonld.expand(data)
             assert 'http://purl.org/dc/terms/identifier' in expanded[0]
             assert 'http://python.com/trees/species' == expanded[0]['@id']
-            assert 'http://www.w3.org/2004/02/skos/core#Collection' in expanded[0]['@type']
+            assert (
+                'http://www.w3.org/2004/02/skos/core#Collection' in expanded[0]['@type']
+            )
             assert {'@value': 3} in expanded[0]['http://purl.org/dc/terms/identifier']
             assert 'http://www.w3.org/2004/02/skos/core#prefLabel' in expanded[0]
 
     def test_get_conceptschemes_trees_species_jsonld_url(self):
-        res = self.testapp.get(
-            '/conceptschemes/TREES/c/3.jsonld',
-            status=200
-        )
+        res = self.testapp.get('/conceptschemes/TREES/c/3.jsonld', status=200)
         assert 'application/ld+json' in res.headers['Content-Type']
         data = res.json
         res2 = self.testapp.get(
             '/conceptschemes/TREES/c/3',
             {},
             {'Accept': 'application/ld+json'},
-            status=200
+            status=200,
         )
         data2 = res.json
         assert data == data2
@@ -398,12 +362,9 @@ class RestFunctionalTests(FunctionalTests):
     def test_get_conceptscheme_concepts_search_dfs_label_star_postfix(self):
         res = self.testapp.get(
             '/conceptschemes/TREES/c?language=nl-BE',
-            {
-                'mode': 'dijitFilteringSelect',
-                'label': 'de *'
-            },
+            {'mode': 'dijitFilteringSelect', 'label': 'de *'},
             {'Accept': 'application/json'},
-            status=200
+            status=200,
         )
         self.assertIn('application/json', res.headers['Content-Type'])
         data = res.json
@@ -413,12 +374,9 @@ class RestFunctionalTests(FunctionalTests):
     def test_get_conceptscheme_concepts_search_dfs_label_star_prefix(self):
         res = self.testapp.get(
             '/conceptschemes/TREES/c?language=en',
-            {
-                'mode': 'dijitFilteringSelect',
-                'label': '*nut'
-            },
+            {'mode': 'dijitFilteringSelect', 'label': '*nut'},
             {'Accept': 'application/json'},
-            status=200
+            status=200,
         )
         self.assertIn('application/json', res.headers['Content-Type'])
         data = res.json
@@ -428,12 +386,9 @@ class RestFunctionalTests(FunctionalTests):
     def test_get_conceptscheme_concepts_search_dfs_label_star_prepostfix(self):
         res = self.testapp.get(
             '/conceptschemes/TREES/c?language=nl-BE',
-            {
-                'mode': 'dijitFilteringSelect',
-                'label': '*Lariks*'
-            },
+            {'mode': 'dijitFilteringSelect', 'label': '*Lariks*'},
             {'Accept': 'application/json'},
-            status=200
+            status=200,
         )
         self.assertIn('application/json', res.headers['Content-Type'])
         data = res.json
@@ -445,7 +400,7 @@ class RestFunctionalTests(FunctionalTests):
             '/conceptschemes/TREES/c',
             {'mode': 'dijitFilteringSelect', 'label': '*'},
             {'Accept': 'application/json'},
-            status=200
+            status=200,
         )
         self.assertIn('application/json', res.headers['Content-Type'])
         data = res.json
@@ -456,7 +411,7 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get(
             '/conceptschemes/TREES/topconcepts',
             {'Accept': 'application/json'},
-            status=200
+            status=200,
         )
         self.assertIn('application/json', res.headers['Content-Type'])
         data = res.json
