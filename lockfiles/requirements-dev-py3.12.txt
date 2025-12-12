@@ -68,7 +68,7 @@ pygments==2.18.0
     # via
     #   pyramid-skosprovider (pyproject.toml)
     #   sphinx
-pyld==2.0.4
+pyld==2.0.3
     # via skosprovider
 pyramid==2.0.2
     # via pyramid-skosprovider (pyproject.toml)
@@ -97,7 +97,7 @@ six==1.17.0
     # via
     #   html5lib
     #   sphinxcontrib-httpdomain
-skosprovider==1.2.0
+skosprovider==1.5.1
     # via pyramid-skosprovider (pyproject.toml)
 snowballstemmer==3.0.1
     # via sphinx
