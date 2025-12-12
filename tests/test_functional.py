@@ -172,7 +172,7 @@ class RestFunctionalTests(FunctionalTests):
         assert 'uri' in data
         assert 'label' in data
         assert 'labels' in data
-        assert 'sources' in data
+        assert 'sources' not in data
         assert '@context' in data
         assert '/jsonld/context/skos' in data['@context']
 
