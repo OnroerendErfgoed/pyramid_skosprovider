@@ -31,7 +31,7 @@ jobs:
         run: |
           pip --version
           pip install pip-tools
-          pip-sync lockfiles/requirements-dev${{ matrix.python-version }}.txt
+          pip-sync lockfiles/requirements-dev-py${{ matrix.python-version }}.txt
           pip install -e .
 
       - name: Python tests

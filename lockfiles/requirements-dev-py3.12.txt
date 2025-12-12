@@ -40,8 +40,6 @@ jinja2==3.1.6
     # via sphinx
 language-tags==1.2.0
     # via skosprovider
-legacy-cgi==2.6.4
-    # via webob
 lxml==6.0.2
     # via pyld
 markupsafe==3.0.3
@@ -133,7 +131,7 @@ translationstring==1.4
     # via pyramid
 typing-extensions==4.15.0
     # via beautifulsoup4
-urllib3==2.6.1
+urllib3==2.6.2
     # via
     #   requests
     #   responses

@@ -35,8 +35,8 @@ pyramid_skosprovider is present.
 .. code-block:: bash
 
     # activate your virtual env
-    $ pip install -r requirements.txt
-    $ python setup.py develop
+    $ pip install -r lockfiles/requirements-dev-py{version}.txt
+    $ pip install -e .
     $ cd docs
     $ make html
 
