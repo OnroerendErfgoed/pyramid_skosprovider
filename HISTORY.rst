@@ -1,3 +1,15 @@
+1.3.0 (2025-12-12)
+------------------
+
+- Require label XOR match filter when searching concepts or collections. (#122)
+- Handle ValueError from skosprovider when searching by uri (#118)
+- Add workflow: Verify that the package can be built and is ready for upload to PyPI. (#117)
+- Add test coverage (#116)
+- Move to Github Actions + pyproj.toml (#112)
+- When visiting the /conceptschemes route via a browser, a 500 HTTP error is displayed. (#107)
+- Provide HTTP 502 Bad Gateway errors (#102)
+
+
 1.2.2 (2024-07-30)
 ------------------
 
