@@ -131,7 +131,7 @@ translationstring==1.4
     # via pyramid
 typing-extensions==4.15.0
     # via beautifulsoup4
-urllib3==2.6.2
+urllib3==2.6.3
     # via
     #   requests
     #   responses
