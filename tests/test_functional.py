@@ -422,3 +422,78 @@ class RestFunctionalTests(FunctionalTests):
             self.assertIn('uri', c)
             self.assertIn('label', c)
             self.assertEqual('concept', c['type'])
+
+
+class HeadFunctionalTests(FunctionalTests):
+    """Test that HEAD requests return the same status and headers as GET but no body."""
+
+    def _assert_head_matches_get(self, path, headers=None):
+        if headers is None:
+            headers = {'Accept': 'application/json'}
+        get_res = self.testapp.get(path, headers=headers)
+        head_res = self.testapp.head(path, headers=headers)
+        self.assertEqual(get_res.status_code, head_res.status_code)
+        self.assertEqual(
+            get_res.headers['Content-Type'], head_res.headers['Content-Type']
+        )
+        self.assertEqual(head_res.body, b'')
+
+    def test_head_context(self):
+        self._assert_head_matches_get('/jsonld/context/skos')
+
+    def test_head_context_jsonld(self):
+        self._assert_head_matches_get(
+            '/jsonld/context/skos', {'Accept': 'application/ld+json'}
+        )
+
+    def test_head_conceptschemes(self):
+        self._assert_head_matches_get('/conceptschemes')
+
+    def test_head_conceptscheme(self):
+        self._assert_head_matches_get('/conceptschemes/TREES')
+
+    def test_head_conceptscheme_jsonld(self):
+        self._assert_head_matches_get(
+            '/conceptschemes/TREES', {'Accept': 'application/ld+json'}
+        )
+
+    def test_head_conceptscheme_jsonld_url(self):
+        self._assert_head_matches_get('/conceptschemes/TREES.jsonld')
+
+    def test_head_conceptscheme_concepts(self):
+        self._assert_head_matches_get('/conceptschemes/TREES/c')
+
+    def test_head_concept(self):
+        self._assert_head_matches_get('/conceptschemes/TREES/c/1')
+
+    def test_head_concept_jsonld(self):
+        self._assert_head_matches_get(
+            '/conceptschemes/TREES/c/1', {'Accept': 'application/ld+json'}
+        )
+
+    def test_head_concept_jsonld_url(self):
+        self._assert_head_matches_get('/conceptschemes/TREES/c/1.jsonld')
+
+    def test_head_top_concepts(self):
+        self._assert_head_matches_get('/conceptschemes/TREES/topconcepts')
+
+    def test_head_display_top(self):
+        self._assert_head_matches_get('/conceptschemes/TREES/displaytop')
+
+    def test_head_display_children(self):
+        self._assert_head_matches_get('/conceptschemes/TREES/c/1/displaychildren')
+
+    def test_head_expand(self):
+        self._assert_head_matches_get('/conceptschemes/TREES/c/1/expand')
+
+    def test_head_uri(self):
+        self._assert_head_matches_get('/uris?uri=http://python.com/trees')
+
+    def test_head_nonexistent_returns_404(self):
+        head_res = self.testapp.head(
+            '/conceptschemes/NONEXISTENT',
+            headers={'Accept': 'application/json'},
+            expect_errors=True,
+        )
+        self.assertEqual(404, head_res.status_code)
+        self.assertEqual(head_res.body, b'')

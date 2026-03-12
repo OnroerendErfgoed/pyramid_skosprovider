@@ -32,13 +32,13 @@ class RestView(object):
 class StaticView(RestView):
     @view_config(
         route_name='skosprovider.context',
-        request_method='GET',
+        request_method=('GET', 'HEAD'),
         accept='application/json',
         http_cache=(3600, {'public': True}),
     )
     @view_config(
         route_name='skosprovider.context',
-        request_method='GET',
+        request_method=('GET', 'HEAD'),
         accept='application/ld+json',
         http_cache=(3600, {'public': True}),
     )
@@ -55,19 +55,19 @@ class ProviderView(RestView):
 
     @view_config(
         route_name='skosprovider.uri',
-        request_method='GET',
+        request_method=('GET', 'HEAD'),
         accept='application/json+ld',
         renderer='skosjson',
     )
     @view_config(
         route_name='skosprovider.uri',
-        request_method='GET',
+        request_method=('GET', 'HEAD'),
         accept='application/json',
         renderer='skosjson',
     )
     @view_config(
         route_name='skosprovider.uri.deprecated',
-        request_method='GET',
+        request_method=('GET', 'HEAD'),
         accept='application/json',
         renderer='skosjson',
     )
@@ -112,13 +112,13 @@ class ProviderView(RestView):
 
     @view_config(
         route_name='skosprovider.conceptschemes',
-        request_method='GET',
+        request_method=('GET', 'HEAD'),
         accept='application/json',
         renderer='skosjson',
     )
     @view_config(
         route_name='skosprovider.conceptschemes',
-        request_method='GET',
+        request_method=('GET', 'HEAD'),
         accept='application/ld+json',
         renderer='skosjsonld',
     )
@@ -151,7 +151,7 @@ class ProviderView(RestView):
 
     @view_config(
         route_name='skosprovider.conceptscheme',
-        request_method='GET',
+        request_method=('GET', 'HEAD'),
         accept='application/json',
         renderer='skosjson',
     )
@@ -178,13 +178,13 @@ class ProviderView(RestView):
 
     @view_config(
         route_name='skosprovider.conceptscheme',
-        request_method='GET',
+        request_method=('GET', 'HEAD'),
         renderer='skosjsonld',
         accept='application/ld+json',
     )
     @view_config(
         route_name='skosprovider.conceptscheme.jsonld',
-        request_method='GET',
+        request_method=('GET', 'HEAD'),
         renderer='skosjsonld',
     )
     def get_conceptscheme_jsonld(self):
@@ -196,7 +196,7 @@ class ProviderView(RestView):
 
     @view_config(
         route_name='skosprovider.conceptscheme.tc',
-        request_method='GET',
+        request_method=('GET', 'HEAD'),
         accept='application/json',
         renderer='skosjson',
     )
@@ -213,7 +213,7 @@ class ProviderView(RestView):
 
     @view_config(
         route_name='skosprovider.conceptscheme.display_top',
-        request_method='GET',
+        request_method=('GET', 'HEAD'),
         accept='application/json',
         renderer='skosjson',
     )
@@ -246,7 +246,7 @@ class ProviderView(RestView):
 
     @view_config(
         route_name='skosprovider.cs',
-        request_method='GET',
+        request_method=('GET', 'HEAD'),
         accept='application/json',
         renderer='skosjson',
     )
@@ -284,7 +284,7 @@ class ProviderView(RestView):
 
     @view_config(
         route_name='skosprovider.conceptscheme.cs',
-        request_method='GET',
+        request_method=('GET', 'HEAD'),
         accept='application/json',
         renderer='skosjson',
     )
@@ -354,18 +354,18 @@ class ProviderView(RestView):
 
     @view_config(
         route_name='skosprovider.c',
-        request_method='GET',
+        request_method=('GET', 'HEAD'),
         accept='application/json',
         renderer='skosjson',
     )
     @view_config(
         route_name='skosprovider.c',
-        request_method='GET',
+        request_method=('GET', 'HEAD'),
         renderer='skosjsonld',
         accept='application/ld+json',
     )
     @view_config(
-        route_name='skosprovider.c.jsonld', request_method='GET', renderer='skosjsonld'
+        route_name='skosprovider.c.jsonld', request_method=('GET', 'HEAD'), renderer='skosjsonld'
     )
     def get_concept(self):
         scheme_id = self.request.matchdict['scheme_id']
@@ -383,7 +383,7 @@ class ProviderView(RestView):
 
     @view_config(
         route_name='skosprovider.c.display_children',
-        request_method='GET',
+        request_method=('GET', 'HEAD'),
         accept='application/json',
         renderer='skosjson',
     )
@@ -404,7 +404,7 @@ class ProviderView(RestView):
 
     @view_config(
         route_name='skosprovider.c.expand',
-        request_method='GET',
+        request_method=('GET', 'HEAD'),
         accept='application/json',
         renderer='skosjson',
     )
