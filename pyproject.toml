@@ -11,7 +11,7 @@ authors = [
 ]
 license = "MIT"
 description = "integration of skosprovider in pyramid"
-requires-python = ">=3.10,<3.13.11"
+requires-python = ">=3.11,<3.14"
 keywords = ["pyramid", "skos", "skosprovider", "vocabularies", "thesauri"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -19,9 +19,9 @@ classifiers = [
     "Framework :: Pyramid",
     "Topic :: Internet :: WWW/HTTP",
     "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
     "pyramid>=2.0.2",
