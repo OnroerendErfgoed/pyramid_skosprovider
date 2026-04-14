@@ -365,7 +365,9 @@ class ProviderView(RestView):
         accept='application/ld+json',
     )
     @view_config(
-        route_name='skosprovider.c.jsonld', request_method=('GET', 'HEAD'), renderer='skosjsonld'
+        route_name='skosprovider.c.jsonld',
+        request_method=('GET', 'HEAD'),
+        renderer='skosjsonld',
     )
     def get_concept(self):
         scheme_id = self.request.matchdict['scheme_id']

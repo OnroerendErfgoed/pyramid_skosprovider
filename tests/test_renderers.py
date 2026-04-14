@@ -2,19 +2,9 @@
 
 from pyramid import testing
 
-from .fixtures.data import (
-    larch,
-    chestnut,
-    species,
-    trees
-)
+from .fixtures.data import larch, species, trees
 
-from skosprovider.skos import (
-    Concept,
-    Collection,
-    Label,
-    Source
-)
+from skosprovider.skos import Concept, Collection, Label, Source
 
 import json
 
@@ -23,21 +13,21 @@ from unittest.mock import Mock
 
 
 class TestRenderers(unittest.TestCase):
-
     def _assert_is_labels(self, labels):
         self.assertIsInstance(labels, list)
-        for l in labels:
-            self.assertIsInstance(l, Label)
+        for label in labels:
+            self.assertIsInstance(label, Label)
 
     def test_concept_adapter(self):
         from pyramid_skosprovider.renderers import concept_adapter
+
         c = Concept(
             id=larch['id'],
             labels=larch['labels'],
             notes=larch['notes'],
             sources=larch['sources'],
             concept_scheme=trees.concept_scheme,
-            matches=larch['matches']
+            matches=larch['matches'],
         )
         request = testing.DummyRequest()
         m = Mock()
@@ -66,6 +56,7 @@ class TestRenderers(unittest.TestCase):
 
     def test_concept_adapter_en(self):
         from pyramid_skosprovider.renderers import concept_adapter
+
         c = Concept(
             id=larch['id'],
             labels=larch['labels'],
@@ -81,11 +72,12 @@ class TestRenderers(unittest.TestCase):
 
     def test_collection_adapter(self):
         from pyramid_skosprovider.renderers import collection_adapter
+
         c = Collection(
             id=species['id'],
             labels=species['labels'],
             members=species['members'],
-            concept_scheme=trees.concept_scheme
+            concept_scheme=trees.concept_scheme,
         )
         request = testing.DummyRequest()
         m = Mock()
@@ -110,6 +102,7 @@ class TestRenderers(unittest.TestCase):
 
     def test_source_adapter(self):
         from pyramid_skosprovider.renderers import source_adapter
+
         s = Source('<em>My citation</em>', 'HTML')
         source = source_adapter(s, Mock())
         assert isinstance(source, dict)
@@ -119,13 +112,14 @@ class TestRenderers(unittest.TestCase):
 
     def test_json_concept(self):
         from pyramid_skosprovider.renderers import json_renderer
+
         c = Concept(
             id=larch['id'],
             uri=larch['uri'],
             labels=larch['labels'],
             notes=larch['notes'],
             concept_scheme=trees.concept_scheme,
-            matches=larch['matches']
+            matches=larch['matches'],
         )
         r = json_renderer({})
         request = testing.DummyRequest()
@@ -142,11 +136,11 @@ class TestRenderers(unittest.TestCase):
         self.assertEqual(concept['type'], 'concept')
         self.assertIsInstance(concept['labels'], list)
         self.assertEqual(len(concept['labels']), 3)
-        for l in concept['labels']:
-            self.assertIsInstance(l, dict)
-            self.assertIn('label', l)
-            self.assertIn('type', l)
-            self.assertIn('language', l)
+        for label in concept['labels']:
+            self.assertIsInstance(label, dict)
+            self.assertIn('label', label)
+            self.assertIn('type', label)
+            self.assertIn('language', label)
         self.assertIsInstance(concept['notes'], list)
         self.assertEqual(len(concept['notes']), 1)
         for n in concept['notes']:
@@ -161,23 +155,26 @@ class TestRenderers(unittest.TestCase):
         assert 'matches' in concept
         for mt in ['broad', 'narrow', 'related', 'close', 'exact']:
             assert mt in concept['matches']
-            assert list == type(concept['matches'][mt])
+            assert isinstance(concept['matches'][mt], list)
         assert 1 == len(concept['matches']['close'])
 
     def test_json_collection(self):
         from pyramid_skosprovider.renderers import json_renderer
+
         c = Collection(
             id=species['id'],
             uri=species['uri'],
             labels=species['labels'],
             notes=species['notes'],
             members=[larch['id']],
-            concept_scheme=trees.concept_scheme
+            concept_scheme=trees.concept_scheme,
         )
         r = json_renderer({})
         m = Mock()
         config = {
-            'get_provider.return_value.get_by_id.return_value': Concept(id=larch['id'], uri=larch['uri'], labels=larch['labels'])
+            'get_provider.return_value.get_by_id.return_value': Concept(
+                id=larch['id'], uri=larch['uri'], labels=larch['labels']
+            )
         }
         m.configure_mock(**config)
         request = testing.DummyRequest()
@@ -193,10 +190,10 @@ class TestRenderers(unittest.TestCase):
         assert coll['type'] == 'collection'
         assert isinstance(coll['labels'], list)
         assert 4 == len(coll['labels'])
-        for l in coll['labels']:
-            assert 'label' in l
-            assert 'type' in l
-            assert 'language' in l
+        for label in coll['labels']:
+            assert 'label' in label
+            assert 'type' in label
+            assert 'language' in label
         assert len(coll['notes']) == 1
         for n in coll['notes']:
             assert 'note' in n
@@ -213,10 +210,11 @@ class TestRenderers(unittest.TestCase):
 
     def test_map_relations_invalid_id(self):
         from pyramid_skosprovider.renderers import _map_relations
+
         p = Mock()
         config = {
             'get_by_id.return_value': False,
-            'get_vocabulary_id.return_value': 'TESTPROVIDER'
+            'get_vocabulary_id.return_value': 'TESTPROVIDER',
         }
         p.configure_mock(**config)
         rels = _map_relations([5], p)

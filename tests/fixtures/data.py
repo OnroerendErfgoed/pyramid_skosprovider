@@ -1,13 +1,8 @@
 # -*- coding: utf8 -*-
 
-from skosprovider.providers import (
-    DictionaryProvider
-)
+from skosprovider.providers import DictionaryProvider
 
-from skosprovider.skos import (
-    ConceptScheme,
-    Label
-)
+from skosprovider.skos import ConceptScheme, Label
 
 larch = {
     'id': 1,
@@ -15,17 +10,17 @@ larch = {
     'labels': [
         {'type': 'prefLabel', 'language': 'en', 'label': 'The Larch'},
         {'type': 'prefLabel', 'language': 'nl', 'label': 'De Lariks'},
-        {'type': 'sortLabel', 'language': 'nl', 'label': 'c'}
+        {'type': 'sortLabel', 'language': 'nl', 'label': 'c'},
     ],
-    'notes': [
-        {'type': 'definition', 'language': 'en', 'note': 'A type of tree.'}
-    ],
+    'notes': [{'type': 'definition', 'language': 'en', 'note': 'A type of tree.'}],
     'sources': [
-        {'citation': 'Monthy Python. Episode Three: How to recognise different types of trees from quite a long way away.'}
+        {
+            'citation': 'Monthy Python. Episode Three: How to recognise different types of trees from quite a long way away.'
+        }
     ],
     'matches': {
         'close': ['http://id.python.org/different/types/of/trees/nr/1/the/larch']
-    }
+    },
 }
 
 chestnut = {
@@ -34,17 +29,16 @@ chestnut = {
     'labels': [
         {'type': 'prefLabel', 'language': 'en', 'label': 'The Chestnut'},
         {'type': 'altLabel', 'language': 'nl', 'label': 'De Paardekastanje'},
-        {'type': 'sortLabel', 'language': 'nl', 'label': 'a'}
+        {'type': 'sortLabel', 'language': 'nl', 'label': 'a'},
     ],
     'notes': [
-        {
-            'type': 'definition', 'language': 'en',
-            'note': 'A different type of tree.'
-        }
+        {'type': 'definition', 'language': 'en', 'note': 'A different type of tree.'}
     ],
     'matches': {
-        'related': ['http://id.python.org/different/types/of/trees/nr/17/the/other/chestnut']
-    }
+        'related': [
+            'http://id.python.org/different/types/of/trees/nr/17/the/other/chestnut'
+        ]
+    },
 }
 
 species = {
@@ -54,16 +48,11 @@ species = {
         {'type': 'prefLabel', 'language': 'en', 'label': 'Trees by species'},
         {'type': 'altLabel', 'language': 'en', 'label': 'Trees by their species'},
         {'type': 'prefLabel', 'language': 'nl', 'label': 'Bomen per soort'},
-        {'type': 'prefLabel', 'language': 'nl', 'label': 'b'}
+        {'type': 'prefLabel', 'language': 'nl', 'label': 'b'},
     ],
-    'notes': [
-        {
-            'type': 'scopeNote', 'language': 'en',
-            'note': 'A division of trees.'
-        }
-    ],
+    'notes': [{'type': 'scopeNote', 'language': 'en', 'note': 'A division of trees.'}],
     'type': 'collection',
-    'members': ['1', '2']
+    'members': ['1', '2'],
 }
 
 trees = DictionaryProvider(
@@ -73,7 +62,7 @@ trees = DictionaryProvider(
         uri='http://python.com/trees',
         labels=[
             Label('Different types of trees', 'prefLabel', 'en'),
-            Label('Verschillende soorten bomen', 'prefLabel', 'nl')
-        ]
-    )
+            Label('Verschillende soorten bomen', 'prefLabel', 'nl'),
+        ],
+    ),
 )
