@@ -1,25 +1,22 @@
 # -*- coding: utf8 -*-
-'''
+"""
 This module contains a few utility functions.
-'''
+"""
 
 import re
 
 import logging
+
 log = logging.getLogger(__name__)
 
 
 class QueryBuilder:
-
     def __init__(self, request, postprocess=False):
         self.request = request
         self.postprocess = postprocess
         self.no_result = False
         self.mode = self.request.params.get('mode', 'default')
-        self.language = self.request.params.get(
-            'language',
-            self.request.locale_name
-        )
+        self.language = self.request.params.get('language', self.request.locale_name)
         self.label = self.request.params.get('label', None)
 
     def _build_type(self, query):
@@ -64,24 +61,20 @@ class QueryBuilder:
 
 
 def parse_range_header(range):
-    '''
+    """
     Parse a range header as used by the dojo Json Rest store.
 
     :param str range: The content of the range header to be parsed.
         eg. `items=0-9`
     :returns: A dict with keys start, finish and number or `False` if the
         range is invalid.
-    '''
+    """
     match = re.match('^items=([0-9]+)-([0-9]+)$', range)
     if match:
         start = int(match.group(1))
         finish = int(match.group(2))
         if finish < start:
             finish = start
-        return {
-            'start': start,
-            'finish': finish,
-            'number': finish - start + 1
-        }
+        return {'start': start, 'finish': finish, 'number': finish - start + 1}
     else:
         return False

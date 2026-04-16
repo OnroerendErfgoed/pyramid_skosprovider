@@ -131,9 +131,7 @@ class RestFunctionalTests(FunctionalTests):
     def test_get_conceptschemes(self):
         accept_headers = ('*/*', 'application/json', 'application/ld+json')
         for accept in accept_headers:
-            res = self.testapp.get(
-                '/conceptschemes', {}, {'Accept': accept}, status=200
-            )
+            res = self.testapp.get('/conceptschemes', {}, {'Accept': accept}, status=200)
             if accept != '*/*':
                 self.assertIn(accept, res.headers['Content-Type'])
             data = res.json
@@ -157,8 +155,8 @@ class RestFunctionalTests(FunctionalTests):
         self.assertIn('labels', data)
         self.assertIn('sources', data)
         self.assertEqual(len(data['labels']), 2)
-        for l in data['labels']:
-            self.assertIsInstance(l, dict)
+        for label in data['labels']:
+            self.assertIsInstance(label, dict)
         self.assertIn('notes', data)
 
     def test_get_conceptscheme_jsonld(self):
@@ -350,7 +348,7 @@ class RestFunctionalTests(FunctionalTests):
         res = self.testapp.get('/conceptschemes/TREES/c/3.jsonld', status=200)
         assert 'application/ld+json' in res.headers['Content-Type']
         data = res.json
-        res2 = self.testapp.get(
+        self.testapp.get(
             '/conceptschemes/TREES/c/3',
             {},
             {'Accept': 'application/ld+json'},

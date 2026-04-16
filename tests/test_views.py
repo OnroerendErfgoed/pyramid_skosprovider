@@ -78,7 +78,7 @@ class ProviderViewTests(unittest.TestCase):
         request.accept = 'application/ld+json'
         request.matchdict = {'uri': 'http://python.com/trees'}
         pv = self._get_provider_view(request)
-        u = pv.get_uri()
+        pv.get_uri()
         assert request.response.content_type == 'application/ld+json'
 
     def test_get_uri_conceptscheme(self):
@@ -607,7 +607,6 @@ class ProviderViewTests(unittest.TestCase):
         tc = pv.get_conceptscheme_top_concepts()
         self.assertIsInstance(tc, list)
         self.assertEqual(2, len(tc))
-        first = tc[0]
         for c in tc:
             self.assertIn('id', c)
             self.assertIn('uri', c)
